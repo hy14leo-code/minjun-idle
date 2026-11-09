@@ -918,7 +918,7 @@ var CM=[
     look:{hair:"#1A1A22",style:"bowl",outfit:"#26262E",pants:"#26262E",fit:"track3",hat:"glasses",gcol:"#1A1A22",prop:"none"},
     d:function(m){return "초당 공격력 ×"+f1(0.9*m)+" 추가 피해 · 치명타 확률 +"+f1(5*m)+"%"}},
   {id:"heesung",n:"원희성",role:"힐러",t:"A",fx:{time:3,heal:3},line:"보스전에서 팀을 지켜줘요.",
-    look:{hair:"#1A1A22",style:"short",outfit:"#22242A",pants:"#252B20",fit:"fleece",hat:"glasses",gtype:"brow",gcol:"#2A2A33",happy:1,prop:"none"},
+    look:{hair:"#241C1A",style:"neat",outfit:"#8FB8A8",pants:"#3A3F4A",fit:"cardi",hat:"glasses",gtype:"rimless",gcol:"#9FB0CC",smile:1,prop:"none"},
     d:function(m){return "보스 시간 +"+f1(3*m)+"초 · 12초마다 보스 시간 +"+f1(3*m)+"초 회복"}},
   {id:"junbeom",n:"허준범",role:"탱커",t:"A",fx:{time:6,guard:8,atk:8},line:"앞에서 버티는 든든한 방패예요.",
     look:{hair:"#1A1A22",style:"bowl",outfit:"#1C1C22",pants:"#262E64",fit:"short2",hat:"glasses",gcol:"#9AA6B8",prop:"none"},
@@ -933,10 +933,10 @@ var CM=[
     look:{hair:"#1A1A22",style:"short",outfit:"#2C2A3C",pants:"#2A2F4A",fit:"hanbok",hat:"none",prop:"none"},
     d:function(m){return "능력 강화 비용 −"+f1(Math.min(40,10*m))+"% · 스킬 효과 +"+f1(12*m)+"% · 쿨타임 −"+f1(8*m)+"%"}},
   {id:"byeonghwa",n:"황병화",role:"미친개",t:"B",fx:{spd:15,bz:6},line:"앞뒤 안 가리고 달려들어요.",
-    look:{hair:"#1A1A1A",style:"spiky",outfit:"#8E2A3A",pants:"#2A2030",hat:"glasses",gcol:"#2A2A33",fierce:1,prop:"none"},
+    look:{hair:"#1A1A1A",style:"spiky",outfit:"#8E2A3A",pants:"#2A2030",hat:"glasses",gtype:"rimless",gcol:"#DDE7F5",fierce:1,prop:"none"},
     d:function(m){return "공격 속도 +"+f1(15*m)+"% · 타격할 때 "+f1(Math.min(30,6*m))+"% 확률로 광란(공격력 ×4 추가 피해)"}},
   {id:"bonggu",n:"이봉구",role:"분신",t:"U",fx:{dps:2.0,atk:10,sponge:15},line:"분신술로 셋이서 한꺼번에 몰아쳐요.",
-    look:{hair:"#1A1A22",style:"rainbow",outfit:"#8D929D",pants:"#7A7F8A",fit:"uni",hat:"glasses",gcol:"#1A1A22",prop:"none"},
+    look:{hair:"#1A1A22",style:"rainbow",outfit:"#4F78B8",pants:"#2A2F45",fit:"denim",hat:"none",prop:"none"},
     d:function(m){return "본체와 분신 2명이 함께 공격: 초당 공격력 ×"+f1(2.0*m)+" 추가 피해 · 공격력 +"+f1(10*m)+"% · 몬스터 공격의 "+f1(Math.min(40,15*m))+"%를 분신이 대신 맞음"}},
   {id:"seonggu",n:"이성구",role:"군인",t:"S",fx:{dps:1.0,def:40,hp:25,time:3},line:"규율과 화력으로 전선을 지켜요.",
     look:{hair:"#2B2B2B",style:"short",outfit:"#4B5D3A",pants:"#3A4A2C",hat:"army",prop:"gun"},
@@ -1274,6 +1274,7 @@ function drawChibi(x,o){
   else if(st==="spiky"){R(x,HR,5,4,14,2);R(x,HR,6,1,2,4);R(x,HR,10,0,2,5);R(x,HR,14,1,2,4);R(x,HR,18,2,2,4);R(x,HR,4,5,2,6);R(x,HR,18,5,2,6);R(x,HR,6,6,12,1)}
   else if(st==="swept"){R(x,HR,5,3,14,3);R(x,HR,4,5,3,8);R(x,HR,17,5,3,4);R(x,HR,6,6,10,2);R(x,HR,14,7,4,2);R(x,SKC,11,7,2,1);R(x,"#fff",7,3,4,1)}
   else if(st==="parted"){R(x,HR,5,3,14,3);R(x,HR,4,5,2,7);R(x,HR,18,5,2,7);R(x,HR,6,6,5,2);R(x,HR,13,6,5,2);R(x,"#7A6A5A",8,3,3,1)}
+  else if(st==="neat"){R(x,HR,5,3,14,3);R(x,HR,4,5,2,3);R(x,HR,18,5,2,3);R(x,HR,6,6,12,1);R(x,HR,6,7,3,1);R(x,"#6A5A4A",8,3,3,1)}
   else if(st==="bowl"){R(x,HR,5,3,14,4);R(x,HR,4,5,2,6);R(x,HR,18,5,2,6);R(x,HR,6,6,12,3)}
   else if(st==="downperm"){R(x,HR,5,3,14,3);R(x,HR,4,5,3,7);R(x,HR,17,5,3,7);R(x,HR,6,6,12,2);R(x,HR,7,8,3,1);R(x,HR,14,8,3,1)}
   else if(st==="rainbow"){
@@ -1290,7 +1291,8 @@ function drawChibi(x,o){
   if(o.hat==="helm"){R(x,"#9AA6C8",5,2,14,4);R(x,"#7B86A8",5,5,14,1);R(x,"#E83A4A",11,0,2,3)}
   if(o.hat==="wizard"){R(x,"#6B4AC0",4,3,16,2);R(x,"#6B4AC0",7,1,10,2);R(x,"#6B4AC0",10,-1,4,2);R(x,"#FFC94A",7,3,10,1)}
   if(o.hat==="band"){R(x,"#fff",5,4,14,1);R(x,"#E83A4A",5,5,14,1)}
-  if(o.hat==="glasses"){var G=o.gcol||INK,GB=o.gtype==="brow"?"#C9B27A":G;R(x,G,7,9,4,1);R(x,G,13,9,4,1);R(x,GB,7,13,4,1);R(x,GB,13,13,4,1);R(x,G,7,9,1,5);R(x,G,10,9,1,5);R(x,G,13,9,1,5);R(x,G,16,9,1,5);R(x,G,11,11,2,1);if(o.gtype==="brow"){R(x,G,7,8,4,1);R(x,G,13,8,4,1)}}
+  if(o.hat==="glasses"&&o.gtype==="rimless"){var LG=o.gcol||"#DDE7F5";R(x,LG,7,9,4,1);R(x,LG,13,9,4,1);R(x,LG,7,13,4,1);R(x,LG,13,13,4,1);R(x,LG,7,10,1,3);R(x,LG,16,10,1,3);R(x,LG,11,11,2,1);R(x,LG,5,10,2,1);R(x,LG,17,10,2,1);R(x,"#EAF4FF",8,9,1,1);R(x,"#EAF4FF",14,9,1,1)}
+  else if(o.hat==="glasses"){var G=o.gcol||INK,GB=o.gtype==="brow"?"#C9B27A":G;R(x,G,7,9,4,1);R(x,G,13,9,4,1);R(x,GB,7,13,4,1);R(x,GB,13,13,4,1);R(x,G,7,9,1,5);R(x,G,10,9,1,5);R(x,G,13,9,1,5);R(x,G,16,9,1,5);R(x,G,11,11,2,1);if(o.gtype==="brow"){R(x,G,7,8,4,1);R(x,G,13,8,4,1)}}
   if(o.fit)fitFace(x,o,INK);
   if(o.scarf){R(x,o.scarf,7,15,10,2);R(x,o.scarf,15,17,2,6)}
   if(o.sparkle){R(x,"#fff",2,2,1,3);R(x,"#fff",1,3,3,1);R(x,"#FFF1A8",21,4,1,3);R(x,"#FFF1A8",20,5,3,1);R(x,"#fff",20,12,1,1)}
@@ -1322,10 +1324,13 @@ function fitBody(x,o,SKC){
   else if(f==="fleece"){R(x,o.outfit,4,17,3,7);R(x,o.outfit,17,17,3,7);R(x,"#3A3C44",7,19,2,1);R(x,"#3A3C44",12,21,2,1);R(x,"#3A3C44",5,20,1,1);R(x,"#3A3C44",18,22,1,1);R(x,"#8A8A96",11,16,1,8);R(x,"#D8343C",10,16,4,1);R(x,"#fff",12,16,2,1);R(x,"#3A4230",8,25,2,1);R(x,"#3A4230",14,25,2,1)}
   else if(f==="short2"){R(x,SKC,5,20,2,3);R(x,SKC,17,20,2,3);R(x,SKC,8,25,3,1);R(x,SKC,13,25,3,1);R(x,"#F4F6FF",8,26,3,1);R(x,"#F4F6FF",13,26,3,1);R(x,"#fff",9,24,1,1);R(x,"#fff",11,24,1,1);R(x,"#2A3A8A",18,21,4,5);R(x,"#B02A3A",18,21,1,5)}
   else if(f==="track3"){R(x,"#6E7180",7,16,10,2);R(x,"#6E7180",5,17,2,2);R(x,"#6E7180",17,17,2,2);R(x,"#D8343C",7,19,10,1);R(x,"#D8343C",5,20,2,1);R(x,"#D8343C",17,20,2,1);R(x,"#C9D4F0",11,16,1,8);R(x,"#FFC94A",14,20,2,2);R(x,"#6E7180",8,24,1,3);R(x,"#6E7180",15,24,1,3)}
+  else if(f==="denim"){R(x,"#4F78B8",4,17,3,7);R(x,"#4F78B8",17,17,3,7);R(x,"#4F78B8",7,16,3,8);R(x,"#4F78B8",14,16,3,8);R(x,"#3A5C94",9,16,1,8);R(x,"#3A5C94",14,16,1,8);R(x,"#F4F6FF",10,16,4,8);R(x,"#DCE3F2",11,17,2,1);R(x,"#FFC94A",8,20,1,1);R(x,"#FFC94A",15,20,1,1);R(x,"#3A5C94",7,22,2,1);R(x,"#3A5C94",15,22,2,1);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2);R(x,"#3A4A70",8,24,3,1);R(x,"#3A4A70",13,24,3,1)}
+  else if(f==="cardi"){R(x,"#8FB8A8",4,17,3,7);R(x,"#8FB8A8",17,17,3,7);R(x,"#8FB8A8",7,16,3,8);R(x,"#8FB8A8",14,16,3,8);R(x,"#6E9A8A",9,16,1,8);R(x,"#6E9A8A",14,16,1,8);R(x,"#fff",10,16,4,8);R(x,"#B7D3C8",10,16,1,1);R(x,"#B7D3C8",13,16,1,1);R(x,"#FFE9A8",8,18,1,1);R(x,"#FFE9A8",8,21,1,1);R(x,"#FFE9A8",15,18,1,1);R(x,"#FFE9A8",15,21,1,1);R(x,"#6E9A8A",4,22,3,1);R(x,"#6E9A8A",17,22,3,1);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2)}
   else if(f==="hanbok"){R(x,o.outfit,3,17,3,8);R(x,o.outfit,18,17,3,8);R(x,o.outfit,6,23,12,4);R(x,"#1C1C22",8,21,8,1);R(x,"#fff",10,16,4,1);R(x,"#2A2640",6,24,1,3);R(x,"#2A2640",17,24,1,3);R(x,SKC,4,25,2,1);R(x,SKC,18,25,2,1)}
 }
 function fitFace(x,o,INK){
   if(o.fit==="hanbok"){R(x,o.hair,11,0,2,3);R(x,"#C9A56B",10,3,4,1)}
+  if(o.smile){R(x,INK,10,14,4,1);R(x,INK,9,13,1,1);R(x,INK,14,13,1,1)}
   if(o.fierce){R(x,INK,8,8,3,1);R(x,INK,13,8,3,1);R(x,INK,10,9,1,1);R(x,INK,13,9,1,1);R(x,INK,10,14,4,1)}
   if(o.happy){R(x,"#FFD3AA",8,10,2,3);R(x,"#FFD3AA",14,10,2,3);R(x,INK,8,11,2,1);R(x,INK,14,11,2,1);R(x,INK,9,10,1,1);R(x,INK,14,10,1,1);R(x,"#fff",9,14,6,1);R(x,INK,9,13,6,1)}
 }
