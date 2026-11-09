@@ -21,7 +21,7 @@
   --ink:#F4F6FF; --ink2:#AEB8F0; --ink3:#7683CC;
   --gold:#FFC94A; --gold2:#FF9B1F; --cyan:#5BE8FF; --red:#FF5470; --green:#52E3A4;
   --t-common:#9AA6D6; --t-rare:#4DA3FF; --t-epic:#B07CFF; --t-legend:#FFB62E; --t-trash:#A57F4B; --t-ultra:#FF5C7A;
-  --k-C:#9AA6D6; --k-B:#4DA3FF; --k-A:#B07CFF; --k-S:#FFB62E; --k-N:#FF4DD2; --k-U:#FF5C7A; --k-H:#FFD84D; --k-M:#7CFFE8;
+  --k-C:#9AA6D6; --k-B:#4DA3FF; --k-A:#B07CFF; --k-S:#FFB62E; --k-N:#FF4DD2; --k-U:#FF5C7A; --k-X:#FF2D55; --k-H:#FFD84D; --k-M:#7CFFE8;
   --f-d:"Do Hyeon","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-b:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
   --f-p:"Press Start 2P","Do Hyeon","Noto Sans KR",monospace;
@@ -105,7 +105,7 @@ tr:last-child td{border-bottom:0}
 .bt th,.bt td{white-space:nowrap;padding:7px 4px;font-size:12.5px}
 .tier{display:inline-block;color:#fff;background:var(--tc);padding:0 8px;font-size:11px;font-weight:700}
 .t-common{--tc:var(--t-common)} .t-rare{--tc:var(--t-rare)} .t-epic{--tc:var(--t-epic)} .t-legend{--tc:var(--t-legend)} .t-trash{--tc:var(--t-trash)} .t-ultra{--tc:var(--t-ultra)}
-.k-C{--tc:var(--k-C)} .k-B{--tc:var(--k-B)} .k-A{--tc:var(--k-A)} .k-S{--tc:var(--k-S)} .k-N{--tc:var(--k-N)} .k-U{--tc:var(--k-U)} .k-H{--tc:var(--k-H)} .k-M{--tc:var(--k-M)} .t-pet{--tc:#FFB62E}
+.k-C{--tc:var(--k-C)} .k-B{--tc:var(--k-B)} .k-A{--tc:var(--k-A)} .k-S{--tc:var(--k-S)} .k-N{--tc:var(--k-N)} .k-U{--tc:var(--k-U)} .k-X{--tc:var(--k-X)} .k-H{--tc:var(--k-H)} .k-M{--tc:var(--k-M)} .t-pet{--tc:#FFB62E}
 .tier.k-N,.tier.k-U{animation:rb 1.2s steps(6) infinite}
 .tier.k-M{background:linear-gradient(90deg,#FF5C7A,#FFC94A,#52E3A4,#4DA3FF,#B07CFF);color:#fff;animation:rb 1.2s steps(6) infinite}
 .pcard.k-M::after{content:"";position:absolute;inset:-4px;border:4px solid #7CFFE8;animation:rb 1.2s steps(6) infinite;pointer-events:none}
@@ -727,6 +727,9 @@ body,.panel,.btn{text-shadow:none}
 
 .tier.k-H{background:linear-gradient(90deg,#FFD84D,#FF6FD8,#7CE8FF);color:#1A1030;animation:rb 1.2s steps(6) infinite}
 .pcard.k-H::after{content:"";position:absolute;inset:-4px;border:4px solid #FFD84D;animation:rb 1.2s steps(6) infinite;pointer-events:none}
+
+.tier.k-X{background:linear-gradient(90deg,#2A0010,#FF2D55,#2A0010);color:#fff;animation:rb 1.2s steps(6) infinite}
+.pcard.k-X::after{content:"";position:absolute;inset:-4px;border:4px solid #FF2D55;animation:rb 1.2s steps(6) infinite;pointer-events:none}
 </style>
 
 <div class="wrap">
@@ -802,6 +805,7 @@ var TIERS=[
 ];
 var TI={}; TIERS.forEach(function(t){TI[t.id]=t});
 var SKTIERS=[
+  {id:"X",n:"멸망",p:0.05,sh:40,rank:7},
   {id:"N",n:"국가권력",p:0.5,sh:20,rank:6},
   {id:"S",n:"S등급",p:3,sh:8,rank:5},
   {id:"A",n:"A등급",p:12,sh:4,rank:4},
@@ -817,7 +821,8 @@ var CMTIERS=[
   {id:"B",n:"B등급",p:35,sh:2,rank:2},
   {id:"C",n:"C등급",p:43.8,sh:1,rank:1,sink:true}
 ];
-function tl(t){return t==="N"?"국가권력":t==="U"?"울트라":t==="H"?"하이퍼":t==="M"?"미스틱":t}
+function isTop(sk){return !!sk&&(sk.t==="N"||sk.t==="X")}
+function tl(t){return t==="X"?"멸망":t==="N"?"국가권력":t==="U"?"울트라":t==="H"?"하이퍼":t==="M"?"미스틱":t}
 function tl2(t){return "SABC".indexOf(t)>=0?t+"등급":tl(t)}
 var SKTI={},CMTI={};
 SKTIERS.forEach(function(t){SKTI[t.id]=t});CMTIERS.forEach(function(t){CMTI[t.id]=t});
@@ -912,7 +917,10 @@ var SKL=[
   {id:"score",t:"S",n:"성적향상",e:"💯",cd:60,dur:20,buff:{atkM:1.5,goldM:2,critAdd:0.2}},
   {id:"bat",t:"S",n:"강철빠따",e:"⚾",cd:55,dur:10,buff:{dmgM:3}},
   {id:"bong",t:"N",n:"봉산탈춤",e:"🎭",cd:120,dur:20,nuke:400,buff:{atkM:3,spdM:1.5,dr:0.5}},
-  {id:"casa",t:"N",n:"카사노바",e:"💘",cd:100,dur:12,buff:{dmgM:2.5,goldM:3,charm:1,freeze:1}}
+  {id:"casa",t:"N",n:"카사노바",e:"💘",cd:100,dur:12,buff:{dmgM:2.5,goldM:3,charm:1,freeze:1}},
+  {id:"mimic",t:"N",n:"J의 모방",e:"🪞",cd:140,mimic:1},
+  {id:"nuna",t:"S",n:"누나찬스",e:"👩",cd:55,dur:14,nuke:100,buff:{dr:0.35,frM:3,goldM:1.5}},
+  {id:"sage",t:"X",n:"현자타임",e:"🧘",cd:180,dur:10,nuke:1200,cdr:999,buff:{freeze:1,dr:0.9,atkM:2}}
 ];
 var SKM={}; SKL.forEach(function(s){SKM[s.id]=s});
 
@@ -1307,28 +1315,31 @@ function drawStella(x){
 
 /* 동료 캐릭터 */
 function drawMech(x){
-  var D="#2F3A52",M="#4A566E",L="#9FB0CC",OR="#FF9F3A",CY="#7CE8FF";
-  /* 꼬리 */
-  R(x,M,20,25,2,2);R(x,M,22,23,2,2);R(x,M,22,20,2,3);R(x,OR,22,18,2,2);R(x,"#FFE27A",23,18,1,1);
-  /* 다리·발 */
-  R(x,D,6,24,5,4);R(x,D,13,24,5,4);R(x,M,6,24,5,1);R(x,M,13,24,5,1);
-  R(x,OR,4,27,7,2);R(x,OR,13,27,7,2);R(x,"#B86A1A",4,28,7,1);R(x,"#B86A1A",13,28,7,1);R(x,"#fff",4,27,1,1);R(x,"#fff",13,27,1,1);
-  /* 허리·반응로 */
-  R(x,M,5,21,14,4);R(x,OR,5,23,14,1);R(x,D,5,24,14,1);R(x,CY,11,21,2,2);R(x,"#fff",11,21,1,1);
-  /* 몸통 장갑 */
-  R(x,D,4,15,16,6);R(x,L,5,16,3,4);R(x,L,16,16,3,4);R(x,"#fff",5,16,1,1);R(x,"#fff",18,16,1,1);R(x,OR,4,19,4,1);R(x,OR,16,19,4,1);
-  /* 조종석 캐노피 */
-  R(x,OR,7,15,10,1);R(x,OR,7,16,1,5);R(x,OR,16,16,1,5);R(x,OR,8,21,8,1);
-  R(x,"#BFF3FF",8,16,8,2);R(x,"#4DB8F5",8,18,8,3);R(x,"#fff",9,16,3,1);R(x,"#fff",9,17,1,1);
-  /* 어깨 장갑·캐논 */
-  R(x,M,1,15,4,4);R(x,M,19,15,4,4);R(x,L,1,15,4,1);R(x,L,19,15,4,1);R(x,OR,1,18,4,1);R(x,OR,19,18,4,1);
-  R(x,D,0,10,2,6);R(x,D,22,10,2,6);R(x,CY,0,9,2,1);R(x,CY,22,9,2,1);R(x,OR,0,13,2,1);R(x,OR,22,13,2,1);
-  /* 팔·발톱 */
-  R(x,M,2,19,3,4);R(x,M,19,19,3,4);R(x,D,1,22,4,3);R(x,D,19,22,4,3);
-  R(x,OR,1,25,1,2);R(x,OR,3,25,1,2);R(x,OR,19,25,1,2);R(x,OR,21,25,1,2);R(x,"#fff",1,26,1,1);R(x,"#fff",21,26,1,1);
-  /* 미어캣 귀 안테나 */
-  R(x,M,3,6,2,4);R(x,M,19,6,2,4);R(x,OR,3,7,1,2);R(x,OR,20,7,1,2);R(x,CY,3,5,1,1);R(x,CY,20,5,1,1);
+  var N="#2B3552",N2="#3F4C70",TAN="#D9B98A",OR="#FF9F3A",CY="#7CE8FF";
+  /* 긴 꼬리 */
+  R(x,N2,17,25,3,2);R(x,N2,19,23,3,2);R(x,N2,20,20,2,3);R(x,N2,19,17,2,3);R(x,OR,19,15,2,2);R(x,CY,19,14,1,1);
+  /* 날렵한 다리·발톱 */
+  R(x,N,8,24,3,3);R(x,N,13,24,3,3);R(x,N2,8,24,1,2);R(x,N2,13,24,1,2);
+  R(x,OR,6,27,5,2);R(x,OR,13,27,5,2);R(x,"#B86A1A",6,28,5,1);R(x,"#B86A1A",13,28,5,1);R(x,"#fff",6,27,1,1);R(x,"#fff",13,27,1,1);
+  R(x,CY,8,29,2,1);R(x,CY,14,29,2,1);
+  /* 슬림 몸통 */
+  R(x,N,6,16,12,9);R(x,N2,6,16,12,1);R(x,N2,6,16,1,8);R(x,N2,17,16,1,8);
+  R(x,"#E8D8B8",9,17,6,6);R(x,TAN,9,17,6,1);R(x,"#B89A6A",9,19,6,1);R(x,"#B89A6A",9,21,6,1);R(x,CY,11,18,2,4);R(x,"#fff",11,18,1,1);
+  R(x,OR,6,23,12,1);
+  /* 어깨 장갑·가슴 앞 팔 */
+  R(x,N2,4,16,3,3);R(x,N2,17,16,3,3);R(x,OR,4,18,3,1);R(x,OR,17,18,3,1);
+  R(x,N,5,19,2,4);R(x,N,17,19,2,4);R(x,TAN,6,22,3,2);R(x,TAN,15,22,3,2);R(x,"#fff",6,23,1,1);R(x,"#fff",17,23,1,1);
 }
+function mechHead(x){
+  var TAN="#D9B98A",TD="#9A7A4A",OR="#FF9F3A",CY="#7CE8FF";
+  /* 털모자 + 뾰족한 귀 */
+  R(x,TAN,5,3,14,4);R(x,TD,7,4,1,3);R(x,TD,11,3,2,3);R(x,TD,16,4,1,3);R(x,TAN,7,2,10,1);R(x,TD,5,6,14,1);
+  R(x,TAN,3,-1,3,6);R(x,TAN,18,-1,3,6);R(x,"#1A1030",4,-1,1,1);R(x,OR,4,1,1,3);R(x,OR,19,1,1,3);R(x,TD,3,0,1,2);R(x,TD,20,0,1,2);
+  R(x,CY,3,5,1,1);R(x,CY,20,5,1,1);
+  /* 코·수염 */
+  R(x,"#1A1020",11,13,2,1);R(x,"#fff",2,11,3,1);R(x,"#fff",19,11,3,1);R(x,"#fff",2,13,3,1);R(x,"#fff",19,13,3,1);
+}
+function mechPatch(x){R(x,"#3A2A3E",7,9,4,5);R(x,"#3A2A3E",13,9,4,5);R(x,"#4A3A50",7,9,4,1);R(x,"#4A3A50",13,9,4,1)}
 function drawChibi(x,o){
   var SKC="#FFD3AA",SH="#E9A97F",HR=o.hair,INK="#1A1530",st=o.style;
   if(o.prop==="rope"){for(var rt=0;rt<=60;rt++){var ra=Math.PI*rt/60;R(x,"#FFC94A",Math.round(12-10.5*Math.cos(ra)),Math.round(24-23*Math.sin(ra)),1,1)}}
@@ -1356,6 +1367,7 @@ function drawChibi(x,o){
     for(ri=0;ri<6;ri++)R(x,RB[(ri+1)%6],6+ri*2,6,2,2);
   }
   else{R(x,HR,5,3,14,3);R(x,HR,4,5,2,6);R(x,HR,18,5,2,6);R(x,HR,6,6,12,2);R(x,SKC,11,7,2,1)}
+  if(o.mech)mechPatch(x);
   R(x,INK,8,10,2,3);R(x,INK,14,10,2,3);R(x,"#fff",8,10,1,1);R(x,"#fff",14,10,1,1);
   R(x,"#FF8FA3",7,13,2,1);R(x,"#FF8FA3",15,13,2,1);
   if(o.grin){R(x,INK,9,14,6,1);R(x,"#fff",10,15,1,1);R(x,"#fff",13,15,1,1);R(x,"#E83A4A",8,9,3,1);R(x,"#E83A4A",13,9,3,1)}
@@ -1367,6 +1379,7 @@ function drawChibi(x,o){
   else if(o.hat==="glasses"){var G=o.gcol||INK,GB=o.gtype==="brow"?"#C9B27A":G;R(x,G,7,9,4,1);R(x,G,13,9,4,1);R(x,GB,7,13,4,1);R(x,GB,13,13,4,1);R(x,G,7,9,1,5);R(x,G,10,9,1,5);R(x,G,13,9,1,5);R(x,G,16,9,1,5);R(x,G,11,11,2,1);if(o.gtype==="brow"){R(x,G,7,8,4,1);R(x,G,13,8,4,1)}}
   if(o.fit)fitFace(x,o,INK);
   if(o.darkeye){R(x,"#000",7,10,4,3);R(x,"#000",8,9,2,5);R(x,"#000",13,10,4,3);R(x,"#000",14,9,2,5);R(x,"#3A1A55",8,10,1,1);R(x,"#3A1A55",14,10,1,1)}
+  if(o.mech)mechHead(x);
   if(o.hat==="crown"){R(x,"#FFC94A",7,2,10,2);R(x,"#FFC94A",7,0,2,2);R(x,"#FFC94A",11,0,2,2);R(x,"#FFC94A",15,0,2,2);R(x,"#D8343C",11,2,2,1)}
   if(o.halo){R(x,"#FFE27A",7,0,10,1);R(x,"#FFF6C0",8,0,8,1)}
   if(o.prop==="rope"){R(x,"#fff",2,23,2,3);R(x,"#D8343C",2,23,2,1);R(x,"#fff",20,23,2,3);R(x,"#D8343C",20,23,2,1)}
@@ -2113,6 +2126,18 @@ function useSkill(id){
     SKL.forEach(function(o){if(o.id!==id&&cds[o.id]>0)cds[o.id]=Math.max(0,cds[o.id]-cut)});
     toast(sk.n+": 다른 스킬 대기시간 −"+f1(cut)+"초");snd(600,0.15,"square",0.04,900);
   }
+  if(sk.mimic){
+    var mc=0;
+    S.slots.forEach(function(oid){
+      if(!oid||oid===id)return;
+      var o=SKM[oid];if(!o||!S.skl[oid]||isTop(o))return;
+      mc++;var op=sPow(oid);
+      if(o.nuke){var md=nukeDmg(o,c,op)*0.8;popAt(fmt(md),"big",0.7,0.3+mc*0.06);deal(md)}
+      if(o.buff)eff[oid]=Math.max(eff[oid]||0,o.dur*(1+0.1*(eLv(S.skl[oid].lv,5,0.25)-1))*(1+SYc.dur/100));
+      (function(k,oi){later(function(){try{skillFx(oi)}catch(e){}},260+k*220)})(mc,oid);
+    });
+    refreshSF();toast("J의 모방! "+mc+"개 스킬을 따라 했어요");snd(700,0.2,"square",0.04,1200);
+  }
   if(sk.buff){
     eff[id]=sk.dur*(1+0.1*(eLv(lv,5,0.25)-1))*(1+SYc.dur/100);
     refreshSF();
@@ -2127,7 +2152,8 @@ function autoSkills(){
     var sk=SKM[id];
     if(!sk||!S.skl[id]||cds[id]>0)return;
     var p=sPow(id);
-    if(sk.t==="N"&&!F.boss)return;
+    if(isTop(sk)&&!F.boss)return;
+    if(sk.mimic&&!S.slots.some(function(o){return o&&o!==id&&SKM[o]&&S.skl[o]&&!isTop(SKM[o])}))return;
     if(sk.nuke){if(!F.boss&&F.hp<nukeDmg(sk,c,p)*0.7)return}
     else if(sk.cdr){
       var need=S.slots.some(function(o){return o&&o!==id&&cds[o]>0});
@@ -2194,6 +2220,27 @@ function skillFx(id){
       for(i=0;i<9;i++)(function(k){later(function(){fxSpr(k%3?"💘":"❤️",14,2.6,"heart",22+Math.random()*10,30+Math.random()*30,1.1,{"--dx":(120+Math.random()*60)+"px","--dy":(-60+Math.random()*50)+"px"})},k*90)})(i);
       later(function(){fxSpr("🌹",16,3.6,"fly",30,50,0.8,{"--dx":"170px","--dy":"-20px"})},300);
       later(function(){fxSpr("💞",16,4.6,"pop",70,18,1.1)},900);
+      break;
+    case "mimic":
+      bannerFx("J의 모방!");
+      flashFx("rgba(160,200,255,.3)");
+      fxSpr("🪞",16,5,"pop",24,16,1.2);
+      for(i=0;i<5;i++)(function(k){later(function(){fxSpr("🌀",12,2.4,"fly",30,46,0.6,{"--dx":(120+k*20)+"px","--dy":(-30+k*14)+"px"})},k*100)})(i);
+      later(function(){popAt("따라쟁이!","big",0.76,0.5)},500);
+      break;
+    case "nuna":
+      bannerFx("누나 찬스!");
+      fxSpr("👩",16,4.6,"fly",8,40,0.9,{"--dx":"170px","--dy":"-10px"});
+      for(i=0;i<6;i++)(function(k){later(function(){fxSpr(k%2?"💸":"🪙",12,2.2,"fly",34,36,0.8,{"--dx":(120+k*18)+"px","--dy":(-70+k*20)+"px"})},300+k*90)})(i);
+      later(function(){popAt("누나 믿지?","big",0.74,0.5);boomAt(72,38,3);flashFx("rgba(255,210,230,.35)");shakeF()},760);
+      later(function(){fxSpr("💖",16,3.6,"pop",24,20,1.1)},900);
+      break;
+    case "sage":
+      bannerFx("현자타임…");
+      flashFx("rgba(10,0,40,.62)");
+      fxSpr("🧘",16,7,"pop",42,12,2.1);
+      [[20,14],[78,12],[28,44],[84,40]].forEach(function(p,k){later(function(){fxSpr("🌌",16,3.2,"pop",p[0],p[1],1.4)},200+k*150)});
+      later(function(){flashFx("rgba(255,255,255,.7)");boomAt(70,36,6);boomAt(60,44,4);shakeF();knock();popAt("깨달음!","big",0.74,0.45);snd(90,0.4,"sawtooth",0.07,40)},900);
       break;
     case "slap":
       fxSpr("🖐️",16,6,"slapfx",62,2,0.75);
@@ -2378,14 +2425,15 @@ function pullOne(pool){
   return {id:it.id,t:it.t,isNew:isNew,up:false,sh:sh};
 }
 function pullSk(pool){
-  S.pit.sk++;S.pit.skn++;
-  var t=(S.pit.skn>=300&&S.best>=30)?SKTI.N:(S.pit.sk>=60&&S.best>=30)?SKTI.S:rollTier(pool||SKTIERS);
-  if(t.id==="S"||t.id==="N")S.pit.sk=0;
-  if(t.id==="N")S.pit.skn=0;
+  S.pit.sk++;S.pit.skn++;S.pit.skx=(S.pit.skx||0)+1;
+  var t=(S.pit.skx>=600&&S.best>=60)?SKTI.X:(S.pit.skn>=300&&S.best>=30)?SKTI.N:(S.pit.sk>=60&&S.best>=30)?SKTI.S:rollTier(pool||SKTIERS);
+  if(t.id==="S"||t.id==="N"||t.id==="X")S.pit.sk=0;
+  if(t.id==="N"||t.id==="X")S.pit.skn=0;
+  if(t.id==="X")S.pit.skx=0;
   var sk=pickRand(SKL.filter(function(s){return s.t===t.id})),own=S.skl[sk.id],isNew=false,up=false,sh=0;
   if(!own){
     S.skl[sk.id]={n:1,lv:1};isNew=true;
-    var ei=S.slots.indexOf(null);if(ei>=0&&!(sk.t==="N"&&S.slots.some(function(x){return x&&SKM[x]&&SKM[x].t==="N"})))S.slots[ei]=sk.id;
+    var ei=S.slots.indexOf(null);if(ei>=0&&!(isTop(sk)&&S.slots.some(function(x){return x&&SKM[x]&&isTop(SKM[x])})))S.slots[ei]=sk.id;
   }else{
     own.n++;
     if(own.lv<SKMAX){own.lv++;up=true}else{sh=t.sh;S.shards+=sh}
@@ -2486,10 +2534,10 @@ function toggleSkill(id){
   if(i>=0)S.slots[i]=null;
   else{
     var e=S.slots.indexOf(null),nsk=SKM[id],swapped=false;
-    if(nsk.t==="N"){
+    if(isTop(nsk)){
       var oi=-1;
-      S.slots.forEach(function(x,ix){if(x&&x!==id&&SKM[x]&&SKM[x].t==="N")oi=ix});
-      if(oi>=0){toast("국가권력급 스킬은 하나만 장착할 수 있어요: "+SKM[S.slots[oi]].n+" → "+nsk.n);S.slots[oi]=id;swapped=true}
+      S.slots.forEach(function(x,ix){if(x&&x!==id&&SKM[x]&&isTop(SKM[x]))oi=ix});
+      if(oi>=0){toast("국가권력급 이상 스킬은 하나만 장착할 수 있어요: "+SKM[S.slots[oi]].n+" → "+nsk.n);S.slots[oi]=id;swapped=true}
     }
     if(!swapped){
       if(e<0){toast("슬롯이 가득 찼어요. 먼저 장착 해제해 주세요");return}
@@ -3240,12 +3288,12 @@ var SYN=[
   {id:"y3",n:"느긋한 생각",need:["awk","think"],fx:{cdr:10},d:"쿨타임 −10%"},
   {id:"y4",n:"매운맛 연타",need:["chili","slap"],fx:{nuke:40},d:"즉발 피해 +40%"},
   {id:"y5",n:"파티 타임",need:["happy","summon"],fx:{gold:30,fr:40},d:"골드 +30%, 친구 도움 +40%"},
-  {id:"y6",n:"깔끔한 마무리",need:["shave","note"],fx:{atk:15,nuke:20},d:"공격력 +15%, 즉발 피해 +20%"},
+  {id:"y6",n:"굴욕 콤보",need:["shave","pants"],fx:{nuke:30,crit:8},d:"즉발 피해 +30%, 치명타 +8%"},
   {id:"y7",n:"공중 지원",need:["air","summon"],fx:{nuke:50},d:"즉발 피해 +50%"},
   {id:"y8",n:"멘탈 케어",need:["burst","think"],fx:{dur:25},d:"지속 시간 +25%"},
   {id:"y9",n:"고득점 플랜",need:["gpa","score"],fx:{atk:25,gold:20},d:"공격력 +25%, 골드 +20%"},
   {id:"y10",n:"근육 학습",need:["gut","note"],fx:{spd:15,crit:6},d:"공격 속도 +15%, 치명타 +6%"},
-  {id:"y11",n:"철벽 타법",need:["bat","glare"],fx:{atk:20,crit:8},d:"공격력 +20%, 치명타 +8%"},
+  {id:"y11",n:"압박 타법",need:["bat","glare"],fx:{atk:20,crit:8},d:"공격력 +20%, 치명타 +8%"},
   {id:"y12",n:"전면전",need:["air","bat","gut"],fx:{atk:40,nuke:30},d:"공격력 +40%, 즉발 피해 +30%"},
   {id:"t1",n:"기초 다지기",tier:"C",fx:{cdr:15},d:"C등급 4종 장착: 쿨타임 −15%"},
   {id:"t2",n:"중급 코스",tier:"B",fx:{spow:15,gold:20},d:"B등급 4종 장착: 스킬 효과 +15%, 골드 +20%"},
@@ -3259,7 +3307,10 @@ var SYN=[
   {id:"p6",n:"분신 부대",need:["c:bonggu","c:seonggu"],fx:{atk:25,def:30},d:"공격력 +25%, 방어력 +30%"},
   {id:"p7",n:"철벽 방어선",need:["c:junho","c:junbeom"],fx:{def:60,hp:30},d:"방어력 +60%, 체력 +30%"},
   {id:"y13",n:"신명나는 한마당",need:["bong","happy"],fx:{gold:30,dur:20},d:"골드 +30%, 지속 시간 +20%"},
-  {id:"y14",n:"밤의 제왕",need:["casa","gpa"],fx:{atk:30,crit:10},d:"공격력 +30%, 치명타 +10%"}
+  {id:"y14",n:"치명적 눈빛",need:["casa","glare"],fx:{atk:30,crit:10},d:"공격력 +30%, 치명타 +10%"},
+  {id:"y15",n:"용돈 타임",need:["nuna","happy"],fx:{gold:25,fr:30},d:"골드 +25%, 친구 도움 +30%"},
+  {id:"y16",n:"완벽한 베끼기",need:["mimic","note"],fx:{spow:20,dur:15},d:"스킬 효과 +20%, 지속 시간 +15%"},
+  {id:"y17",n:"현자의 깨달음",need:["sage","think"],fx:{cdr:15,dur:20},d:"쿨타임 −15%, 지속 시간 +20%"}
 ];
 var SYc={atk:0,crit:0,spd:0,gold:0,fr:0,cdr:0,spow:0,nuke:0,dur:0,time:0,hp:0,def:0};
 function haveNeed(x){return x.indexOf("c:")===0?S.party.indexOf(x.slice(2))>=0:S.slots.indexOf(x)>=0}
@@ -3470,8 +3521,9 @@ function subHtml(key,list){
   return '<div class="subtabs">'+list.map(function(x){return '<button class="btn small ghost'+(sub[key]===x[0]?" on":"")+'" data-a="sub" data-v="'+key+':'+x[0]+'">'+x[1]+"</button>"}).join("")+"</div>";
 }
 function skDesc(sk,p,lv){
+  if(sk.mimic)return "장착한 다른 스킬을 전부 따라 해요: 즉발 피해는 80%만큼 한 번 더, 버프는 쿨타임 없이 전부 발동 (국가권력급 이상 제외)";
   if(sk.nuke&&!sk.buff)return "즉시 공격력 ×"+r0(sk.nuke*p)+" 피해";
-  if(sk.cdr)return "다른 스킬의 대기시간 −"+f1(sk.cdr*p)+"초";
+  if(sk.cdr&&!sk.buff)return "다른 스킬의 대기시간 −"+f1(sk.cdr*p)+"초";
   var b=sk.buff,s=[],dur=sk.dur*(1+0.1*(eLv((lv||1),5,0.25)-1));
   if(b.freeze)s.push("보스 제한시간 정지");
   if(b.atkM)s.push("공격력 +"+r0((b.atkM-1)*p*100)+"%");
@@ -3485,7 +3537,7 @@ function skDesc(sk,p,lv){
   if(b.dot)s.push("초당 공격력 ×"+f1(b.dot*p)+" 지속 피해");
   if(b.dr)s.push("받는 피해 −"+r0(Math.min(0.8,b.dr*p)*100)+"%");
   if(b.charm)s.push("몬스터 매혹(공격 못 함)");
-  return (sk.nuke?"즉시 공격력 ×"+r0(sk.nuke*p)+" 피해 + ":"")+f1(dur)+"초간 "+s.join(", ");
+  return (sk.nuke?"즉시 공격력 ×"+r0(sk.nuke*p)+" 피해 + ":"")+(sk.cdr?"다른 스킬 대기시간 전부 초기화 + ":"")+f1(dur)+"초간 "+s.join(", ");
 }
 
 /* ---------- 위쪽 고정 영역 ---------- */
@@ -3605,7 +3657,7 @@ function skillHtml(){
     h+=sk?'<div class="slotc k-'+sk.t+'">'+spr(sk.e,18,2.2)+'<div class="n">'+sk.n+'</div><div class="s">Lv.'+S.skl[id].lv+'</div></div>':'<div class="slotc"><div style="height:46px;display:grid;place-items:center;color:var(--ink3);font-family:var(--f-p);font-size:14px">+</div><div class="s">비어 있음</div></div>';
   }
   h+='</div></section>'+synHtml();
-  ["N","S","A","B","C"].forEach(function(tr){
+  ["X","N","S","A","B","C"].forEach(function(tr){
     h+='<section class="panel"><div class="row" style="justify-content:space-between;margin-bottom:4px"><h2 class="h2" style="margin:0">'+tl2(tr)+'</h2><span class="tier k-'+tr+'">'+SKTI[tr].p+'%</span></div>';
     SKL.filter(function(s){return s.t===tr}).forEach(function(sk){
       var o=S.skl[sk.id],p=o?sPow(sk.id):1,on=S.slots.indexOf(sk.id)>=0;
@@ -3696,7 +3748,7 @@ function gachaHtml(){
   var title=k==="eq"?"장비 뽑기":k==="sk"?"스킬 뽑기":k==="pt"?"펫 뽑기":"동료 뽑기";
   var pit=k==="eq"?S.pity:k==="sk"?S.pit.sk:k==="pt"?S.pit.pt:S.pit.cm,pmax=k==="eq"?100:k==="sk"?60:40,pwhat=k==="eq"?"울트라":"S등급";
   function pbar(t,v,m){return '<div style="margin-top:12px"><div class="row" style="justify-content:space-between"><span class="sub">'+t+'</span><span class="sub num">'+Math.min(v,m)+' / '+m+'회</span></div><div class="bar" style="margin-top:4px"><i style="width:'+Math.min(100,v/m*100)+'%;--c1:#FF4DD2"></i></div></div>'}
-  var xp=k==="sk"?pbar("국가권력급 천장 (확정)",S.pit.skn,300):k==="cm"?pbar("울트라 천장 (확정)",S.pit.cmu,150)+pbar("미스틱 천장 (확정)",S.pit.cmm,400):k==="pt"?pbar("S등급 펫 천장 (확정)",S.pit.pt,40):"";
+  var xp=k==="sk"?pbar("국가권력급 천장 (확정)",S.pit.skn,300)+pbar("멸망급 천장 (확정)",S.pit.skx||0,600):k==="cm"?pbar("울트라 천장 (확정)",S.pit.cmu,150)+pbar("미스틱 천장 (확정)",S.pit.cmm,400):k==="pt"?pbar("S등급 펫 천장 (확정)",S.pit.pt,40):"";
   h+='<section class="panel"><h2 class="h2">'+title+'</h2><div class="altar"><div class="rg"></div><div class="rg b"></div><div class="core">'+spr(core,16,3)+'</div></div>'+
     '<p class="sub" style="text-align:center">뽑기권 1장으로 1회예요. 10연은 '+(k==="eq"?"희귀":"B등급")+' 이상 1개가 확정이에요.</p>'+
     '<div class="grid2" style="margin-top:14px"><button class="btn" id="g-p1" data-a="pull" data-v="'+k+':1">1회 뽑기<br><small>뽑기권 1장</small></button>'+
