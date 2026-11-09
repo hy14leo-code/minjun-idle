@@ -19,7 +19,7 @@
   --ink:#F4F6FF; --ink2:#AEB8F0; --ink3:#7683CC;
   --gold:#FFC94A; --gold2:#FF9B1F; --cyan:#5BE8FF; --red:#FF5470; --green:#52E3A4;
   --t-common:#9AA6D6; --t-rare:#4DA3FF; --t-epic:#B07CFF; --t-legend:#FFB62E; --t-trash:#A57F4B; --t-ultra:#FF5C7A;
-  --k-C:#9AA6D6; --k-B:#4DA3FF; --k-A:#B07CFF; --k-S:#FFB62E; --k-N:#FF4DD2; --k-U:#FF5C7A;
+  --k-C:#9AA6D6; --k-B:#4DA3FF; --k-A:#B07CFF; --k-S:#FFB62E; --k-N:#FF4DD2; --k-U:#FF5C7A; --k-M:#7CFFE8;
   --f-d:"Do Hyeon","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-b:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
   --f-p:"Press Start 2P","Do Hyeon","Noto Sans KR",monospace;
@@ -101,8 +101,10 @@ tr:last-child td{border-bottom:0}
 .bt th,.bt td{white-space:nowrap;padding:7px 4px;font-size:12.5px}
 .tier{display:inline-block;color:#fff;background:var(--tc);padding:0 8px;font-size:11px;font-weight:700}
 .t-common{--tc:var(--t-common)} .t-rare{--tc:var(--t-rare)} .t-epic{--tc:var(--t-epic)} .t-legend{--tc:var(--t-legend)} .t-trash{--tc:var(--t-trash)} .t-ultra{--tc:var(--t-ultra)}
-.k-C{--tc:var(--k-C)} .k-B{--tc:var(--k-B)} .k-A{--tc:var(--k-A)} .k-S{--tc:var(--k-S)} .k-N{--tc:var(--k-N)} .k-U{--tc:var(--k-U)}
+.k-C{--tc:var(--k-C)} .k-B{--tc:var(--k-B)} .k-A{--tc:var(--k-A)} .k-S{--tc:var(--k-S)} .k-N{--tc:var(--k-N)} .k-U{--tc:var(--k-U)} .k-M{--tc:var(--k-M)} .t-pet{--tc:#FFB62E}
 .tier.k-N,.tier.k-U{animation:rb 1.2s steps(6) infinite}
+.tier.k-M{background:linear-gradient(90deg,#FF5C7A,#FFC94A,#52E3A4,#4DA3FF,#B07CFF);color:#fff;animation:rb 1.2s steps(6) infinite}
+.pcard.k-M::after{content:"";position:absolute;inset:-4px;border:4px solid #7CFFE8;animation:rb 1.2s steps(6) infinite;pointer-events:none}
 .tier.t-legend,.tier.k-S{color:#3a2300}
 .tier.t-ultra{background:#FF5C7A;animation:rb 1.2s steps(6) infinite}
 .link{background:none;border:0;color:var(--ink3);text-decoration:underline;font-size:13px;padding:4px}
@@ -382,6 +384,8 @@ tr:last-child td{border-bottom:0}
 .pm .cl{position:absolute;opacity:.5;filter:hue-rotate(70deg) brightness(1.2)}
 .pm .cl.c1{left:-16px;top:4px}.pm .cl.c2{left:16px;top:-4px}
 @media (prefers-reduced-motion: reduce){.fxs,.flash{display:none}}
+.pk{position:absolute;animation:bob .8s steps(2) infinite;z-index:1}
+.pk0{left:86px;bottom:-4px}.pk1{left:54px;bottom:-10px;animation-delay:-.4s}
 
 /* v9 */
 .kop{position:absolute;left:6%;right:6%;top:26%;z-index:6;background:rgba(0,0,0,.85);padding:8px 8px 6px;text-align:center;box-shadow:inset 0 0 0 3px var(--red);font-family:var(--f-d);font-size:15px}
@@ -469,18 +473,19 @@ var SKTIERS=[
   {id:"C",n:"C등급",p:54.5,sh:1,rank:1,sink:true}
 ];
 var CMTIERS=[
+  {id:"M",n:"미스틱",p:0.2,sh:30,rank:7},
   {id:"U",n:"울트라",p:1,sh:20,rank:6},
   {id:"S",n:"S등급",p:3,sh:8,rank:5},
   {id:"A",n:"A등급",p:17,sh:4,rank:4},
   {id:"B",n:"B등급",p:35,sh:2,rank:2},
-  {id:"C",n:"C등급",p:44,sh:1,rank:1,sink:true}
+  {id:"C",n:"C등급",p:43.8,sh:1,rank:1,sink:true}
 ];
-function tl(t){return t==="N"?"국가권력":t==="U"?"울트라":t}
+function tl(t){return t==="N"?"국가권력":t==="U"?"울트라":t==="M"?"미스틱":t}
 function tl2(t){return "SABC".indexOf(t)>=0?t+"등급":tl(t)}
 var SKTI={},CMTI={};
 SKTIERS.forEach(function(t){SKTI[t.id]=t});CMTIERS.forEach(function(t){CMTI[t.id]=t});
-function tiersOf(kind){return kind==="sk"?SKTIERS:kind==="cm"?CMTIERS:TIERS}
-function rk(kind,tid){return (kind==="sk"?SKTI:kind==="cm"?CMTI:TI)[tid].rank}
+function tiersOf(kind){return kind==="sk"?SKTIERS:kind==="cm"?CMTIERS:kind==="pt"?PTTIERS:TIERS}
+function rk(kind,tid){return (kind==="sk"?SKTI:kind==="cm"?CMTI:kind==="pt"?PTTI:TI)[tid].rank}
 
 var FXN={atk:"공격력",spd:"공격 속도",crit:"치명타 확률",gold:"골드",time:"보스 시간",friend:"친구 도움",cd:"쿨타임 감소",hp:"최대 체력",def:"방어력"};
 var FXC={atk:"#8FA6FF",spd:"#5BE6A8",crit:"#C4A2FF",gold:"#FFD866",time:"#FF8CA4",friend:"#FFA37A",cd:"#7CE7F0",hp:"#FF7A8A",def:"#6FB1FF"};
@@ -611,7 +616,10 @@ var CM=[
     d:function(m){return "공격력 +"+f1(20*m)+"% · 치명타 확률 +"+f1(8*m)+"% · 스킬 효과 +"+f1(8*m)+"% · 쿨타임 −"+f1(6*m)+"%"}},
   {id:"sihyeon",n:"박시현",role:"겉친",t:"B",fx:{friend:50,gold:12,crit:3},line:"겉으로는 엄청 친한 척! (속마음은 비밀)",
     look:{hair:"#E6C84A",style:"swept",outfit:"#FF8FA3",pants:"#3A3A55",prop:"phone",grin:1},
-    d:function(m){return "친구 도움 +"+f1(50*m)+"% · 골드 +"+f1(12*m)+"% · 치명타 확률 +"+f1(3*m)+"%"}}
+    d:function(m){return "친구 도움 +"+f1(50*m)+"% · 골드 +"+f1(12*m)+"% · 치명타 확률 +"+f1(3*m)+"%"}},
+  {id:"stella",n:"스텔라",role:"별빛 여신",t:"M",fx:{atk:35,crit:15,spow:20,cd:15,gold:30,dps:2.5,hp:40,def:40,regen:0.8,time:6},line:"별빛을 두른 금발의 여신. 모두를 환하게 비춰요.",
+    look:{stella:1},
+    d:function(m){return "별빛 축복: 공격력 +"+f1(35*m)+"% · 치명타 +"+f1(15*m)+"% · 스킬 효과 +"+f1(20*m)+"% · 쿨타임 −"+f1(15*m)+"% · 골드 +"+f1(30*m)+"% · 초당 공격력 ×"+f1(2.5*m)+" · 최대 체력 +"+f1(40*m)+"% · 방어력 +"+f1(40*m)+"% · 초당 회복 +"+f1(0.8*m)+"% · 보스 시간 +"+f1(6*m)+"초"}}
 ];
 CM.forEach(function(c){
   if(c.id==="heesung"){c.fx.regen=0.5;var od=c.d;c.d=function(m){return od(m)+" · 초당 체력 회복 +"+f1(0.5*m)+"%"}}
@@ -634,7 +642,8 @@ function applyJob(){
   }
   CU.dohyeon=undefined;
 }
-var CMAX=10;
+var CMAX=60,SKMAX=20,PMAX=30;
+function eLv(lv,cap,k){return lv<=cap?lv:cap+(lv-cap)*k}
 
 var TITLES=[
   {id:"kim",n:"김공부의 가호",e:"📚",tag:"공격형",fx:{atk:40,crit:15},line:"공부의 신이 곁에서 지켜준다.",extra:[]},
@@ -838,6 +847,55 @@ function drawPlayer(x,ph,sk){
   if(look==="gown"){R(x,"#22223F",3,1,18,2);R(x,"#22223F",7,3,10,2);R(x,"#FFC94A",19,2,1,5);R(x,"#FFC94A",19,7,2,2)}
   if(look==="hero"){R(x,"#FFC94A",5,4,14,1);R(x,"#E8416A",11,3,2,2)}
 }
+
+/* 스텔라: 다른 동료보다 두 배 해상도로 그린 별빛 여신 (48x60) */
+function drawStella(x){
+  var HR="#FFD45A",HL="#FFF3A8",SH="#D9A22A",SK="#FFE8D6",SK2="#F6C9B0",INK="#3A2A5A",GOLD="#FFC94A",PINK="#FF6FA8";
+  x.save();x.scale(2,2);
+  // 뒷머리(긴 웨이브)
+  R(x,SH,3,6,4,18);R(x,SH,17,6,4,18);R(x,HR,2,10,3,13);R(x,HR,19,10,3,13);R(x,HR,3,23,3,3);R(x,HR,18,23,3,3);R(x,HR,1,19,2,4);R(x,HR,21,19,2,4);
+  // 드레스
+  R(x,"#FFFFFF",8,17,8,6);R(x,GOLD,8,17,8,1);R(x,"#8FD0FF",8,21,8,1);
+  R(x,"#FFFFFF",5,17,3,4);R(x,"#FFFFFF",16,17,3,4);R(x,"#DDEBFF",5,20,3,1);R(x,"#DDEBFF",16,20,3,1);
+  R(x,SK,5,21,3,2);R(x,SK,16,21,3,2);
+  R(x,"#FFFFFF",6,23,12,3);R(x,"#DDEBFF",5,25,14,2);R(x,"#8FD0FF",5,27,14,1);R(x,GOLD,5,27,1,1);R(x,GOLD,18,27,1,1);R(x,GOLD,11,27,2,1);
+  R(x,PINK,11,18,2,2);R(x,"#FF3F88",11,19,2,1);R(x,PINK,10,19,1,1);R(x,PINK,13,19,1,1);
+  // 다리/부츠
+  R(x,SK,9,28,2,1);R(x,SK,13,28,2,1);R(x,"#4A6FD8",8,29,4,1);R(x,"#4A6FD8",12,29,4,1);
+  // 얼굴
+  R(x,SK,6,6,12,10);R(x,SK,7,16,10,1);R(x,SK,11,17,2,1);
+  // 앞머리/옆머리
+  R(x,HR,4,3,16,4);R(x,HR,5,2,14,2);R(x,HR,3,6,4,10);R(x,HR,17,6,4,10);
+  R(x,HR,6,6,5,3);R(x,HR,13,6,5,2);R(x,HR,6,9,2,5);R(x,HR,16,9,2,5);R(x,SK,11,6,2,2);
+  R(x,HL,6,3,8,1);R(x,HL,4,8,1,7);R(x,HL,19,8,1,7);R(x,HL,7,6,3,1);
+  // 티아라와 리본
+  R(x,GOLD,9,1,6,1);R(x,"#FFF",11,0,2,1);R(x,"#FFF",8,0,1,1);R(x,"#FFF",15,0,1,1);
+  R(x,PINK,16,3,4,3);R(x,"#FF3F88",17,4,2,1);R(x,PINK,15,4,1,1);R(x,PINK,20,4,1,1);
+  // 별 장식
+  R(x,"#FFF1A8",1,3,1,3);R(x,"#FFF1A8",0,4,3,1);R(x,"#FFFFFF",22,11,1,3);R(x,"#FFFFFF",21,12,3,1);R(x,"#FFF1A8",21,2,1,1);R(x,"#FFF1A8",2,14,1,1);
+  x.restore();
+  // 세부(48x60 해상도)
+  // 눈: 크고 반짝이는 하늘색 눈
+  R(x,"#FFFFFF",14,19,8,10);R(x,"#FFFFFF",26,19,8,10);
+  R(x,"#5BB6FF",15,20,6,9);R(x,"#5BB6FF",27,20,6,9);
+  R(x,"#2F6FD6",16,22,4,6);R(x,"#2F6FD6",28,22,4,6);
+  R(x,"#1A2F7A",17,24,2,3);R(x,"#1A2F7A",29,24,2,3);
+  R(x,"#FFFFFF",15,20,3,3);R(x,"#FFFFFF",27,20,3,3);R(x,"#FFFFFF",19,26,2,2);R(x,"#FFFFFF",31,26,2,2);
+  R(x,"#A8E0FF",16,28,4,1);R(x,"#A8E0FF",28,28,4,1);
+  // 속눈썹
+  R(x,INK,13,18,10,2);R(x,INK,25,18,10,2);R(x,INK,12,19,2,2);R(x,INK,34,19,2,2);R(x,INK,11,20,1,1);R(x,INK,36,20,1,1);
+  // 눈썹
+  R(x,"#C9902A",15,16,6,1);R(x,"#C9902A",27,16,6,1);
+  // 볼터치, 코, 입
+  R(x,"#FFB0C0",12,30,5,2);R(x,"#FFB0C0",31,30,5,2);R(x,"#FFC8D2",13,30,3,1);R(x,"#FFC8D2",32,30,3,1);
+  R(x,SK2,23,29,2,1);
+  R(x,"#E8506A",21,33,6,1);R(x,"#FF7A94",22,34,4,1);R(x,"#FFFFFF",23,33,1,1);
+  // 머리결 하이라이트
+  R(x,"#FFF8C8",10,9,6,1);R(x,"#FFF8C8",8,14,1,6);R(x,"#FFF8C8",39,14,1,6);R(x,"#FFF8C8",6,28,1,8);R(x,"#FFF8C8",41,28,1,8);
+  // 드레스 반짝임
+  R(x,"#FFFFFF",18,38,2,1);R(x,"#FFFFFF",30,41,2,1);R(x,"#FFF1A8",22,50,3,1);R(x,"#FFF1A8",15,52,1,1);R(x,"#FFF1A8",33,53,1,1);
+}
+
 /* 동료 캐릭터 */
 function drawChibi(x,o){
   var SKC="#FFD3AA",SH="#E9A97F",HR=o.hair,INK="#1A1530",st=o.style;
@@ -894,10 +952,11 @@ function cimg(id,pu){
   var url=CU[id];
   if(url===undefined){
     url=null;
-    try{var k=mkCanvas(24,30);if(k){drawChibi(k.x,CMM[id].look);url=outline(k.c)}}catch(e){url=null}
+    try{if(CMM[id].look.stella){var ks=mkCanvas(48,60);if(ks){drawStella(ks.x);url=outline(ks.c)}}else{var k=mkCanvas(24,30);if(k){drawChibi(k.x,CMM[id].look);url=outline(k.c)}}}catch(e){url=null}
     CU[id]=url;
   }
   if(!url)return '<span class="pxe" style="font-size:40px">🙂</span>';
+  if(CMM[id].look.stella)return '<img class="pxi pl" alt="" style="--n:50;width:calc(50*var(--pu,3px)*.52)'+(pu?';--pu:'+pu+'px':'')+'" src="'+url+'">';
   return '<img class="pxi pl" alt="" style="--n:26'+(pu?';--pu:'+pu+'px':'')+'" src="'+url+'">';
 }
 function hx(h){return [parseInt(h.substr(1,2),16),parseInt(h.substr(3,2),16),parseInt(h.substr(5,2),16)]}
@@ -969,16 +1028,19 @@ function sceneUrl(i){
 /* ---------- 상태 ---------- */
 var KEY="minjun-idle-v1";
 function fresh(){return {v:8,gold:0,tickets:0,stage:1,best:1,majors:0,up:[0,0,0,0,0,0,0],inv:{},equip:{weapon:null,armor:null,acc:null},shards:0,pity:0,pulls:0,title:null,tl:false,skin:"basic",autoBoss:true,autoSkill:true,bossReady:false,welcome:false,lastGift:0,last:Date.now(),gps:0,ending:null,kt:0,bk:0,ach:{},sfx:true,
-  skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false}}
+  skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
 function norm(o){
   var f=fresh(),old=!o.v||o.v<5,hadRb=o.rbest!==undefined;
   for(var k in f){if(o[k]===undefined)o[k]=f[k]}
   if(!hadRb)o.rbest=o.best||1;
   o.v=8;
   if(!o.pit||typeof o.pit!=="object")o.pit={sk:0,cm:0};
-  ["sk","cm","skn","cmu"].forEach(function(k){if(typeof o.pit[k]!=="number")o.pit[k]=0});
+  ["sk","cm","skn","cmu","cmm","pt"].forEach(function(k){if(typeof o.pit[k]!=="number")o.pit[k]=0});
   if(!o.rs||typeof o.rs!=="object")o.rs={};
   if(!o.egg||typeof o.egg!=="object")o.egg={};
+  if(!o.pet||typeof o.pet!=="object")o.pet={};
+  if(!Array.isArray(o.pets))o.pets=[null,null];
+  while(o.pets.length<2)o.pets.push(null);
   if(!o.sd||typeof o.sd!=="object"||!o.sd.b)o.sd={d:"",b:{}};
   if(!o.dq||typeof o.dq!=="object"||!o.dq.c||!o.dq.cl)o.dq=f.dq;
   if(!Array.isArray(o.rc))o.rc=[];
@@ -1006,7 +1068,7 @@ function load(){
 var S=load();
 function save(){S.last=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 
-var KPS=8,tab="char",sub={char:"up",gacha:"eq",quest:"dq"},F=null,kills=0,BM=1,lastPull=null,resetArmed=false,E={},pickSel=null,hudKey="";
+var KPS=8,tab="char",sub={char:"up",gacha:"eq",quest:"dq",party:"cm"},F=null,kills=0,BM=1,lastPull=null,resetArmed=false,E={},pickSel=null,hudKey="";
 var cds={},eff={};
 SKL.forEach(function(s){cds[s.id]=0;eff[s.id]=0});
 var T={hp:-1,hpMax:0,koN:0,revT:0,last:performance.now(),acc:0,fAcc:0,fT:0,combo:0,comboT:0,spawnT:0.3,giftT:25,hitFx:0,saveT:0,gpsT:0,gpsG:0,sndT:0,healT:0};
@@ -1091,7 +1153,7 @@ function bonus(){
   return b;
 }
 function cdCut(){return Math.min(0.7,S.up[4]*0.005+bonus().cd/100)}
-function cmM(id){return 1+0.25*(((S.cmp[id]&&S.cmp[id].lv)||1)-1)}
+function cmM(id){return 1+0.25*(eLv((S.cmp[id]&&S.cmp[id].lv)||1,10,0.2)-1)}
 function refreshCM(){
   applyJob();
   var o={atk:0,spd:0,crit:0,gold:0,time:0,cd:0,dps:0,pet:0,heal:0,guard:0,tip:0,disc:0,spow:0,bz:0,hp:0,def:0,regen:0,sponge:0,friend:0};
@@ -1100,10 +1162,15 @@ function refreshCM(){
     var fx=CMM[id].fx,m=cmM(id);
     for(var k in fx)o[k]+=fx[k]*m;
   });
+  S.pets.forEach(function(id){
+    if(!id||!S.pet[id]||!PETM[id])return;
+    var fx=PETM[id].fx,m=pM(id);
+    for(var k in fx)o[k]+=fx[k]*m;
+  });
   o.disc=Math.min(40,o.disc);o.bz=Math.min(30,o.bz)/100;o.sponge=Math.min(40,o.sponge)/100;
   CMc=o;
 }
-function sPow(id){var s=S.skl[id];return (1+0.2*(((s&&s.lv)||1)-1))*(1+(CMc.spow+SYc.spow)/100)}
+function sPow(id){var s=S.skl[id];return (1+0.2*(eLv((s&&s.lv)||1,5,0.25)-1))*(1+(CMc.spow+SYc.spow)/100)}
 function refreshSF(){
   refreshSYN();
   var r={atkM:1,spdM:1,critAdd:0,cdAdd:0,goldM:1,frM:1,dmgM:1,dot:0,freeze:false,crit100:false,dr:1,charm:false};
@@ -1277,7 +1344,7 @@ function nerdRevolt(){
 }
 function eggCheck(){
   if(nerdOn()&&!S.egg.nerd){S.egg.nerd=1;toast("🥽 이스터에그 발견! 「찐따의 반란」");save()}
-  if(!S.egg.dh&&S.cmp.dohyeon&&!S.cmp.dohyeon.job&&colCount()>=53){S.egg.dh=1;toast("🎉 이스터에그! 도감 53장 달성 — 동료 탭에서 김도현을 확인해요");jingle([523,659,784,1046]);save()}
+  if(!S.egg.dh&&S.cmp.dohyeon&&!S.cmp.dohyeon.job&&S.cmp.dohyeon.lv>=53){S.egg.dh=1;toast("🎉 이스터에그! 김도현 카드 53장 달성 — 동료 탭에서 확인해요");jingle([523,659,784,1046]);save()}
 }
 function koDecide(m){
   if(!T.ko)return;
@@ -1308,12 +1375,12 @@ function stageGo(){
 function jobBtn(cm,o){
   if(cm.id!=="dohyeon")return "";
   if(o.job)return ' <span class="chip" style="color:var(--gold)">전직 완료</span>';
-  if(colCount()<53)return "";
+  if(o.lv<53)return "";
   return ' <button class="btn small hot" data-a="jobask">🎉 전직하기</button>';
 }
 function jobOv(){
   var sel=T.jobSel||"";
-  showOv('<div class="panel gold"><p class="banner" style="margin-bottom:4px">김도현의 전직</p><p style="margin:0 0 12px;text-align:center;color:var(--red);font-family:var(--f-d);font-size:15px">도감 53장을 모은 보상! 한 번 정하면 바꿀 수 없어요. 울트라 등급으로 상승해요.</p><div style="display:flex;flex-direction:column;gap:14px">'+
+  showOv('<div class="panel gold"><p class="banner" style="margin-bottom:4px">김도현의 전직</p><p style="margin:0 0 12px;text-align:center;color:var(--red);font-family:var(--f-d);font-size:15px">김도현 카드 53장(Lv.53) 달성 보상! 한 번 정하면 바꿀 수 없어요. 울트라 등급으로 상승해요.</p><div style="display:flex;flex-direction:column;gap:14px">'+
     ["atk","def"].map(function(j){
       var nm=j==="atk"?"턱슬레이어 (공격형)":"강철턱 (방어형)",ds=j==="atk"?"초당 공격력 ×3.2 · 공격력 +15% · 치명타 +12% · 골드 +20%":"방어력 +90% · 최대 체력 +60% · 몬스터 공격 25% 대신 맞음 · 보스 시간 +6초";
       return '<button class="tcard'+(sel===j?" sel":"")+'" data-a="jobsel" data-v="'+j+'"><div class="tn">'+nm+'</div><span class="sub">'+ds+'</span></button>';
@@ -1321,7 +1388,7 @@ function jobOv(){
 }
 function jobGo(){
   var j=T.jobSel;
-  if(!j||!S.cmp.dohyeon||S.cmp.dohyeon.job||colCount()<53)return;
+  if(!j||!S.cmp.dohyeon||S.cmp.dohyeon.job||S.cmp.dohyeon.lv<53)return;
   S.cmp.dohyeon.job=j;S.egg.job=1;T.jobSel="";
   applyJob();refreshCM();paintParty();hideOv();
   jingle([523,659,784,1046,1318]);toast("전직! 김도현이 울트라 「"+CMM.dohyeon.role+"」(으)로 각성했어요");
@@ -1330,7 +1397,7 @@ function jobGo(){
 function eggHtml(){
   var l=[];
   if(S.egg.nerd)l.push(["👓","찐따의 반란","고등학생 시기에 기본 교복 + 안경을 착용하면 발동! 공격력 +40% · 치명타 +15% · 방어 +30%, 처치할 때마다 7% 확률로 4초간 공격력 ×4 · 몬스터 공포"]);
-  if(S.egg.job)l.push(["🎉","도감 53장의 전직","김도현이 「"+CMM.dohyeon.role+"」(으)로 전직했어요."]);
+  if(S.egg.job)l.push(["🎉","김도현 카드 53장의 전직","김도현이 「"+CMM.dohyeon.role+"」(으)로 전직했어요."]);
   var h='<section class="panel"><h2 class="h2">발견한 이스터에그</h2>';
   if(!l.length)return h+'<p class="sub">숨겨진 비밀이 있어요… 아직 아무것도 발견하지 못했어요.</p></section>';
   l.forEach(function(x){h+='<div class="irow"><div class="ie2">'+spr(x[0],16,2.4)+'</div><div class="ib"><div class="t">'+x[1]+'</div><div class="d" style="margin:0">'+x[2]+'</div></div></div>'});
@@ -1460,7 +1527,7 @@ function useSkill(id){
     toast(sk.n+": 다른 스킬 대기시간 −"+f1(cut)+"초");snd(600,0.15,"square",0.04,900);
   }
   if(sk.buff){
-    eff[id]=sk.dur*(1+0.1*(lv-1))*(1+SYc.dur/100);
+    eff[id]=sk.dur*(1+0.1*(eLv(lv,5,0.25)-1))*(1+SYc.dur/100);
     refreshSF();
     toast(sk.n+" 발동!");snd(500,0.2,"square",0.04,1000);
   }
@@ -1661,6 +1728,7 @@ function paintParty(){
     if(!id||!CMM[id])return;
     h+='<div class="pm pm'+i+'">'+(id==="bonggu"?'<span class="cl c1">'+cimg(id)+'</span><span class="cl c2">'+cimg(id)+'</span>':"")+cimg(id)+(id==="jihwan"?'<span class="pet">'+meerHtml(S.cmp.jihwan.lv)+'</span>':"")+'</div>';
   });
+  S.pets.forEach(function(id,i){if(id&&PETM[id])h+='<div class="pk pk'+i+'">'+petImg(id,2.4)+'</div>'});
   $("b-party").innerHTML=h;
 }
 function paintField(){
@@ -1733,16 +1801,19 @@ function pullSk(pool){
     var ei=S.slots.indexOf(null);if(ei>=0&&!(sk.t==="N"&&S.slots.some(function(x){return x&&SKM[x]&&SKM[x].t==="N"})))S.slots[ei]=sk.id;
   }else{
     own.n++;
-    if(own.lv<5){own.lv++;up=true}else{sh=t.sh;S.shards+=sh}
+    if(own.lv<SKMAX){own.lv++;up=true}else{sh=t.sh;S.shards+=sh}
   }
   return {id:sk.id,t:t.id,isNew:isNew,up:up,sh:sh};
 }
 function pullCm(pool){
-  S.pit.cm++;S.pit.cmu++;
-  var t=(S.pit.cmu>=150&&S.best>=30)?CMTI.U:(S.pit.cm>=40&&S.best>=30)?CMTI.S:rollTier(pool||CMTIERS);
-  if(t.id==="S"||t.id==="U")S.pit.cm=0;
-  if(t.id==="U")S.pit.cmu=0;
-  var cm=pickRand(CM.filter(function(s){return (s.bt||s.t)===t.id})),own=S.cmp[cm.id],isNew=false,up=false,sh=0;
+  S.pit.cm++;S.pit.cmu++;S.pit.cmm++;
+  var t=(S.pit.cmm>=400&&S.best>=30)?CMTI.M:(S.pit.cmu>=150&&S.best>=30)?CMTI.U:(S.pit.cm>=40&&S.best>=30)?CMTI.S:rollTier(pool||CMTIERS);
+  if(t.id==="S"||t.id==="U"||t.id==="M")S.pit.cm=0;
+  if(t.id==="U"||t.id==="M")S.pit.cmu=0;
+  if(t.id==="M")S.pit.cmm=0;
+  var cl=CM.filter(function(s){return (s.bt||s.t)===t.id});
+  if(t.id==="C")cl=cl.concat([CMM.dohyeon,CMM.dohyeon]);
+  var cm=pickRand(cl),own=S.cmp[cm.id],isNew=false,up=false,sh=0;
   if(!own){
     S.cmp[cm.id]={n:1,lv:1};isNew=true;
     var ei=S.party.indexOf(null);if(ei>=0){S.party[ei]=cm.id;refreshCM();paintParty()}
@@ -1756,7 +1827,7 @@ function doPull(kind,n){
   if(S.tickets<n)return;
   S.tickets-=n;
   var res=[],tiers=tiersOf(kind),strong=tiers.filter(function(t){return t.rank>=2});
-  var fn=kind==="sk"?pullSk:kind==="cm"?pullCm:pullOne;
+  var fn=kind==="sk"?pullSk:kind==="cm"?pullCm:kind==="pt"?pullPt:pullOne;
   for(var i=0;i<n;i++){
     var need=n===10&&i===9&&!res.some(function(r){return rk(kind,r.t)>=2});
     res.push(fn(need?strong:null));
@@ -2005,6 +2076,7 @@ function updateDots(){
   f.skill=S.slots.indexOf(null)>=0&&Object.keys(S.skl).some(function(id){return S.slots.indexOf(id)<0});
   f.gear=SLOTS.some(function(sl){return !S.equip[sl]&&ITEMS.some(function(i){return i.slot===sl&&S.inv[i.id]&&i.t!=="trash"})});
   f.party=S.party.indexOf(null)>=0&&Object.keys(S.cmp).some(function(id){return S.party.indexOf(id)<0});
+  f.party=f.party||(S.pets.indexOf(null)>=0&&Object.keys(S.pet).some(function(id){return S.pets.indexOf(id)<0}));
   f.gacha=S.tickets>0;
   var ds=document.querySelectorAll("#nav .dot");
   for(var i=0;i<ds.length;i++)ds[i].hidden=!f[ds[i].getAttribute("data-d")];
@@ -2016,7 +2088,7 @@ function milestone(){
 }
 function helpOv(){
   showOv('<div class="panel"><h2 class="h2">게임 방법</h2>'+
-    '<p class="sub" style="margin-bottom:10px">화면을 눌러 직접 공격하고, 자동 전투로 방치하며 키워요. 몬스터를 8마리 잡으면 다음 스테이지로, 10스테이지마다 보스가 나와요. 몬스터도 반격하니 맷집(체력)과 방어도 꼭 키워 주세요. 체력이 0이 되면 쓰러지지만 같은 스테이지에서 다시 도전할 수 있어요. 화면 위쪽 STAGE 글자를 누르면 스테이지를 이동할 수 있어요.</p>'+
+    '<p class="sub" style="margin-bottom:10px">화면을 눌러 직접 공격하고, 자동 전투로 방치하며 키워요. 몬스터를 8마리 잡으면 다음 스테이지로, 10스테이지마다 보스가 나와요. 같은 카드를 또 뽑으면 레벨이 올라가니 버려지는 카드는 없어요. 펫도 2마리까지 데려갈 수 있어요. 몬스터도 반격하니 맷집(체력)과 방어도 꼭 키워 주세요. 체력이 0이 되면 쓰러지지만 같은 스테이지에서 다시 도전할 수 있어요. 화면 위쪽 STAGE 글자를 누르면 스테이지를 이동할 수 있어요.</p>'+
     '<div class="tbl"><table><tr><th>재화</th><th>얻는 곳</th><th>쓰는 곳</th></tr>'+
     '<tr><td>🪙 골드</td><td>몬스터, 방치</td><td>능력 강화, 뽑기권 구매</td></tr>'+
     '<tr><td>🎟️ 뽑기권</td><td>보스, 목표, 출석, 업적</td><td>장비·스킬·동료 뽑기</td></tr>'+
@@ -2030,6 +2102,109 @@ function helpOv(){
     '<tr><td>벽에 막히면</td><td>장비 세트·시너지를 맞추고 던전·상점 부스트를 써요</td></tr>'+
     '<tr><td>스테이지 20 이상</td><td>회귀하고 회귀 상점으로 영구 강화해요</td></tr></table></div>'+
     '<button class="btn gold wide" style="margin-top:16px" data-a="ovx">알겠어요</button></div>');
+}
+
+
+/* ---------- 펫 ---------- */
+var PETS=[
+  {id:"coco",n:"코코",kind:"강아지",t:"C",fx:{gold:10,def:10},line:"주인을 제일 좋아하는 충성스러운 강아지예요."},
+  {id:"cloud",n:"구름이",kind:"포메리안",t:"B",fx:{hp:12,regen:0.6},line:"푹신푹신한 털로 상처를 감싸 줘요."},
+  {id:"gul",n:"굴봉이",kind:"개구리",t:"B",fx:{dps:0.9,crit:4},line:"폴짝폴짝 뛰어올라 몬스터를 밟아요."},
+  {id:"meerkat",n:"박지환의 미어캣",kind:"미어캣",t:"A",fx:{atk:12,crit:8,time:4},own:"jihwan",line:"망을 보며 약점을 알려 줘요. 박지환과 함께면 효과 ×1.5!"},
+  {id:"mul",n:"물봉이",kind:"물범",t:"S",fx:{dps:1.8,cd:8,def:30},line:"물대포를 쏘고 얼음 방패를 쳐 줘요."}
+];
+var PETM={};PETS.forEach(function(p){PETM[p.id]=p});
+var PTTIERS=[
+  {id:"S",n:"S등급",p:5,sh:8,rank:5},
+  {id:"A",n:"A등급",p:15,sh:4,rank:4},
+  {id:"B",n:"B등급",p:35,sh:2,rank:2},
+  {id:"C",n:"C등급",p:45,sh:1,rank:1,sink:true}
+];
+var PTTI={};PTTIERS.forEach(function(t){PTTI[t.id]=t});
+var FXLAB={atk:["공격력 +","%"],crit:["치명타 확률 +","%"],gold:["골드 +","%"],def:["방어력 +","%"],hp:["최대 체력 +","%"],regen:["초당 체력 회복 +","%"],dps:["초당 공격력 ×",""],time:["보스 시간 +","초"],cd:["쿨타임 −","%"],spow:["스킬 효과 +","%"],friend:["친구 도움 +","%"]};
+function fxTxt(fx,m){var a=[];for(var k in fx)if(FXLAB[k])a.push(FXLAB[k][0]+f1(fx[k]*m)+FXLAB[k][1]);return a.join(" · ")}
+function pM(id){
+  var o=S.pet[id],lv=(o&&o.lv)||1,m=1+0.2*(eLv(lv,10,0.2)-1),p=PETM[id];
+  if(p&&p.own&&S.party.indexOf(p.own)>=0)m*=1.5;
+  return m;
+}
+function drawPet(x,id){
+  var INK="#1A1020";
+  if(id==="gul"){
+    var G="#5BC25B",D="#3E9A3E",B="#D9F2B0";
+    R(x,G,3,6,10,7);R(x,G,4,5,8,1);R(x,G,3,3,4,3);R(x,G,9,3,4,3);
+    R(x,"#fff",4,3,2,2);R(x,"#fff",10,3,2,2);R(x,INK,5,4,1,1);R(x,INK,11,4,1,1);
+    R(x,B,5,9,6,4);R(x,"#E8506A",6,8,4,1);R(x,D,4,6,2,1);R(x,D,10,6,2,1);
+    R(x,G,1,12,4,3);R(x,G,11,12,4,3);R(x,D,1,14,4,1);R(x,D,11,14,4,1);R(x,"#FF8FA3",3,8,1,1);R(x,"#FF8FA3",12,8,1,1);
+  }else if(id==="mul"){
+    var Bl="#8FA6C8",Dk="#6A80A8";
+    R(x,Bl,2,7,10,6);R(x,Bl,10,4,5,6);R(x,Bl,1,9,2,3);R(x,"#E8EEF8",4,10,6,3);R(x,Dk,6,11,3,3);R(x,Bl,0,11,3,2);
+    R(x,INK,12,6,1,1);R(x,INK,14,6,1,1);R(x,INK,14,8,2,1);R(x,"#fff",15,9,1,1);R(x,"#fff",16,8,1,1);R(x,"#FF8FA3",11,8,1,1);
+    R(x,Dk,2,7,10,1);R(x,Dk,8,5,2,1);
+  }else if(id==="cloud"){
+    var O="#FFB35A",L="#FFE0B0";
+    R(x,O,3,5,10,9);R(x,O,2,7,12,5);R(x,O,3,3,2,3);R(x,O,11,3,2,3);R(x,"#FFD090",4,5,4,1);R(x,"#FFD090",10,6,3,1);
+    R(x,L,5,8,6,4);R(x,INK,5,7,1,2);R(x,INK,10,7,1,2);R(x,INK,7,9,2,1);R(x,"#FF6B8A",7,11,2,1);
+    R(x,O,13,5,2,4);R(x,L,4,14,3,1);R(x,L,9,14,3,1);R(x,"#FFC27A",1,9,2,2);R(x,"#FFC27A",13,9,2,2);
+  }else if(id==="coco"){
+    var BR="#B07A4A",DB="#7A4A28",Mz="#F2D6AA";
+    R(x,BR,4,3,8,7);R(x,DB,3,3,2,6);R(x,DB,11,3,2,6);R(x,Mz,6,7,4,3);R(x,INK,5,5,1,1);R(x,INK,10,5,1,1);R(x,INK,7,7,2,1);R(x,"#FF6B8A",7,10,2,1);
+    R(x,BR,4,10,8,4);R(x,Mz,4,14,3,1);R(x,Mz,9,14,3,1);R(x,BR,12,10,3,2);R(x,Mz,7,10,2,3);
+  }else if(id==="meerkat"){drawMeerkat(x)}
+}
+var PU={};
+function petImg(id,u){
+  var url=PU[id];
+  if(url===undefined){url=null;try{var k=mkCanvas(16,16);if(k){drawPet(k.x,id);url=outline(k.c)}}catch(e){url=null}PU[id]=url}
+  if(!url)return spr("🐾",12,u||2);
+  return '<img class="pxi" alt="" style="--n:18;--u:'+(u||2.2)+'px;display:inline-block" src="'+url+'">';
+}
+function pullPt(pool){
+  S.pit.pt++;
+  var t=(S.pit.pt>=40&&S.best>=30)?PTTI.S:rollTier(pool||PTTIERS);
+  if(t.id==="S")S.pit.pt=0;
+  var pt=pickRand(PETS.filter(function(p){return p.t===t.id})),own=S.pet[pt.id],isNew=false,up=false,sh=0;
+  if(!own){
+    S.pet[pt.id]={n:1,lv:1};isNew=true;
+    var ei=S.pets.indexOf(null);if(ei>=0){S.pets[ei]=pt.id}
+  }else{
+    own.n++;
+    if(own.lv<PMAX){own.lv++;up=true}else{sh=t.sh;S.shards+=sh}
+  }
+  refreshCM();paintParty();
+  return {id:pt.id,t:t.id,isNew:isNew,up:up,sh:sh};
+}
+function togglePet(id){
+  if(!S.pet[id])return;
+  var i=S.pets.indexOf(id);
+  if(i>=0)S.pets[i]=null;
+  else{
+    var e=S.pets.indexOf(null);
+    if(e<0){toast("펫은 2마리까지 데리고 다닐 수 있어요. 먼저 해제해 주세요");return}
+    S.pets[e]=id;
+  }
+  refreshCM();paintParty();save();renderTab();
+}
+function petHtml(){
+  var h='<section class="panel"><div class="row" style="justify-content:space-between"><h2 class="h2" style="margin:0">내 펫</h2><span class="sub num">최대 2마리 · 보유 '+Object.keys(S.pet).length+' / '+PETS.length+'</span></div>'+
+    '<p class="sub" style="margin:6px 0 12px">같은 펫을 또 뽑으면 레벨이 올라요 (최대 Lv.'+PMAX+'). 펫은 뽑기 탭의 「펫」에서 만나요.</p><div class="sl3" style="grid-template-columns:repeat(2,1fr)">';
+  for(var i=0;i<2;i++){
+    var id=S.pets[i],p=id&&PETM[id];
+    h+=p?'<div class="sbox on t-pet">'+petImg(id,3)+'<div class="n">'+p.n+'</div><div>'+p.kind+' · Lv.'+S.pet[id].lv+'</div></div>':'<div class="sbox"><div style="height:54px;display:grid;place-items:center;font-family:var(--f-p);font-size:14px">+</div><div class="n" style="color:var(--ink3)">빈 자리</div></div>';
+  }
+  h+='</div></section><section class="panel"><h2 class="h2">펫 도감</h2>';
+  PETS.slice().sort(function(a,b){return PTTI[b.t].rank-PTTI[a.t].rank}).forEach(function(p){
+    var o=S.pet[p.id],on=S.pets.indexOf(p.id)>=0;
+    if(o){
+      var m=pM(p.id);
+      h+='<div class="irow"><div class="ie2 k-'+p.t+'">'+petImg(p.id,2.4)+'</div><div class="ib"><div class="t">'+p.n+' <span class="tier k-'+p.t+'">'+p.t+'</span><span class="chip">'+p.kind+'</span><span class="chip">Lv.'+o.lv+' / '+PMAX+'</span></div>'+
+        '<div class="d">'+p.line+'</div><div class="d" style="color:var(--ink)">'+fxTxt(p.fx,m)+(p.own&&S.party.indexOf(p.own)>=0?' <b style="color:var(--gold)">(주인과 함께 ×1.5)</b>':'')+'</div>'+
+        '<button class="btn small'+(on?" ghost":"")+'" data-a="pteq2" data-v="'+p.id+'">'+(on?"데려가기 해제":"데려가기")+'</button></div></div>';
+    }else{
+      h+='<div class="irow dim"><div class="ie2" style="filter:brightness(0) opacity(.5)">'+petImg(p.id,2.4)+'</div><div class="ib"><div class="t">??? <span class="tier k-'+p.t+'">'+p.t+'</span><span class="chip">'+p.kind+'</span></div><div class="d">뽑기 탭의 펫 뽑기에서 만날 수 있어요.</div></div></div>';
+    }
+  });
+  return h+'</section>';
 }
 
 /* ---------- 업적 ---------- */
@@ -2118,8 +2293,8 @@ function pad2(n){return n<10?"0"+n:""+n}
 /* ---------- 회귀(환생) ---------- */
 var RBMIN=20,RPB=5;
 function rpGain(s){return s>=RBMIN?Math.floor(Math.pow(s/10,2.2)):0}
-function colCount(){return ITEMS.filter(function(i){return i.t!=="trash"&&S.inv[i.id]}).length+Object.keys(S.skl).length+Object.keys(S.cmp).length}
-function colMax(){return ITEMS.filter(function(i){return i.t!=="trash"}).length+SKL.length+CM.length}
+function colCount(){return ITEMS.filter(function(i){return i.t!=="trash"&&S.inv[i.id]}).length+Object.keys(S.skl).length+Object.keys(S.cmp).length+Object.keys(S.pet).length}
+function colMax(){return ITEMS.filter(function(i){return i.t!=="trash"}).length+SKL.length+CM.length+PETS.length}
 function miscBonus(){
   var b=zero(),v=colCount()*0.5+S.rp*RPB;b.atk=v;b.gold=v;
   b.atk+=rsLv("atkm")*15;b.gold+=rsLv("gold")*8;b.time+=rsLv("boss")*2;
@@ -2700,7 +2875,7 @@ function subHtml(key,list){
 function skDesc(sk,p,lv){
   if(sk.nuke&&!sk.buff)return "즉시 공격력 ×"+r0(sk.nuke*p)+" 피해";
   if(sk.cdr)return "다른 스킬의 대기시간 −"+f1(sk.cdr*p)+"초";
-  var b=sk.buff,s=[],dur=sk.dur*(1+0.1*((lv||1)-1));
+  var b=sk.buff,s=[],dur=sk.dur*(1+0.1*(eLv((lv||1),5,0.25)-1));
   if(b.freeze)s.push("보스 제한시간 정지");
   if(b.atkM)s.push("공격력 +"+r0((b.atkM-1)*p*100)+"%");
   if(b.spdM)s.push("공격 속도 ×"+f1(1+(b.spdM-1)*p));
@@ -2827,7 +3002,7 @@ function uiInfo(){
 /* ---------- 탭: 스킬 ---------- */
 function skillHtml(){
   var h='<section class="panel"><div class="row" style="justify-content:space-between"><h2 class="h2" style="margin:0">장착 스킬</h2><span class="sub num">보유 '+Object.keys(S.skl).length+' / '+SKL.length+'종</span></div>'+
-    '<p class="sub" style="margin:6px 0 12px">최대 4개까지 장착할 수 있어요. 같은 스킬을 또 뽑으면 레벨이 올라요 (최대 Lv.5). 국가권력급 스킬은 한 번에 하나만 장착돼요.</p><div class="slots4">';
+    '<p class="sub" style="margin:6px 0 12px">최대 4개까지 장착할 수 있어요. 같은 스킬을 또 뽑으면 레벨이 올라요 (최대 Lv.'+SKMAX+', Lv.5부터는 상승폭이 줄어요). 국가권력급 스킬은 한 번에 하나만 장착돼요.</p><div class="slots4">';
   for(var i=0;i<4;i++){
     var id=S.slots[i],sk=id&&SKM[id];
     h+=sk?'<div class="slotc k-'+sk.t+'">'+spr(sk.e,18,2.2)+'<div class="n">'+sk.n+'</div><div class="s">Lv.'+S.skl[id].lv+'</div></div>':'<div class="slotc"><div style="height:46px;display:grid;place-items:center;color:var(--ink3);font-family:var(--f-p);font-size:14px">+</div><div class="s">비어 있음</div></div>';
@@ -2837,7 +3012,7 @@ function skillHtml(){
     h+='<section class="panel"><div class="row" style="justify-content:space-between;margin-bottom:4px"><h2 class="h2" style="margin:0">'+tl2(tr)+'</h2><span class="tier k-'+tr+'">'+SKTI[tr].p+'%</span></div>';
     SKL.filter(function(s){return s.t===tr}).forEach(function(sk){
       var o=S.skl[sk.id],p=o?sPow(sk.id):1,on=S.slots.indexOf(sk.id)>=0;
-      h+='<div class="irow'+(o?"":" dim")+'"><div class="ie2 k-'+sk.t+'">'+spr(sk.e,18,2.2)+'</div><div class="ib"><div class="t">'+sk.n+(o?' <span class="chip">Lv.'+o.lv+' / 5</span>':' <span class="chip">미보유</span>')+'</div>'+
+      h+='<div class="irow'+(o?"":" dim")+'"><div class="ie2 k-'+sk.t+'">'+spr(sk.e,18,2.2)+'</div><div class="ib"><div class="t">'+sk.n+(o?' <span class="chip">Lv.'+o.lv+' / '+SKMAX+'</span>':' <span class="chip">미보유</span>')+'</div>'+
         '<div class="d">'+skDesc(sk,p,o?o.lv:1)+' · 재사용 '+f1(sk.cd*(1-cdCut()))+'초</div>'+
         (o?'<button class="btn small'+(on?" ghost":"")+'" data-a="sleq" data-v="'+sk.id+'">'+(on?"장착 해제":"장착")+'</button>':'')+'</div></div>';
     });
@@ -2877,8 +3052,10 @@ function gearHtml(){
 
 /* ---------- 탭: 동료 ---------- */
 function partyHtml(){
-  var h='<section class="panel"><div class="row" style="justify-content:space-between"><h2 class="h2" style="margin:0">내 파티</h2><span class="sub num">최대 3명 · 영입 '+Object.keys(S.cmp).length+' / '+CM.length+'</span></div>'+
-    '<p class="sub" style="margin:6px 0 12px">같은 동료를 또 뽑으면 레벨이 올라요 (최대 Lv.'+CMAX+'). 레벨마다 효과가 25%씩 커져요.</p><div class="sl3">';
+  var h0=subHtml("party",[["cm","동료"],["pt","펫"]]);
+  if(sub.party==="pt")return h0+petHtml();
+  var h=h0+'<section class="panel"><div class="row" style="justify-content:space-between"><h2 class="h2" style="margin:0">내 파티</h2><span class="sub num">최대 3명 · 영입 '+Object.keys(S.cmp).length+' / '+CM.length+'</span></div>'+
+    '<p class="sub" style="margin:6px 0 12px">같은 동료를 또 뽑으면 레벨이 올라요 (최대 Lv.'+CMAX+'). Lv.10까지는 레벨마다 효과가 25%씩, 그 이후는 5%씩 커져요. 버려지는 카드는 없어요.</p><div class="sl3">';
   for(var i=0;i<3;i++){
     var id=S.party[i],cm=id&&CMM[id];
     h+=cm?'<div class="sbox on k-'+cm.t+'">'+cimg(id,1.9)+'<div class="n">'+cm.n+'</div><div>'+cm.role+' · Lv.'+S.cmp[id].lv+'</div></div>':'<div class="sbox"><div style="height:50px;display:grid;place-items:center;font-family:var(--f-p);font-size:14px">+</div><div class="n" style="color:var(--ink3)">빈 자리</div></div>';
@@ -2903,37 +3080,41 @@ function pullCard(kind,r,i){
   var icon,name,tier,cls,st;
   if(kind==="eq"){var it=ITEM[r.id];icon=spr(it.e,16,2.8);name=it.n;tier='<span class="tier t-'+it.t+'">'+TI[it.t].n+'</span>';cls="t-"+it.t}
   else if(kind==="sk"){var sk=SKM[r.id];icon=spr(sk.e,18,2.4);name=sk.n;tier='<span class="tier k-'+sk.t+'">'+tl2(sk.t)+'</span>';cls="k-"+sk.t}
+  else if(kind==="pt"){var pt=PETM[r.id];icon=petImg(r.id,3);name=pt.n;tier='<span class="tier k-'+pt.t+'">'+tl2(pt.t)+'</span>';cls="k-"+pt.t}
   else{var cm=CMM[r.id];icon=cimg(r.id,2.2);name=cm.n+" ("+cm.role+")";tier='<span class="tier k-'+cm.t+'">'+tl2(cm.t)+'</span>';cls="k-"+cm.t}
   st=r.isNew?"NEW":r.up?"레벨 상승!":"조각 +"+r.sh;
   return '<div class="pcard '+cls+'" style="--i:'+i+'">'+icon+'<span class="n">'+name+'</span>'+tier+'<span class="s">'+st+"</span></div>";
 }
 function gachaHtml(){
-  var k=sub.gacha,h=subHtml("gacha",[["eq","장비"],["sk","스킬"],["cm","동료"],["shop","상점"]]);
+  var k=sub.gacha,h=subHtml("gacha",[["eq","장비"],["sk","스킬"],["cm","동료"],["pt","펫"],["shop","상점"]]);
   if(k==="shop")return h+shopHtml();
   if(lastPull&&lastPull.kind===k){
     var best=lastPull.res.reduce(function(a,r){return Math.max(a,rk(k,r.t))},0);
-    var names=k==="eq"?["구데기 주의!","평범한 결과","희귀 획득!","영웅 등장!","전설 등장!","울트라 등장!!"]:["평범한 결과","평범한 결과","B등급 획득!","B등급 획득!","A등급 등장!","S등급 등장!!","★ 국가권력급 / 울트라 등장 ★"];
+    var names=k==="eq"?["구데기 주의!","평범한 결과","희귀 획득!","영웅 등장!","전설 등장!","울트라 등장!!"]:["평범한 결과","평범한 결과","B등급 획득!","B등급 획득!","A등급 등장!","S등급 등장!!","★ 국가권력급 / 울트라 등장 ★","✦✦ 미스틱 등장 ✦✦"];
     h+='<section class="panel gold"><p class="banner">'+names[best]+'</p><div class="pgrid">';
     lastPull.res.forEach(function(r,i){h+=pullCard(k,r,i)});
     h+="</div></section>";
   }
-  var core=k==="eq"?"🎟️":k==="sk"?"📖":"👥";
-  var title=k==="eq"?"장비 뽑기":k==="sk"?"스킬 뽑기":"동료 뽑기";
-  var pit=k==="eq"?S.pity:k==="sk"?S.pit.sk:S.pit.cm,pmax=k==="eq"?100:k==="sk"?60:40,pwhat=k==="eq"?"울트라":"S등급";
+  var core=k==="eq"?"🎟️":k==="sk"?"📖":k==="pt"?"🐾":"👥";
+  var title=k==="eq"?"장비 뽑기":k==="sk"?"스킬 뽑기":k==="pt"?"펫 뽑기":"동료 뽑기";
+  var pit=k==="eq"?S.pity:k==="sk"?S.pit.sk:k==="pt"?S.pit.pt:S.pit.cm,pmax=k==="eq"?100:k==="sk"?60:40,pwhat=k==="eq"?"울트라":"S등급";
   function pbar(t,v,m){return '<div style="margin-top:12px"><div class="row" style="justify-content:space-between"><span class="sub">'+t+'</span><span class="sub num">'+Math.min(v,m)+' / '+m+'회</span></div><div class="bar" style="margin-top:4px"><i style="width:'+Math.min(100,v/m*100)+'%;--c1:#FF4DD2"></i></div></div>'}
-  var xp=k==="sk"?pbar("국가권력급 천장 (확정)",S.pit.skn,300):k==="cm"?pbar("울트라 천장 (확정)",S.pit.cmu,150):"";
+  var xp=k==="sk"?pbar("국가권력급 천장 (확정)",S.pit.skn,300):k==="cm"?pbar("울트라 천장 (확정)",S.pit.cmu,150)+pbar("미스틱 천장 (확정)",S.pit.cmm,400):k==="pt"?pbar("S등급 펫 천장 (확정)",S.pit.pt,40):"";
   h+='<section class="panel"><h2 class="h2">'+title+'</h2><div class="altar"><div class="rg"></div><div class="rg b"></div><div class="core">'+spr(core,16,3)+'</div></div>'+
     '<p class="sub" style="text-align:center">뽑기권 1장으로 1회예요. 10연은 '+(k==="eq"?"희귀":"B등급")+' 이상 1개가 확정이에요.</p>'+
     '<div class="grid2" style="margin-top:14px"><button class="btn" id="g-p1" data-a="pull" data-v="'+k+':1">1회 뽑기<br><small>뽑기권 1장</small></button>'+
     '<button class="btn hot" id="g-p10" data-a="pull" data-v="'+k+':10">10연 뽑기<br><small>뽑기권 10장</small></button></div>'+
     '<div style="margin-top:16px"><div class="row" style="justify-content:space-between"><span class="sub">천장 ('+pwhat+' 확정)</span><span class="sub num">'+Math.min(pit,pmax)+' / '+pmax+'회</span></div><div class="bar" style="margin-top:4px"><i style="width:'+Math.min(100,pit/pmax*100)+'%;--c1:#FFC94A"></i></div></div>'+
     xp+'<div class="grid2" style="margin-top:16px"><button class="btn small gold" id="g-b1" data-a="tbuy" data-v="1"></button><button class="btn small gold" id="g-b10" data-a="tbuy" data-v="10"></button></div></section>';
-  h+='<section class="panel"><h2 class="h2">확률표</h2><div class="tbl"><table><tr><th>등급</th><th>확률</th><th>'+(k==="eq"?"아이템":k==="sk"?"스킬":"동료")+'</th></tr>';
+  h+='<section class="panel"><h2 class="h2">확률표</h2><div class="tbl"><table><tr><th>등급</th><th>확률</th><th>'+(k==="eq"?"아이템":k==="sk"?"스킬":k==="pt"?"펫":"동료")+'</th></tr>';
   if(k==="eq")TIERS.forEach(function(t){
     h+='<tr><td><span class="tier t-'+t.id+'">'+t.n+'</span></td><td class="num">'+t.p+"%</td><td>"+ITEMS.filter(function(i){return i.t===t.id}).map(function(i){return i.e+" "+i.n}).join(", ")+"</td></tr>";
   });
   else if(k==="sk")SKTIERS.forEach(function(t){
     h+='<tr><td><span class="tier k-'+t.id+'">'+t.n+'</span></td><td class="num">'+t.p+"%</td><td>"+SKL.filter(function(s){return s.t===t.id}).map(function(s){return s.e+" "+s.n}).join(", ")+"</td></tr>";
+  });
+  else if(k==="pt")PTTIERS.forEach(function(t){
+    h+='<tr><td><span class="tier k-'+t.id+'">'+t.n+'</span></td><td class="num">'+t.p+"%</td><td>"+PETS.filter(function(s){return s.t===t.id}).map(function(s){return s.n+"("+s.kind+")"}).join(", ")+"</td></tr>";
   });
   else CMTIERS.forEach(function(t){
     h+='<tr><td><span class="tier k-'+t.id+'">'+t.n+'</span></td><td class="num">'+t.p+"%</td><td>"+CM.filter(function(s){return (s.bt||s.t)===t.id}).map(function(s){return s.n+"("+s.role+")"}).join(", ")+"</td></tr>";
@@ -3105,6 +3286,7 @@ document.addEventListener("click",function(e){
     toast("칭호 획득: "+TT[S.title].n);jingle([523,784,1046]);
     save();renderTab();uiTop();
   }
+  else if(a==="pteq2")togglePet(v);
   else if(a==="stagemv")stageOv();
   else if(a==="stgadj")stgAdj(v);
   else if(a==="stggo")stageGo();
@@ -3144,13 +3326,15 @@ document.addEventListener("click",function(e){
 
 /* ---------- 시작 ---------- */
 function boot(){
-  var now=Date.now(),lines=[];
+  var now=Date.now(),lines=[],petNew=false;
+  if(!S.petG){S.petG=true;if(Object.keys(S.pet).length===0){S.pet.coco={n:1,lv:1};if(!S.pets[0])S.pets[0]="coco";petNew=true;refreshCM();paintParty()}}
   if(!S.welcome){
     S.welcome=true;S.tickets+=5;S.lastGift=now;
     showOv('<div class="panel gold"><p class="banner">환영 선물</p><p style="margin:0 0 8px;text-align:center">뽑기권 <b>5장</b>이 도착했어요!</p>'+
       '<p class="sub" style="margin-bottom:14px;text-align:center">화면을 눌러 공격하고, 골드로 능력을 키워 보스를 쓰러뜨리세요. 스킬과 동료는 뽑기에서 만날 수 있어요. 막히면 설정의 「게임 방법」과 화면 위쪽의 「성장 목표」를 따라가 보세요. 먼저 칭호를 하나 골라야 해요.</p><button class="btn gold wide" data-a="ovclose">다음</button></div>');
   }else{
     var away=(now-S.last)/1000;
+    if(petNew)lines.push("<b>펫 업데이트!</b> 강아지 <b>코코</b>가 함께하게 됐어요. 뽑기 탭의 「펫」에서 더 많은 펫을 만나 보세요.");
     if(S.m8){S.m8=false;lines.push("<b>전투 업데이트!</b> 몬스터가 반격해요. 능력 강화의 맷집·방어를 기존 레벨에 맞춰 미리 채워 드렸어요.")}
     if(S.migr){S.migr=false;lines.push("<b>업데이트 선물</b>로 뽑기권 10장이 도착했어요!<br>스킬 뽑기(최대 4개 장착)와 동료 파티(최대 3명), 우편함 출석, 업적이 새로 생겼어요.")}
     if(away>=60&&S.gps>0){var g=offGold(away),otk=offTix(away);S.gold+=g;S.tickets+=otk;lines.push("자리를 비운 동안(최대 "+(offCap()/3600)+"시간, 효율 "+Math.round(offEff()*100)+"%) 골드 <b>"+fmt(g)+"</b>"+(otk?"과 뽑기권 <b>"+otk+"장</b>":"")+"을 모았어요.")}
