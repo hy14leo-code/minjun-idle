@@ -814,7 +814,7 @@ var SKTIERS=[
 ];
 var CMTIERS=[
   {id:"M",n:"미스틱",p:0.2,sh:30,rank:7},
-  {id:"H",n:"하이퍼",p:0,sh:25,rank:6.5},
+  {id:"H",n:"하이퍼",p:0.4,sh:25,rank:6.5},
   {id:"U",n:"울트라",p:1,sh:20,rank:6},
   {id:"S",n:"S등급",p:3,sh:8,rank:5},
   {id:"A",n:"A등급",p:17,sh:4,rank:4},
@@ -1980,7 +1980,7 @@ function jobOv(id){
   var keys=Object.keys(D);T.jobId=id;if(keys.length===1)T.jobSel=keys[0];
   else if(!D[T.jobSel])T.jobSel="";
   var sel=T.jobSel||"";
-  showOv('<div class="panel gold"><p class="banner" style="margin-bottom:4px">'+r.nm+'의 전직</p><p style="margin:0 0 12px;text-align:center;color:var(--red);font-family:var(--f-d);font-size:15px">'+r.txt+(keys.length>1?' 한 번 정하면 바꿀 수 없어요.':'')+' '+tl(D[keys[0]].t)+' 등급으로 상승해요.</p><div style="display:flex;flex-direction:column;gap:14px">'+
+  showOv('<div class="panel gold"><p class="banner" style="margin-bottom:4px">'+r.nm+'의 전직</p><p style="margin:0 0 12px;text-align:center;color:var(--red);font-family:var(--f-d);font-size:15px">'+r.txt+(keys.length>1?' 한 번 정하면 바꿀 수 없어요.':'')+' '+tl(D[keys[0]].t)+' 등급으로 상승해요. 단, 레벨은 1로 초기화되고 이후 뽑기에서는 새 등급 확률로 나와요.</p><div style="display:flex;flex-direction:column;gap:14px">'+
     keys.map(function(j){var d=D[j];
       return '<button class="tcard'+(sel===j?" sel":"")+'" data-a="jobsel" data-v="'+j+'"><div class="tn">'+d.n+' <span class="tier k-'+d.t+'">'+tl(d.t)+'</span> <span class="chip">'+d.role+'</span></div><span class="sub">'+d.d(1)+'</span></button>';
     }).join("")+'</div><button class="btn gold wide" style="margin-top:16px" data-a="jobgo"'+(sel?"":" disabled")+'>전직하기</button><button class="btn ghost wide" style="margin-top:10px" data-a="ovx">나중에</button></div>');
@@ -1988,7 +1988,7 @@ function jobOv(id){
 function jobGo(){
   var id=T.jobId,j=T.jobSel,D=JOBD[id];
   if(!id||!D||!j||!D[j]||jobState(id)!=="ready")return;
-  S.cmp[id].job=j;S.egg["job_"+id]=1;if(id==="dohyeon")S.egg.job=1;T.jobSel="";
+  S.cmp[id].job=j;S.cmp[id].lv=1;S.egg["job_"+id]=1;if(id==="dohyeon")S.egg.job=1;T.jobSel="";
   applyJob();refreshCM();paintParty();hideOv();
   jingle([523,659,784,1046,1318]);toast("전직! "+BASE0[id].n+"이(가) "+tl(CMM[id].t)+" 「"+CMM[id].role+"」(으)로 각성했어요");
   save();renderTab();uiTop();
@@ -2444,10 +2444,12 @@ function pullCm(pool){
   S.pit.cm++;S.pit.cmu++;S.pit.cmm++;
   var t=(S.pit.cmm>=400&&S.best>=30)?CMTI.M:(S.pit.cmu>=150&&S.best>=30)?CMTI.U:(S.pit.cm>=40&&S.best>=30)?CMTI.S:rollTier(pool||CMTIERS);
   if(t.id==="S"||t.id==="U"||t.id==="M")S.pit.cm=0;
-  if(t.id==="U"||t.id==="M")S.pit.cmu=0;
+  var cl=CM.filter(function(s){return s.t===t.id});
+  if(!cl.length){t=CMTI.U;cl=CM.filter(function(s){return s.t==="U"})}
+  if(t.id==="S"||t.id==="U"||t.id==="H"||t.id==="M")S.pit.cm=0;
+  if(t.id==="U"||t.id==="H"||t.id==="M")S.pit.cmu=0;
   if(t.id==="M")S.pit.cmm=0;
-  var cl=CM.filter(function(s){return (s.bt||s.t)===t.id});
-  if(t.id==="C")cl=cl.concat([CMM.dohyeon,CMM.dohyeon]);
+  if(t.id==="C"&&CMM.dohyeon.t==="C")cl=cl.concat([CMM.dohyeon,CMM.dohyeon]);
   var cm=pickRand(cl),own=S.cmp[cm.id],isNew=false,up=false,sh=0;
   if(!own){
     S.cmp[cm.id]={n:1,lv:1};isNew=true;
@@ -2484,10 +2486,10 @@ function equip(id){
   S.equip[it.slot]=S.equip[it.slot]===id?null:id;
   save();renderTab();
 }
-var ENH_RATE=[100,100,100,100,100,80,70,60,50,40,30,25,20,15,10];
+var ENH_RATE=[95,90,85,78,70,60,50,42,35,28,20,15,10,6,3];
 function enhCost(lv){return lv<5?lv+2:lv<10?8+(lv-5)*3:25+(lv-10)*8}
 function enhGold(lv){return lv<5?0:Math.round(goldOf(Math.max(5,S.best))*20*(lv-3)*(lv>=10?3:1))}
-function enhRate(o){var r=ENH_RATE[o.lv]||0;if(o.lv>=5)r+=(o.f||0)*2;return Math.min(100,r)}
+function enhRate(o){var r=ENH_RATE[o.lv]||0;r+=Math.min(10,o.f||0);return Math.min(100,r)}
 function enhance(id,gu){
   var o=S.inv[id],it=ITEM[id];
   if(!o||it.t==="trash"||o.lv>=15)return;
@@ -2504,8 +2506,8 @@ function enhance(id,gu){
     toast("강화 성공! "+it.n+" +"+o.lv);bannerFx(o.lv>=10?"초월 강화 성공!":"강화 성공!");
   }else{
     o.f=(o.f||0)+1;
-    if(o.lv>=10&&!prot){o.lv--;toast("강화 실패… "+it.n+" +"+o.lv+"로 하락")}
-    else toast("강화 실패… "+(prot?"(보호됨) ":"")+"실패할수록 확률이 올라요");
+    if(o.lv>=10&&!prot){o.lv--;o.f=0;toast("강화 실패… "+it.n+" +"+o.lv+"로 하락")}
+    else toast("강화 실패… "+(prot?"(보호됨) ":"")+"실패하면 다음 확률이 1%p 올라요 (최대 +10%p)");
     snd(250,0.3,"sawtooth",0.04,90);
   }
   save();renderTab();uiTop();
@@ -2520,7 +2522,7 @@ function enhBtns(it,o){
 }
 function enhTable(){
   var rows="",l;
-  for(l=0;l<15;l++)rows+='<tr><td class="num">+'+l+' → +'+(l+1)+'</td><td class="num">'+ENH_RATE[l]+'%</td><td class="num">'+enhCost(l)+'</td><td>'+(l>=10?"하락":"-")+'</td></tr>';
+  for(l=0;l<15;l++)rows+='<tr><td class="num">+'+l+' → +'+(l+1)+'</td><td class="num">'+ENH_RATE[l]+'%</td><td class="num">'+enhCost(l)+'</td><td>'+(l>=10?"하락":"유지")+'</td></tr>';
   return '<div class="tbl" style="margin-top:12px"><table><tr><th>단계</th><th>기본 확률</th><th>조각</th><th>실패 시</th></tr>'+rows+'</table></div>';
 }
 function setSkin(id){
@@ -3695,7 +3697,7 @@ function gearHtml(){
   });
   h+='</section><section class="panel"><h2 class="h2">강화 안내</h2><div class="tbl"><table><tr><th>등급</th><th>중복 시 조각</th></tr>'+
     TIERS.map(function(x){return '<tr><td><span class="tier t-'+x.id+'">'+x.n+'</span></td><td class="num">+'+x.sh+"개</td></tr>"}).join("")+
-    '</table></div>'+enhTable()+'<p class="sub" style="margin-top:8px">같은 아이템이 또 나오면 조각이 쌓여요. 강화는 최대 +15까지 가능해요. +5부터는 확률이 있고 골드도 들며 실패할수록 확률이 2%씩 올라요. +10부터는 실패하면 1단계 내려가는데 「하락 보호」를 켜면 막을 수 있어요. 다이아로 확정 강화도 가능해요. 한 단계마다 효과가 25%씩 올라요. 같은 등급 장비를 3칸 모두 채우면 세트 보너스가 켜져요.</p></section>';
+    '</table></div>'+enhTable()+'<p class="sub" style="margin-top:8px">같은 아이템이 또 나오면 조각이 쌓여요. 강화는 최대 +15까지 가능해요. 단계가 오를수록 확률이 계속 낮아지고, +5부터는 골드도 들어요. 실패하면 다음 확률이 1%p씩 올라가지만 최대 +10%p까지예요. +10부터는 실패하면 1단계 내려가는데 「하락 보호」를 켜면 막을 수 있어요. 다이아로 확정 강화도 가능해요. 한 단계마다 효과가 25%씩 올라요. 같은 등급 장비를 3칸 모두 채우면 세트 보너스가 켜져요.</p></section>';
   return h;
 }
 
@@ -3766,8 +3768,7 @@ function gachaHtml(){
     h+='<tr><td><span class="tier k-'+t.id+'">'+t.n+'</span></td><td class="num">'+t.p+"%</td><td>"+PETS.filter(function(s){return s.t===t.id}).map(function(s){return s.n+"("+s.kind+")"}).join(", ")+"</td></tr>";
   });
   else CMTIERS.forEach(function(t){
-    if(t.id==="H"){h+='<tr><td><span class="tier k-H">하이퍼</span></td><td class="num">전직</td><td>원희성(맷경/기경), 박지환(미어캣 로봇) — 뽑기로는 나오지 않고 조건을 채워 전직해야 해요</td></tr>';return}
-    h+='<tr><td><span class="tier k-'+t.id+'">'+t.n+'</span></td><td class="num">'+t.p+"%</td><td>"+CM.filter(function(s){return (s.bt||s.t)===t.id}).map(function(s){return s.n+"("+s.role+")"}).join(", ")+"</td></tr>";
+    h+='<tr><td><span class="tier k-'+t.id+'">'+t.n+'</span></td><td class="num">'+t.p+"%</td><td>"+(CM.filter(function(s){return s.t===t.id}).map(function(s){return s.n+"("+s.role+")"}).join(", ")||(t.id==="H"?"전직한 동료만 나와요 (아직 없음)":""))+"</td></tr>";
   });
   h+='</table></div><p class="sub" style="margin-top:8px">'+(k==="eq"?"구데기 등급은 장착하면 능력이 깎이는 저주 아이템이에요. ":"")+'결제 요소는 없고, 모두 게임 안에서만 얻어요.</p></section>';
   return h;
