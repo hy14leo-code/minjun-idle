@@ -784,9 +784,9 @@ var UP=[
   {e:"🏃",n:"민첩",base:30,g:1.16,u1:"#27B27E"},
   {e:"🧠",n:"멘탈",base:50,g:1.17,u1:"#8A5CE8"},
   {e:"👫",n:"친구",base:20,g:1.15,u1:"#E0653F"},
-  {e:"⏳",n:"집중",base:120,g:1.2,u1:"#1F9DB5",max:80},
+  {e:"⏳",n:"집중",base:120,g:1.2,u1:"#1F9DB5"},
   {e:"❤️",n:"맷집",base:40,g:1.15,u1:"#D8435A"},
-  {e:"🛡️",n:"방어",base:60,g:1.16,u1:"#4A7FD8",max:160}
+  {e:"🛡️",n:"방어",base:60,g:1.16,u1:"#4A7FD8"}
 ];
 
 var TIERS=[
@@ -1508,7 +1508,7 @@ function sceneUrl(i){
 /* ---------- 상태 ---------- */
 var KEY="minjun-idle-v1";
 function fresh(){return {v:8,gold:0,tickets:0,stage:1,best:1,majors:0,up:[0,0,0,0,0,0,0],inv:{},equip:{weapon:null,armor:null,acc:null},shards:0,pity:0,pulls:0,title:null,tl:false,skin:"basic",autoBoss:true,autoSkill:true,bossReady:false,welcome:false,lastGift:0,last:Date.now(),gps:0,ending:null,kt:0,bk:0,ach:{},sfx:true,
-  skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
+  tb:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
 function norm(o){
   var f=fresh(),old=!o.v||o.v<5,hadRb=o.rbest!==undefined;
   for(var k in f){if(o[k]===undefined)o[k]=f[k]}
@@ -1632,7 +1632,8 @@ function bonus(){
   FXK.forEach(function(k){b[k]=g[k]+t[k]+s[k]+c[k]+m[k]});
   return b;
 }
-function cdCut(){return Math.min(0.7,S.up[4]*0.005+bonus().cd/100)}
+function cdLv(L){return 0.65*L/(L+60)}
+function cdCut(){return Math.min(0.8,cdLv(S.up[4])+bonus().cd/100)}
 function cmM(id){return 1+0.25*(eLv((S.cmp[id]&&S.cmp[id].lv)||1,10,0.2)-1)}
 function refreshCM(){
   applyJob();
@@ -1677,17 +1678,17 @@ function calc(L){
   var b=bonus(),gm=Math.pow(1.5,S.majors||0);
   var atkBase=5*Math.pow(1.13,L[0])*Math.pow(1.5,Math.floor(L[0]/25))*gm;
   var atk=atkBase*Math.max(0.1,1+b.atk/100)*SFc.atkM*EVc.a*(T.revolt>0?4:1);
-  var spd=Math.min(8,(1+0.04*L[1])*Math.max(0.2,1+b.spd/100))*SFc.spdM;
+  var sp0=(1+0.04*L[1])*Math.max(0.2,1+b.spd/100),spd=(sp0<=8?sp0:8+(sp0-8)*0.25)*SFc.spdM;
   var cc=Math.min(SFc.crit100?1:0.95,0.05+0.006*L[2]+b.crit/100+SFc.critAdd);
   var cd=1.8+0.04*L[2]+SFc.cdAdd+rsLv("critd")*0.1;
   var fr=0.6*L[3]*Math.pow(1.15,Math.floor(L[3]/10))*atk*Math.max(0,1+b.friend/100)*SFc.frM;
   var pd=atk*(CMc.dps+CMc.pet);
   var hp=(120*Math.pow(1.15,L[5])+6*(L[0]+L[1]+L[2]+L[3]))*Math.max(0.2,1+b.hp/100)*(1+0.2*(S.majors||0));
-  var defp=Math.max(0,Math.min(400,L[6]*2.5+b.def));
-  return {atk:atk,spd:spd,cc:cc,cd:cd,fr:fr,pd:pd,bz:CMc.bz,gold:Math.max(0.1,1+b.gold/100)*SFc.goldM*EVc.g,time:30+b.time,hp:hp,def:defp,dr:defp/(100+defp),rg:0.006+CMc.regen/100};
+  var defp=Math.max(0,Math.min(3000,L[6]*2.5+b.def));
+  return {atk:atk,spd:spd,cc:cc,cd:cd,fr:fr,pd:pd,bz:CMc.bz,gold:Math.max(0.1,1+b.gold/100)*SFc.goldM*EVc.g,time:24+(b.time>0?16*(1-Math.exp(-b.time/20)):b.time*0.5),hp:hp,def:defp,dr:defp/(100+defp),rg:0.006+CMc.regen/100};
 }
 function hpOf(s){return 18*Math.pow(1.45,s-1)}
-function goldOf(s){return 6*Math.pow(1.2,s-1)}
+function goldOf(s){return s<=20?6*Math.pow(1.2,s-1):6*Math.pow(1.2,20-1)*Math.pow(1.3,s-20)}
 function rnd(a,b){return a+Math.random()*(b-a)}
 function pickRand(a){return a[Math.floor(Math.random()*a.length)]}
 function bossMul(s){return s%20===0?50:18}
@@ -1699,7 +1700,11 @@ function maxN(i){
   if(u.max)n=Math.min(n,u.max-S.up[i]);
   return n;
 }
-function ticketPrice(){return Math.round(80*goldOf(S.best))}
+var TBMAX=8;
+function tbRoll(){var k=dayKey(new Date());if(!S.tb||S.tb.d!==k)S.tb={d:k,n:0}}
+function tkPriceAt(k){return Math.round(260*goldOf(Math.max(8,S.best))*(1+0.4*k))}
+function ticketPrice(){tbRoll();return tkPriceAt(S.tb.n)}
+function ticketCost(n){tbRoll();var t=0,i;for(i=0;i<n;i++)t+=tkPriceAt(S.tb.n+i);return t}
 function autoDps(c){return c.atk*c.spd*(1+c.cc*(c.cd-1))+c.fr+c.pd+c.atk*c.spd*c.bz*4}
 function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk.tr||!!S.transc)}
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
@@ -2325,8 +2330,10 @@ function doPull(kind,n){
   lastPull={kind:kind,res:res};dqAdd("p",n);save();renderSbar();renderTab();uiTop();
 }
 function buyTicket(n){
-  var p=ticketPrice()*n;if(S.gold<p)return;
-  S.gold-=p;S.tickets+=n;snd(500,0.08,"square",0.04,900);save();renderTab();
+  tbRoll();n=Math.min(n,TBMAX-S.tb.n);
+  if(n<1){toast("오늘 살 수 있는 뽑기권을 모두 샀어요 (하루 "+TBMAX+"장)");return}
+  var p=ticketCost(n);if(S.gold<p)return;
+  S.gold-=p;S.tb.n+=n;S.tickets+=n;snd(500,0.08,"square",0.04,900);save();renderTab();
 }
 function equip(id){
   var it=ITEM[id];if(!S.inv[id])return;
@@ -2871,6 +2878,7 @@ function questHtml(){
 /* ---------- 데이터베이스(클라우드) ---------- */
 var DBH=null,USR=null,UID=null,LV={notice:null,event:null},EVc={g:1,a:1},RK=[],PROF={},CCO=null,CC=null,RKW=true,RKB=false,noticeShown=false,nickShown=false,dbDone=false;
 var cloud={on:false,block:false,busy:false,sig:"",t:0,err:""},NT={cs:0,rk:0,rsig:""};
+function rankScore(o){var t=(o.rp||0)+rpGain(o.rbest||1);return t*1e6+Math.min(999,o.best||1)*1e3+Math.min(999,o.bk||0)}
 function progOf(o){return (o.rb||0)*1e6+(o.best||1)*1e3+Math.min(999,o.bk||0)}
 function progSig(){return S.kt+"|"+S.pulls+"|"+S.tickets+"|"+S.best+"|"+S.rb+"|"+S.up.join(",")}
 function cpath(){return "data/users/"+UID+"/game"}
@@ -2913,7 +2921,7 @@ async function fetchRank(){
   rkT=Date.now();
   try{
     var rows=await rpc("mj_rank",{p_id:UID});
-    RK=(rows||[]).map(function(x,i){return {id:x.me?UID:"x"+i,score:Number(x.score)||0,best:Number(x.best)||0,rb:Number(x.rb)||0,lv:Number(x.lv)||0,nick:String(x.nick||"").slice(0,10)}});
+    RK=(rows||[]).map(function(x,i){return {rk:Number(x.rk)||i+1,id:x.me?UID:"x"+i,score:Number(x.score)||0,best:Number(x.best)||0,rb:Number(x.rb)||0,lv:Number(x.lv)||0,nick:String(x.nick||"").slice(0,10)}});
     if(tab==="quest"&&sub.quest==="rank")renderTab();
   }catch(e){}
 }
@@ -2955,7 +2963,7 @@ async function cloudSave(force){
   cloud.busy=true;
   try{
     S.last=Date.now();
-    await rpc("mj_sync",{p_id:UID,p_secret:ACT.secret,p_nick:S.nick||"",p_score:progOf(S),p_best:S.best,p_rb:S.rb,p_lv:charLv(),p_data:JSON.stringify(S),p_p:progOf(S)});
+    await rpc("mj_sync",{p_id:UID,p_secret:ACT.secret,p_nick:S.nick||"",p_score:rankScore(S),p_best:S.best,p_rb:S.rb,p_lv:charLv(),p_data:JSON.stringify(S),p_p:progOf(S)});
     cloud.sig=sg;cloud.t=Date.now();cloud.err="";
   }catch(e){cloud.err=(e&&e.code)||"err"}
   cloud.busy=false;
@@ -2972,7 +2980,7 @@ async function cloudLoadNow(){
 }
 async function rankPush(){
   if(!DBH||!UID||RKB)return;
-  var sc=progOf(S),sg=sc+"|"+charLv()+"|"+S.nick;
+  var sc=rankScore(S),sg=sc+"|"+charLv()+"|"+S.nick;
   if(sg===NT.rsig)return;
   RKB=true;
   try{
@@ -3073,12 +3081,18 @@ function cloudTxt(){
 }
 function rankHtml(){
   if(!DBH)return '<section class="panel"><h2 class="h2">랭킹</h2><p class="sub">인터넷에 연결되면 랭킹이 보여요.</p></section>';
-  var h='<section class="panel"><h2 class="h2">랭킹</h2><p class="sub">회귀 횟수가 많은 순, 같으면 최고 스테이지가 높은 순이에요.'+(RKW?"":" 이 계정은 기록을 올릴 권한이 없어 보기만 할 수 있어요.")+'</p></section><section class="panel">';
+  var bank=S.rp||0,pend=rpGain(S.rbest||1),tot=bank+pend,mine=null;
+  RK.forEach(function(r){if(r.id===UID)mine=r});
+  var h='<section class="panel gold"><h2 class="h2">내 랭킹</h2><div class="stats" style="margin-top:0"><div class="st"><span>내 순위</span><b>'+(mine?mine.rk+"위":(S.nick?"집계 중":"닉네임 필요"))+'</b></div><div class="st"><span>성장 점수</span><b style="color:var(--gold)">'+tot+'점</b></div><div class="st"><span>회귀로 모은 점수</span><b>'+bank+'점</b></div><div class="st"><span>지금 회귀하면 +</span><b>'+pend+'점</b></div></div>'+
+    '<p class="sub" style="margin-top:10px">순위는 <b>성장 점수</b>로 정해요. 성장 점수 = 회귀로 모은 점수 + 지금 회귀하면 받을 점수라서, 회귀해도 점수가 줄지 않고 낮은 스테이지에서 회귀를 반복해도 늘지 않아요. 점수가 같으면 최고 스테이지, 그다음은 보스 격파 수가 높은 쪽이 앞서요. 점수는 높은 스테이지에 갈수록 크게 올라요.'+(S.nick?"":" 닉네임을 정해야 랭킹에 올라가요.")+(RKW?"":" 이 계정은 기록을 올릴 권한이 없어 보기만 할 수 있어요.")+'</p></section><section class="panel"><h2 class="h2">TOP 30</h2>';
   if(!RK.length)h+='<p class="sub">아직 등록된 기록이 없어요.</p>';
+  var prev=0;
   RK.forEach(function(r,i){
     var me=r.id===UID,p=PROF[r.id],nm=r.nick||(p&&p.name)||(me?"나":"플레이어");
-    var ico=i===0?"🥇":i===1?"🥈":i===2?"🥉":null;
-    h+='<div class="irow"><div class="ie2">'+(ico?spr(ico,16,2.4):'<span class="px">'+(i+1)+'</span>')+'</div><div class="ib"><div class="t">'+esc(nm)+(me?' <span class="chip">나</span>':"")+'</div><div class="d num" style="margin:0">회귀 '+r.rb+'회 · 스테이지 '+r.best+' · Lv.'+r.lv+'</div></div></div>';
+    var ico=r.rk===1?"🥇":r.rk===2?"🥈":r.rk===3?"🥉":null;
+    if(prev&&r.rk>prev+1)h+='<p class="sub" style="text-align:center;margin:4px 0">⋮</p>';
+    prev=r.rk;
+    h+='<div class="irow"><div class="ie2">'+(ico?spr(ico,16,2.4):'<span class="px">'+r.rk+'</span>')+'</div><div class="ib"><div class="t">'+esc(nm)+(me?' <span class="chip">나</span>':"")+' <span class="chip num">'+Math.floor(r.score/1e6)+'점</span></div><div class="d num" style="margin:0">최고 스테이지 '+r.best+' · 회귀 '+r.rb+'회 · Lv.'+r.lv+'</div></div></div>';
   });
   return h+'</section>';
 }
@@ -3422,11 +3436,11 @@ function uiGrow(){
     var L2=S.up.slice();L2[i]+=1;var c2=calc(L2);
     if(i===0)ef="공격력 "+fmt(c.atk)+" → "+fmt(c2.atk);
     else if(i===1)ef="공격 속도 "+f1(c.spd)+" → "+f1(c2.spd)+"회/초";
-    else if(i===2)ef="치명타 확률 "+Math.round(c.cc*100)+"% → "+Math.round(c2.cc*100)+"%";
+    else if(i===2)ef="치명타 "+Math.round(c.cc*100)+"%→"+Math.round(c2.cc*100)+"% · 피해 ×"+f1(c.cd)+"→×"+f1(c2.cd);
     else if(i===3)ef="친구 도움 "+fmt(c.fr)+" → "+fmt(c2.fr)+"/초";
     else if(i===5)ef="최대 체력 "+fmt(c.hp)+" → "+fmt(c2.hp);
     else if(i===6)ef="방어 "+f1(c.def)+"% → "+f1(c2.def)+"% (받는 피해 −"+Math.round(c.dr*100)+"% → −"+Math.round(c2.dr*100)+"%)";
-    else ef="쿨타임 −"+f1(S.up[4]*0.5)+"% → −"+f1(Math.min(u.max,S.up[4]+1)*0.5)+"% (최대 −40%)";
+    else ef="쿨타임 −"+f1(cdLv(S.up[4])*100)+"% → −"+f1(cdLv(S.up[4]+1)*100)+"% (레벨 효과 포함)";
     $("u-lv-"+i).textContent="Lv."+S.up[i]+(u.max?" / "+u.max:"");
     $("u-ef-"+i).innerHTML=ef.replace(/→ (.+?)( \(|$)/,function(m,a,b){return '→ <b class="gn">'+a+'</b>'+b});
     var b=$("u-btn-"+i);
@@ -3592,7 +3606,7 @@ function gachaHtml(){
     '<div class="grid2" style="margin-top:14px"><button class="btn" id="g-p1" data-a="pull" data-v="'+k+':1">1회 뽑기<br><small>뽑기권 1장</small></button>'+
     '<button class="btn hot" id="g-p10" data-a="pull" data-v="'+k+':10">10연 뽑기<br><small>뽑기권 10장</small></button></div>'+
     '<div style="margin-top:16px"><div class="row" style="justify-content:space-between"><span class="sub">천장 ('+pwhat+' 확정)</span><span class="sub num">'+Math.min(pit,pmax)+' / '+pmax+'회</span></div><div class="bar" style="margin-top:4px"><i style="width:'+Math.min(100,pit/pmax*100)+'%;--c1:#FFC94A"></i></div></div>'+
-    xp+'<div class="grid2" style="margin-top:16px"><button class="btn small gold" id="g-b1" data-a="tbuy" data-v="1"></button><button class="btn small gold" id="g-b10" data-a="tbuy" data-v="10"></button></div></section>';
+    xp+'<div class="grid2" style="margin-top:16px"><button class="btn small gold" id="g-b1" data-a="tbuy" data-v="1"></button><button class="btn small gold" id="g-b10" data-a="tbuy" data-v="5"></button></div></section>';
   h+='<section class="panel"><h2 class="h2">확률표</h2><div class="tbl"><table><tr><th>등급</th><th>확률</th><th>'+(k==="eq"?"아이템":k==="sk"?"스킬":k==="pt"?"펫":"동료")+'</th></tr>';
   if(k==="eq")TIERS.forEach(function(t){
     h+='<tr><td><span class="tier t-'+t.id+'">'+t.n+'</span></td><td class="num">'+t.p+"%</td><td>"+ITEMS.filter(function(i){return i.t===t.id}).map(function(i){return i.e+" "+i.n}).join(", ")+"</td></tr>";
@@ -3612,9 +3626,10 @@ function gachaHtml(){
 function uiGacha(){
   if(!$("g-p1"))return;
   $("g-p1").disabled=S.tickets<1;$("g-p10").disabled=S.tickets<10;
-  var p=ticketPrice();
-  $("g-b1").textContent="골드 "+fmt(p)+" → 뽑기권 1장";$("g-b1").disabled=S.gold<p;
-  $("g-b10").textContent="골드 "+fmt(p*10)+" → 10장";$("g-b10").disabled=S.gold<p*10;
+  tbRoll();var left=TBMAX-S.tb.n,p=ticketCost(Math.min(1,left)),p5=ticketCost(Math.min(5,left));
+  $("g-b1").innerHTML=left<1?"오늘 구매 끝<br><small>하루 "+TBMAX+"장</small>":"1장 · 골드 "+fmt(p)+"<br><small>오늘 남은 "+left+"장</small>";$("g-b1").disabled=left<1||S.gold<p;
+  $("g-b10").innerHTML=left<1?"내일 다시<br><small>살 수 있어요</small>":Math.min(5,left)+"장 · 골드 "+fmt(p5)+"<br><small>점점 비싸져요</small>";$("g-b10").disabled=left<1||S.gold<p5;
+
 }
 
 /* ---------- 탭: 업적 ---------- */
