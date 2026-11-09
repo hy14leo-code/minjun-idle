@@ -386,6 +386,52 @@ tr:last-child td{border-bottom:0}
 .pm .cl{position:absolute;opacity:.5;filter:hue-rotate(70deg) brightness(1.2)}
 .pm .cl.c1{left:-16px;top:4px}.pm .cl.c2{left:16px;top:-4px}
 @media (prefers-reduced-motion: reduce){.fxs,.flash{display:none}}
+/* ===== v16 전투 화면 배치: 크게, 겹치지 않게 ===== */
+.field{height:clamp(230px,34vh,340px);--sc:1}
+@media (min-width:500px){.field{--sc:1.22}}
+.top{padding-top:6px}
+.hud{padding-bottom:8px}
+/* 왼쪽 위: 스테이지·시기·진행 */
+.fh{left:10px;right:auto;top:8px;max-width:48%;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:4px;z-index:3}
+.fstage{background:rgba(10,8,30,.58);border-radius:999px;padding:4px 12px 3px;font-size:17px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.fphase{margin:0;background:rgba(10,8,30,.45);border-radius:999px;padding:1px 10px;font-size:12.5px}
+.pips{justify-content:flex-start;margin:2px 0 0 4px}
+.tm{margin:2px 0 0;width:min(170px,42vw)}
+/* 오른쪽 위: 아이콘 가로 한 줄 */
+.ficons{flex-direction:row;top:8px;right:8px;gap:6px}
+.fib{width:32px;height:32px}
+/* 위쪽 가운데: 보스 도전 */
+.fboss{top:10px;transform:translateX(-50%);z-index:4}
+/* 아군 */
+.pm .pxi,.pk .pxi,.en .pxi{max-width:none}
+.party{left:2%;bottom:6%;width:210px;height:130px;transform:scale(var(--sc));transform-origin:left bottom}
+.pm{--pu:1.95px}
+.pm0{left:0;bottom:28px}.pm1{left:36px;bottom:6px}.pm2{left:72px;bottom:32px}
+.pk0{left:96px;bottom:-2px}.pk1{left:58px;bottom:-12px}
+.player{left:calc(118px*var(--sc));bottom:2%;transform:scale(var(--sc));transform-origin:50% 100%}
+.player .pa{height:calc(var(--ah)*1px)}
+.phb{bottom:calc(100% + 4px)}
+/* 적 */
+.enemy{right:2%;bottom:6%;width:206px;height:176px;transform:scale(calc(var(--sc) * 1.15));transform-origin:right bottom}
+.wave{width:206px;height:132px}
+.e0{right:0}.e1{right:66px;bottom:8px}.e2{right:116px;bottom:14px}
+.ehpw{right:28px;top:4px;width:136px}
+.eshadow{right:10px;width:90px}
+.combo{left:12px;bottom:8px}
+/* 스킬 줄: 조금 더 낮게 */
+.sbar{padding-top:10px;gap:8px;grid-template-columns:repeat(4,1fr) 50px}
+.skb{max-width:58px}
+.skn{font-size:11.5px}
+.mini{height:24px}
+
+@media (min-width:700px){
+  .wrap{max-width:760px}
+  .nav-in{max-width:660px}
+  .field{height:clamp(300px,36vh,420px);--sc:1.45}
+  .fstage{font-size:19px}
+}
+@media (max-width:380px){.field{height:clamp(210px,32vh,300px)}.player{left:calc(104px*var(--sc))}.e1{right:58px}.e2{right:100px}}
+
 /* ===== v15 디자인: 캐릭터 일러스트와 어울리는 부드러운 게임 UI ===== */
 :root{
   --bg0:#121836; --panel:#1C2452; --panel2:#283273;
