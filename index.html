@@ -1852,11 +1852,12 @@ function sceneUrl(i){
 /* ---------- 상태 ---------- */
 var KEY="minjun-idle-v1";
 function fresh(){return {v:8,gold:0,tickets:0,stage:1,best:1,majors:0,up:[0,0,0,0,0,0,0],inv:{},equip:{weapon:null,armor:null,acc:null},shards:0,pity:0,pulls:0,title:null,tl:false,skin:"basic",autoBoss:true,autoSkill:true,bossReady:false,welcome:false,lastGift:0,last:Date.now(),gps:0,ending:null,kt:0,bk:0,ach:{},sfx:true,
-  tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
+  tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,bmax:0,gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
 function norm(o){
   var f=fresh(),old=!o.v||o.v<5,hadRb=o.rbest!==undefined;
   for(var k in f){if(o[k]===undefined)o[k]=f[k]}
   if(!SKIN[o.skin])o.skin="basic";
+  if(o.bmax===undefined)o.bmax=Math.floor(((o.best||1)-1)/10)*10;
   if(o.bcl===undefined)o.bcl=Math.floor(((o.rbest||1)-1)/10)*10;
   if(!hadRb)o.rbest=o.best||1;
   o.v=8;
@@ -2034,7 +2035,8 @@ function calc(L){
   var defp=Math.max(0,Math.min(3000,L[6]*2.5+b.def));
   return {atk:atk,spd:spd,cc:cc,cd:cd,fr:fr,pd:pd,bz:CMc.bz,gold:Math.max(0.1,1+b.gold/100)*SFc.goldM*EVc.g,time:24+(b.time>0?16*(1-Math.exp(-b.time/20)):b.time*0.5),hp:hp,def:defp,dr:defp/(100+defp),rg:0.006+CMc.regen/100};
 }
-function hpOf(s){return 18*Math.pow(1.45,s-1)}
+function hpAdj(s){return 1+Math.pow(s/55,3)}
+function hpOf(s){return 18*Math.pow(1.45,s-1)*hpAdj(s)}
 function goldOf(s){return s<=20?6*Math.pow(1.2,s-1):6*Math.pow(1.2,20-1)*Math.pow(1.3,s-20)}
 function rnd(a,b){return a+Math.random()*(b-a)}
 function pickRand(a){return a[Math.floor(Math.random()*a.length)]}
@@ -2124,13 +2126,13 @@ function enterBoss(){
   bannerFx("BOSS",true);
 }
 function bossWin(e){
-  var s=S.stage,first=s>(S.bcl||0),t=first?(e.major?3:1)+rsLv("tix"):0;
-  S.tickets+=t;if(first){S.bcl=s;S.bk++}dqAdd("b",1);
+  var s=S.stage,first=s>(S.bcl||0),ever=s>(S.bmax||0),t=ever?(e.major?3:1)+rsLv("tix"):0;
+  S.tickets+=t;if(first){S.bcl=s;S.bk++}if(ever)S.bmax=s;dqAdd("b",1);
   var prev=phIdx(s);
   S.stage++;if(S.stage>S.best)S.best=S.stage;
   kills=0;
-  var msg=e.name+" 격파!"+(first?" 뽑기권 +"+t:" (이미 깬 보스라 보상 없음)");
-  if(e.major&&first){
+  var msg=e.name+" 격파!"+(ever?" 뽑기권 +"+t:" (이미 보상을 받은 보스예요)");
+  if(e.major&&ever){
     S.dia+=10;msg+=" · 💎+10";
     var m=Math.min(8,s/20);
     if(m>S.majors){
@@ -3819,7 +3821,7 @@ var DGS=[
 ];
 function dgDef(id){return DGS.filter(function(d){return d.id===id})[0]||DGS[0]}
 function dgRoll(){var k=dayKey(new Date());if(S.dg.d!==k)S.dg={d:k,n:0,m:0};if(!S.dg.m)S.dg.m=S.dg.m||0}
-function dgRef(k){return hpOf(Math.max(5,S.best))*20*(dgDef(k).refK)}
+function dgRef(k){var b5=Math.max(5,S.best);return hpOf(b5)/Math.sqrt(hpAdj(b5))*20*(dgDef(k).refK)}
 function dgRew(x,def){return def.rw===1?x:{n:x.n,min:x.min,sh:Math.ceil(x.sh*def.rw),tk:x.tk?Math.ceil(x.tk*def.rw):0,dia:Math.round((x.dia||0)*def.rw)}}
 function dgStart(id){
   var def=dgDef(id);
