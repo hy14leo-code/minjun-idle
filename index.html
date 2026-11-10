@@ -1852,7 +1852,7 @@ function sceneUrl(i){
 /* ---------- 상태 ---------- */
 var KEY="minjun-idle-v1";
 function fresh(){return {v:8,gold:0,tickets:0,stage:1,best:1,majors:0,up:[0,0,0,0,0,0,0],inv:{},equip:{weapon:null,armor:null,acc:null},shards:0,pity:0,pulls:0,title:null,tl:false,skin:"basic",autoBoss:true,autoSkill:true,bossReady:false,welcome:false,lastGift:0,last:Date.now(),gps:0,ending:null,kt:0,bk:0,ach:{},sfx:true,
-  tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,bmax:0,gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
+  tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,bmax:0,dgx:0,gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
 function norm(o){
   var f=fresh(),old=!o.v||o.v<5,hadRb=o.rbest!==undefined;
   for(var k in f){if(o[k]===undefined)o[k]=f[k]}
@@ -3609,9 +3609,9 @@ async function redeem(){
       msg.textContent=em[d&&d.err]||"사용할 수 없는 코드예요.";return;
     }
     if(S.rc.indexOf(code)>=0)return;
-    var tk=clamp(parseInt(d.tickets,10)||0,0,100),sh=clamp(parseInt(d.shards,10)||0,0,500);
-    S.rc.push(code);S.tickets+=tk;S.shards+=sh;save();cloudSave(true);
-    msg.textContent="받았어요! "+(tk?"뽑기권 "+tk+"장 ":"")+(sh?"조각 "+sh+"개":"");
+    var tk=clamp(parseInt(d.tickets,10)||0,0,100),sh=clamp(parseInt(d.shards,10)||0,0,500),dg=clamp(parseInt(d.dungeon,10)||0,0,50);
+    S.rc.push(code);S.tickets+=tk;S.shards+=sh;S.dgx=(S.dgx||0)+dg;save();cloudSave(true);
+    msg.textContent="받았어요! "+(tk?"뽑기권 "+tk+"장 ":"")+(sh?"조각 "+sh+"개 ":"")+(dg?"던전 입장 "+dg+"회":"");
     jingle([784,988,1318]);uiTop();
   }catch(e){msg.textContent="확인하지 못했어요. 잠시 후 다시 해 주세요."}
 }
@@ -3827,9 +3827,10 @@ function dgStart(id){
   var def=dgDef(id);
   dgRoll();
   if(S.best<def.need){toast("스테이지 "+def.need+"에 도달하면 열려요");return}
-  if((S.dg[def.key]||0)>=2){toast("오늘 이 던전 입장 횟수를 모두 썼어요");return}
+  var spent=(S.dg[def.key]||0)>=2;
+  if(spent&&!(S.dgx>0)){toast("오늘 이 던전 입장 횟수를 모두 썼어요");return}
   if(F&&F.boss){toast("보스전이 끝난 뒤에 입장할 수 있어요");return}
-  S.dg[def.key]=(S.dg[def.key]||0)+1;DG.dmg=0;DG.k=def.id;
+  if(spent)S.dgx--;else S.dg[def.key]=(S.dg[def.key]||0)+1;DG.dmg=0;DG.k=def.id;
   F={boss:true,dungeon:true,name:def.boss,wave:[def.e],n:26,hp:1,max:1,t:45,tmax:45,rewound:false,guarded:false};
   paintField();bannerFx("던전 시작!");jingle([392,523,659]);save();renderTab();
 }
@@ -3852,7 +3853,7 @@ function dgHtml(){
   var h="";
   DGS.forEach(function(def,i){
     var open=S.best>=def.need,left=2-(S.dg[def.key]||0),ref=dgRef(def.id);
-    h+='<section class="panel'+(i?"":"")+'"><h2 class="h2">'+def.ico+" "+def.n+'</h2><p class="sub">'+def.desc+' 하루 2번 들어갈 수 있고 피해량에 따라 메달과 보상을 받아요.'+(open?"":" (스테이지 "+def.need+"에 도달하면 열려요)")+'</p><div class="stats"><div class="st"><span>오늘 남은 입장</span><b>'+(open?left+"회":"잠김")+'</b></div><div class="st"><span>누적 도전(전체)</span><b>'+S.dgc+'회</b></div></div><button class="btn gold wide" style="margin-top:16px" data-a="dggo" data-v="'+def.id+'"'+(open&&left>0&&!(F&&F.boss)?"":" disabled")+'>'+(!open?"잠김":left>0?"입장하기":"오늘 입장 끝")+'</button>'+
+    h+='<section class="panel'+(i?"":"")+'"><h2 class="h2">'+def.ico+" "+def.n+'</h2><p class="sub">'+def.desc+' 하루 2번 들어갈 수 있고 피해량에 따라 메달과 보상을 받아요.'+(open?"":" (스테이지 "+def.need+"에 도달하면 열려요)")+'</p><div class="stats"><div class="st"><span>오늘 남은 입장</span><b>'+(open?left+"회"+(S.dgx>0?" + 쿠폰 "+S.dgx+"회":""):"잠김")+'</b></div><div class="st"><span>누적 도전(전체)</span><b>'+S.dgc+'회</b></div></div><button class="btn gold wide" style="margin-top:16px" data-a="dggo" data-v="'+def.id+'"'+(open&&(left>0||S.dgx>0)&&!(F&&F.boss)?"":" disabled")+'>'+(!open?"잠김":left>0?"입장하기":S.dgx>0?"쿠폰으로 입장":"오늘 입장 끝")+'</button>'+
       '<div class="tbl" style="margin-top:14px"><table><tr><th>메달</th><th>필요 피해</th><th>보상</th></tr>'+DGT.map(function(x0){var x=dgRew(x0,def);return '<tr><td>'+x.n+'</td><td class="num">'+fmt(ref*x.min)+'</td><td>'+(x.tk?"뽑기권 "+x.tk+"장 · ":"")+(x.dia?"💎"+x.dia+" · ":"")+'조각 '+x.sh+'개</td></tr>'}).join("")+'</table></div></section>';
   });
   return h+'<section class="panel"><p class="sub">필요 피해는 최고 스테이지에 맞춰 달라져요. 스킬과 버프를 켜고 들어가면 유리해요. 던전 도전 횟수는 두 던전을 합쳐서 세요.</p></section>';
