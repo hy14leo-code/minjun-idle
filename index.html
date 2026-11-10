@@ -1119,7 +1119,18 @@ function spr(e,n,u){
 /* 몬스터를 눈·입·팔다리가 있는 캐릭터로 */
 var MN={};
 function hashStr(s){var h=7,i;for(i=0;i<s.length;i++)h=(h*31+s.charCodeAt(i))>>>0;return h}
+var BOSSLOOK={
+  "@woojin":{u:4,look:{hair:"#2B2018",style:"parted",outfit:"#F2F4FA",pants:"#2A4FB8",fit:"tee",hat:"glasses",gtype:"rimless",gcol:"#1A1530",fierce:1,prop:"racket"}},
+  "@chan":{u:4.4,look:{hair:"#1A1A22",style:"bowl",outfit:"#4A2A6A",pants:"#2A1A3A",fit:"fatrobe",hat:"glasses",gcol:"#E0262E",grin:1,fat:1,horns:1,stink:1,prop:"none"}}
+};
+function bossImg(e){
+  var b=BOSSLOOK[e],url=MN[e];
+  if(url===undefined){url=null;try{var k=mkCanvas(24,30);if(k){drawChibi(k.x,b.look);url=outline(k.c)}}catch(err){url=null}MN[e]=url}
+  if(!url)return spr("👾",24);
+  return '<img class="pxi mon" alt="" style="--n:26;--u:'+b.u+'px" src="'+url+'">';
+}
 function monSpr(e,n,kind){
+  if(BOSSLOOK[e])return bossImg(e);
   var key=e+"|"+n+"|"+kind,url=MN[key];
   if(url===undefined){url=null;try{url=monUrl(e,n,kind)}catch(err){url=null}MN[key]=url}
   if(!url)return spr(e,n);
@@ -1353,6 +1364,7 @@ function drawChibi(x,o){
   if(o.hat==="cross"){R(x,"#52E3A4",11,17,2,5);R(x,"#52E3A4",9,19,6,1)}
   if(o.hat==="helm"){R(x,"#9AA6C8",8,17,8,5)}
   R(x,SKC,6,5,12,10);R(x,SKC,5,7,14,6);R(x,SH,6,14,12,1);
+  if(o.fat){R(x,SKC,4,8,16,6);R(x,SKC,5,6,14,9);R(x,SKC,6,15,12,1);R(x,SH,6,16,12,1);R(x,SH,5,14,14,1)}
   if(st==="long"){R(x,HR,5,3,14,3);R(x,HR,4,5,2,13);R(x,HR,18,5,2,13);R(x,HR,6,6,12,2);R(x,SKC,11,7,2,1)}
   else if(st==="spiky"){R(x,HR,5,4,14,2);R(x,HR,6,1,2,4);R(x,HR,10,0,2,5);R(x,HR,14,1,2,4);R(x,HR,18,2,2,4);R(x,HR,4,5,2,6);R(x,HR,18,5,2,6);R(x,HR,6,6,12,1)}
   else if(st==="swept"){R(x,HR,5,3,14,3);R(x,HR,4,5,3,8);R(x,HR,17,5,3,4);R(x,HR,6,6,10,2);R(x,HR,14,7,4,2);R(x,SKC,11,7,2,1);R(x,"#fff",7,3,4,1)}
@@ -1380,6 +1392,9 @@ function drawChibi(x,o){
   if(o.fit)fitFace(x,o,INK);
   if(o.darkeye){R(x,"#000",7,10,4,3);R(x,"#000",8,9,2,5);R(x,"#000",13,10,4,3);R(x,"#000",14,9,2,5);R(x,"#3A1A55",8,10,1,1);R(x,"#3A1A55",14,10,1,1)}
   if(o.mech)mechHead(x);
+  if(o.horns){R(x,"#7A3FB0",3,2,2,5);R(x,"#7A3FB0",19,2,2,5);R(x,"#B07CFF",3,1,1,1);R(x,"#B07CFF",20,1,1,1);R(x,"#B07CFF",3,2,1,1);R(x,"#B07CFF",20,2,1,1)}
+  if(o.stink){R(x,"#7BC043",0,9,1,3);R(x,"#5A8A2A",1,12,1,3);R(x,"#7BC043",0,15,1,2);R(x,"#7BC043",23,8,1,3);R(x,"#5A8A2A",22,11,1,3);R(x,"#7BC043",23,14,1,2);R(x,"#222",2,6,1,1);R(x,"#222",21,5,1,1);R(x,"#222",2,20,1,1)}
+  if(o.prop==="racket"){R(x,"#E83A4A",18,2,5,1);R(x,"#E83A4A",17,3,1,6);R(x,"#E83A4A",23,3,1,6);R(x,"#E83A4A",18,9,5,1);R(x,"#CFE8FF",18,3,5,6);R(x,"#8AB0D8",20,3,1,6);R(x,"#8AB0D8",18,6,5,1);R(x,"#E83A4A",20,10,1,3);R(x,"#222",20,13,1,9);R(x,SKC,19,21,2,2);R(x,"#fff",1,3,2,3);R(x,"#FFC94A",1,6,2,1)}
   if(o.hat==="crown"){R(x,"#FFC94A",7,2,10,2);R(x,"#FFC94A",7,0,2,2);R(x,"#FFC94A",11,0,2,2);R(x,"#FFC94A",15,0,2,2);R(x,"#D8343C",11,2,2,1)}
   if(o.halo){R(x,"#FFE27A",7,0,10,1);R(x,"#FFF6C0",8,0,8,1)}
   if(o.prop==="rope"){R(x,"#fff",2,23,2,3);R(x,"#D8343C",2,23,2,1);R(x,"#fff",20,23,2,3);R(x,"#D8343C",20,23,2,1)}
@@ -1424,6 +1439,7 @@ function fitBody(x,o,SKC){
   else if(f==="lord"){R(x,"#16161F",4,16,16,11);R(x,"#16161F",3,17,2,7);R(x,"#16161F",19,17,2,7);R(x,"#A0202C",9,16,6,6);R(x,"#fff",10,16,4,2);R(x,"#FFC94A",11,17,2,10);R(x,"#FFC94A",4,16,3,1);R(x,"#FFC94A",17,16,3,1);R(x,"#FFC94A",5,22,14,1);R(x,"#C9A030",8,19,1,1);R(x,"#C9A030",15,19,1,1);R(x,"#C0192A",3,18,1,8);R(x,"#C0192A",20,18,1,8);R(x,SKC,4,24,2,2);R(x,SKC,18,24,2,2);R(x,"#0E0E14",8,27,3,1);R(x,"#0E0E14",13,27,3,1)}
   else if(f==="blazer"){R(x,"#2A3F7A",4,17,3,7);R(x,"#2A3F7A",17,17,3,7);R(x,"#2A3F7A",7,16,3,8);R(x,"#2A3F7A",14,16,3,8);R(x,"#1D2D5C",9,16,1,8);R(x,"#1D2D5C",14,16,1,8);R(x,"#fff",10,16,4,8);R(x,"#FFC94A",8,21,1,1);R(x,"#FFC94A",15,21,1,1);R(x,"#FFC94A",7,18,2,2);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2)}
   else if(f==="kuk"){R(x,"#C8282F",4,17,3,7);R(x,"#C8282F",17,17,3,7);R(x,"#C8282F",7,16,10,8);R(x,"#fff",7,16,1,8);R(x,"#fff",16,16,1,8);R(x,"#fff",4,18,1,5);R(x,"#fff",19,18,1,5);R(x,"#F4F6FF",10,16,4,2);R(x,"#fff",11,17,2,7);R(x,"#FFC94A",14,19,2,2);R(x,"#2A4FB8",15,20,1,1);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2);R(x,"#1C1C22",8,24,3,3);R(x,"#1C1C22",13,24,3,3);R(x,"#fff",8,25,1,2);R(x,"#fff",15,25,1,2)}
+  else if(f==="fatrobe"){R(x,o.outfit,2,16,20,10);R(x,o.outfit,1,17,3,7);R(x,o.outfit,20,17,3,7);R(x,"#6A3F8F",6,18,12,7);R(x,"#3A1E55",6,25,12,1);R(x,"#FFC94A",11,19,2,1);R(x,"#FFC94A",11,22,2,1);R(x,SKC,1,23,3,2);R(x,SKC,20,23,3,2);R(x,o.pants,6,25,5,3);R(x,o.pants,13,25,5,3);R(x,"#7BC043",3,18,1,1);R(x,"#7BC043",19,22,1,1)}
   else if(f==="hanbok"){R(x,o.outfit,3,17,3,8);R(x,o.outfit,18,17,3,8);R(x,o.outfit,6,23,12,4);R(x,"#1C1C22",8,21,8,1);R(x,"#fff",10,16,4,1);R(x,"#2A2640",6,24,1,3);R(x,"#2A2640",17,24,1,3);R(x,SKC,4,25,2,1);R(x,SKC,18,25,2,1)}
 }
 function fitFace(x,o,INK){
@@ -3394,8 +3410,8 @@ function rlHtml(){
 var DG={dmg:0};
 var DGT=[{n:"동메달",min:0.6,sh:3,tk:0,dia:0},{n:"은메달",min:1.2,sh:5,tk:1,dia:2},{n:"금메달",min:2.4,sh:10,tk:2,dia:5}];
 var DGS=[
-  {id:"a",key:"n",n:"보물 창고 던전",boss:"최우진",e:"🎯",refK:1,rw:1,need:0,desc:"45초 동안 최우진을 최대한 많이 때려요."},
-  {id:"b",key:"m",n:"똥냄새 쓰레기장 던전",boss:"박찬영 (똥냄새 쓰레기장 대마왕)",e:"💩",refK:1.8,rw:1.6,need:30,desc:"45초 동안 쓰레기장의 대마왕 박찬영을 쓰러뜨려요. 더 단단한 대신 보상이 1.6배예요."}
+  {id:"a",key:"n",n:"보물 창고 던전",boss:"최우진",e:"@woojin",ico:"🏸",refK:1,rw:1,need:0,desc:"45초 동안 최우진을 최대한 많이 때려요."},
+  {id:"b",key:"m",n:"똥냄새 쓰레기장 던전",boss:"박찬영 (똥냄새 쓰레기장 대마왕)",e:"@chan",ico:"💩",refK:1.8,rw:1.6,need:30,desc:"45초 동안 쓰레기장의 대마왕 박찬영을 쓰러뜨려요. 더 단단한 대신 보상이 1.6배예요."}
 ];
 function dgDef(id){return DGS.filter(function(d){return d.id===id})[0]||DGS[0]}
 function dgRoll(){var k=dayKey(new Date());if(S.dg.d!==k)S.dg={d:k,n:0,m:0};if(!S.dg.m)S.dg.m=S.dg.m||0}
@@ -3411,6 +3427,11 @@ function dgStart(id){
   F={boss:true,dungeon:true,name:def.boss,wave:[def.e],n:26,hp:1,max:1,t:45,tmax:45,rewound:false,guarded:false};
   paintField();bannerFx("던전 시작!");jingle([392,523,659]);save();renderTab();
 }
+function dgAtkFx(){
+  if(E.enemy){E.enemy.classList.remove("atk");void E.enemy.offsetWidth;E.enemy.classList.add("atk")}
+  if(DG.k==="a")fxSpr("🏸",12,2.4,"fly",80,38,0.7,{"--dx":"-210px","--dy":"26px"});
+  else{fxSpr("💨",12,2.6,"fly",80,40,0.8,{"--dx":"-210px","--dy":"10px"});fxSpr("🪰",10,2,"fly",84,30,0.9,{"--dx":"-170px","--dy":"40px"})}
+}
 function dgEnd(){
   var def=dgDef(DG.k),r=DG.dmg/dgRef(def.id),res=null;
   DGT.forEach(function(x){if(r>=x.min)res=dgRew(x,def)});
@@ -3425,7 +3446,7 @@ function dgHtml(){
   var h="";
   DGS.forEach(function(def,i){
     var open=S.best>=def.need,left=2-(S.dg[def.key]||0),ref=dgRef(def.id);
-    h+='<section class="panel'+(i?"":"")+'"><h2 class="h2">'+def.e+" "+def.n+'</h2><p class="sub">'+def.desc+' 하루 2번 들어갈 수 있고 피해량에 따라 메달과 보상을 받아요.'+(open?"":" (스테이지 "+def.need+"에 도달하면 열려요)")+'</p><div class="stats"><div class="st"><span>오늘 남은 입장</span><b>'+(open?left+"회":"잠김")+'</b></div><div class="st"><span>누적 도전(전체)</span><b>'+S.dgc+'회</b></div></div><button class="btn gold wide" style="margin-top:16px" data-a="dggo" data-v="'+def.id+'"'+(open&&left>0&&!(F&&F.boss)?"":" disabled")+'>'+(!open?"잠김":left>0?"입장하기":"오늘 입장 끝")+'</button>'+
+    h+='<section class="panel'+(i?"":"")+'"><h2 class="h2">'+def.ico+" "+def.n+'</h2><p class="sub">'+def.desc+' 하루 2번 들어갈 수 있고 피해량에 따라 메달과 보상을 받아요.'+(open?"":" (스테이지 "+def.need+"에 도달하면 열려요)")+'</p><div class="stats"><div class="st"><span>오늘 남은 입장</span><b>'+(open?left+"회":"잠김")+'</b></div><div class="st"><span>누적 도전(전체)</span><b>'+S.dgc+'회</b></div></div><button class="btn gold wide" style="margin-top:16px" data-a="dggo" data-v="'+def.id+'"'+(open&&left>0&&!(F&&F.boss)?"":" disabled")+'>'+(!open?"잠김":left>0?"입장하기":"오늘 입장 끝")+'</button>'+
       '<div class="tbl" style="margin-top:14px"><table><tr><th>메달</th><th>필요 피해</th><th>보상</th></tr>'+DGT.map(function(x0){var x=dgRew(x0,def);return '<tr><td>'+x.n+'</td><td class="num">'+fmt(ref*x.min)+'</td><td>'+(x.tk?"뽑기권 "+x.tk+"장 · ":"")+(x.dia?"💎"+x.dia+" · ":"")+'조각 '+x.sh+'개</td></tr>'}).join("")+'</table></div></section>';
   });
   return h+'<section class="panel"><p class="sub">필요 피해는 최고 스테이지에 맞춰 달라져요. 스킬과 버프를 켜고 들어가면 유리해요. 던전 도전 횟수는 두 던전을 합쳐서 세요.</p></section>';
@@ -3474,7 +3495,7 @@ function step(dt){
       }
     }
     if(F&&F.boss){
-      if(F.dungeon){F.t-=dt;if(F.t<=0)dgEnd()}
+      if(F.dungeon){F.t-=dt;T.dgA=(T.dgA||0)-dt;if(T.dgA<=0){T.dgA=1.5;dgAtkFx()}if(F.t<=0)dgEnd()}
       else{
         if(F.inv>0)F.inv-=dt;
         if(F.regen)F.hp=Math.min(F.max,F.hp+F.max*F.regen*dt);
