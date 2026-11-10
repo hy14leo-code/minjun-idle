@@ -954,7 +954,7 @@ var CM=[
     look:{hair:"#241C1A",style:"neat",outfit:"#8FB8A8",pants:"#3A3F4A",fit:"cardi",hat:"glasses",gtype:"rimless",gcol:"#9FB0CC",smile:1,prop:"none"},
     d:function(m){return "보스 시간 +"+f1(3*m)+"초 · 12초마다 보스 시간 +"+f1(3*m)+"초 회복"}},
   {id:"junbeom",n:"허준범",role:"탱커",t:"A",fx:{time:6,guard:8,atk:8},line:"앞에서 버티는 든든한 방패예요.",
-    look:{hair:"#1A1A22",style:"bowl",outfit:"#1C1C22",pants:"#262E64",fit:"short2",hat:"glasses",gcol:"#9AA6B8",prop:"none"},
+    look:{hair:"#1A1A22",style:"swept",outfit:"#1C2A5C",pants:"#12162E",fit:"kuk",hat:"none",sunglass:1,noblush:1,smile:1,prop:"none"},
     d:function(m){return "보스 시간 +"+f1(6*m)+"초 · 보스마다 시간이 끝나면 한 번 +"+f1(8*m)+"초 · 공격력 +"+f1(8*m)+"%"}},
   {id:"dohyeon",n:"김도현",role:"따까리",t:"C",fx:{gold:20,tip:4},line:"심부름으로 골드를 챙겨 와요.",
     look:{hair:"#1A1A22",style:"short",outfit:"#1C1C22",pants:"#1C1C22",fit:"polo",hat:"none",prop:"none"},
@@ -988,7 +988,7 @@ var CM=[
     d:function(m){return "별빛 축복: 공격력 +"+f1(35*m)+"% · 치명타 +"+f1(15*m)+"% · 스킬 효과 +"+f1(20*m)+"% · 쿨타임 −"+f1(15*m)+"% · 골드 +"+f1(30*m)+"% · 초당 공격력 ×"+f1(2.5*m)+" · 최대 체력 +"+f1(40*m)+"% · 방어력 +"+f1(40*m)+"% · 초당 회복 +"+f1(0.8*m)+"% · 보스 시간 +"+f1(6*m)+"초"}}
 ];
 CM.push({id:"hummer",n:"허재훈 (허머)",role:"머리카락 격투가",t:"O",fx:{atk:25,dps:2.0,crit:12,spd:15,hp:20,def:15,gold:10},line:"동글동글한 몸에서 뻗어 나오는 머리카락이 몬스터를 휘감아요. 안경은 절대 안 벗어요.",
-  look:{hair:"#5A3A28",style:"bowl",outfit:"#E8A020",pants:"#3A2E20",fit:"roundtee",hat:"glasses",gtype:"rimless",gcol:"#1A1530",fat:1,hairwhip:1,smile:1,prop:"none"},
+  look:{hair:"#2B1E18",style:"spiky",outfit:"#E8A020",pants:"#3A2E20",fit:"roundtee",hat:"glasses",gcol:"#1A1530",fat:1,hairwhip:1,noblush:1,stubble:1,smile:1,prop:"none"},
   d:function(m){return "머리카락 공격: 초당 공격력 ×"+f1(2.0*m)+" 추가 피해 · 공격력 +"+f1(25*m)+"% · 공격 속도 +"+f1(15*m)+"% · 치명타 +"+f1(12*m)+"% · 체력 +"+f1(20*m)+"% · 방어력 +"+f1(15*m)+"%"}});
 CM.push({id:"juyul",n:"김주율",role:"민폐",t:"D",fx:{gold:12,def:-5},line:"뽑으면 뽑기권이 한 장 사라져요. 그래도 골드는 조금 챙겨 줘요… 아마도.",
   look:{hair:"#3A2A20",style:"swept",outfit:"#8A8A96",pants:"#4A4F5E",fit:"sweater",hat:"none",sweat:1,sad:1,prop:"none"},
@@ -1026,7 +1026,7 @@ var JOBD={
       d:function(m){return "기경: 공격력 +"+f1(45*m)+"% · 공격 속도 +"+f1(25*m)+"% · 치명타 +"+f1(15*m)+"% · 스킬 효과 +"+f1(25*m)+"% · 쿨타임 −"+f1(12*m)+"% · 골드 +"+f1(20*m)+"% · 초당 공격력 ×"+f1(1.5*m)+" · 보스 시간 +"+f1(6*m)+"초"}}
   },
   junbeom:{
-    only:{n:"허준범 (줄넘기 국대)",role:"줄넘기 국가대표",t:"O",fx:{spd:30,atk:22,dps:2.2,def:50,hp:25,time:10,guard:14,crit:8},look:{fit:"kuk",outfit:"#C8282F",pants:"#1C1C22",hat:"band",prop:"rope"},line:"쌩쌩이 만 번도 안 틀려요. 국가대표의 위엄!",
+    only:{n:"허준범 (줄넘기 국대)",role:"줄넘기 국가대표",t:"O",fx:{spd:30,atk:22,dps:2.2,def:50,hp:25,time:10,guard:14,crit:8},look:{fit:"kuk",outfit:"#C8282F",pants:"#1C1C22",hat:"none",style:"spiky",sunglass:1,noblush:1,medal:1,omega:1,sparkle:1,prop:"rope"},line:"쌩쌩이 만 번도 안 틀려요. 국가대표의 위엄!",
       d:function(m){return "줄넘기 국대: 공격 속도 +"+f1(30*m)+"% · 공격력 +"+f1(22*m)+"% · 초당 공격력 ×"+f1(2.2*m)+" · 방어력 +"+f1(50*m)+"% · 최대 체력 +"+f1(25*m)+"% · 보스 시간 +"+f1(10*m)+"초 · 보스 시간이 끝나면 한 번 +"+f1(14*m)+"초"}}
   },
   jihwan:{
@@ -1428,7 +1428,7 @@ function drawChibi(x,o){
   R(x,"#F4F6FF",7,27,4,2);R(x,"#F4F6FF",13,27,4,2);
   R(x,o.outfit,5,17,2,6);R(x,o.outfit,17,17,2,6);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2);
   if(o.fit)fitBody(x,o,SKC);
-  if(o.hairwhip){var hw=HR;R(x,hw,1,8,3,3);R(x,hw,0,11,2,6);R(x,hw,1,17,2,5);R(x,hw,3,21,2,2);R(x,hw,20,8,3,3);R(x,hw,22,11,2,5);R(x,hw,21,16,2,6);R(x,hw,19,21,2,2);R(x,"#6A5240",1,9,1,2);R(x,"#6A5240",22,12,1,3);R(x,"#6A5240",1,18,1,3);R(x,"#6A5240",22,17,1,3)}
+  if(o.hairwhip){[[3,6,2,2],[1,4,3,2],[0,2,2,2],[1,10,3,2],[0,12,2,3],[1,16,3,2],[0,18,2,3],[2,22,2,2]].forEach(function(q){R(x,HR,q[0],q[1],q[2],q[3]);R(x,HR,24-q[0]-q[2],q[1],q[2],q[3])});[[0,2,1,1],[0,12,1,1],[0,18,1,1]].forEach(function(q){R(x,"#8A6A52",q[0],q[1],1,1);R(x,"#8A6A52",23,q[1],1,1)})}
   if(o.mech)drawMech(x);
   if(o.tie){R(x,"#fff",11,16,2,2);R(x,o.tie,11,17,2,6)}
   if(o.hat==="cross"){R(x,"#52E3A4",11,17,2,5);R(x,"#52E3A4",9,19,6,1)}
@@ -1451,7 +1451,8 @@ function drawChibi(x,o){
   else{R(x,HR,5,3,14,3);R(x,HR,4,5,2,6);R(x,HR,18,5,2,6);R(x,HR,6,6,12,2);R(x,SKC,11,7,2,1)}
   if(o.mech)mechPatch(x);
   R(x,INK,8,10,2,3);R(x,INK,14,10,2,3);R(x,"#fff",8,10,1,1);R(x,"#fff",14,10,1,1);
-  R(x,"#FF8FA3",7,13,2,1);R(x,"#FF8FA3",15,13,2,1);
+  if(!o.noblush){R(x,"#FF8FA3",7,13,2,1);R(x,"#FF8FA3",15,13,2,1)}
+  if(o.stubble){R(x,"#5A4636",7,15,10,1);R(x,"#5A4636",6,14,2,1);R(x,"#5A4636",16,14,2,1)}
   if(o.grin){R(x,INK,9,14,6,1);R(x,"#fff",10,15,1,1);R(x,"#fff",13,15,1,1);R(x,"#E83A4A",8,9,3,1);R(x,"#E83A4A",13,9,3,1)}
   else R(x,INK,11,14,2,1);
   if(o.hat==="helm"){R(x,"#9AA6C8",5,2,14,4);R(x,"#7B86A8",5,5,14,1);R(x,"#E83A4A",11,0,2,3)}
@@ -1465,6 +1466,9 @@ function drawChibi(x,o){
   if(o.horns){R(x,"#7A3FB0",3,2,2,5);R(x,"#7A3FB0",19,2,2,5);R(x,"#B07CFF",3,1,1,1);R(x,"#B07CFF",20,1,1,1);R(x,"#B07CFF",3,2,1,1);R(x,"#B07CFF",20,2,1,1)}
   if(o.stink){R(x,"#7BC043",0,9,1,3);R(x,"#5A8A2A",1,12,1,3);R(x,"#7BC043",0,15,1,2);R(x,"#7BC043",23,8,1,3);R(x,"#5A8A2A",22,11,1,3);R(x,"#7BC043",23,14,1,2);R(x,"#222",2,6,1,1);R(x,"#222",21,5,1,1);R(x,"#222",2,20,1,1)}
   if(o.prop==="racket"){R(x,"#E83A4A",18,2,5,1);R(x,"#E83A4A",17,3,1,6);R(x,"#E83A4A",23,3,1,6);R(x,"#E83A4A",18,9,5,1);R(x,"#CFE8FF",18,3,5,6);R(x,"#8AB0D8",20,3,1,6);R(x,"#8AB0D8",18,6,5,1);R(x,"#E83A4A",20,10,1,3);R(x,"#222",20,13,1,9);R(x,SKC,19,21,2,2);R(x,"#fff",1,3,2,3);R(x,"#FFC94A",1,6,2,1)}
+  if(o.sunglass){R(x,"#10131C",6,9,5,4);R(x,"#10131C",13,9,5,4);R(x,"#10131C",11,10,2,1);R(x,"#10131C",5,9,1,1);R(x,"#10131C",18,9,1,1);R(x,"#6AB8FF",7,9,2,1);R(x,"#6AB8FF",14,9,2,1);R(x,"#2A3A5A",7,10,3,1);R(x,"#2A3A5A",14,10,3,1)}
+  if(o.medal){R(x,"#fff",10,16,1,3);R(x,"#2A4FB8",11,16,1,3);R(x,"#D8343C",12,16,1,3);R(x,"#FFC94A",10,19,3,3);R(x,"#FFF1A8",10,19,1,1);R(x,"#B8860B",12,21,1,1)}
+  if(o.omega){R(x,"#FF9A3D",1,1,3,1);R(x,"#FF9A3D",0,2,1,2);R(x,"#FF9A3D",4,2,1,2);R(x,"#FF9A3D",1,4,1,1);R(x,"#FF9A3D",3,4,1,1);R(x,"#FF9A3D",0,5,2,1);R(x,"#FF9A3D",3,5,2,1)}
   if(o.visor){R(x,"#0A1428",5,9,14,5);R(x,"#35E8FF",5,9,14,1);R(x,"#35E8FF",5,13,14,1);R(x,"#1E6A8A",6,10,12,3);R(x,"#35E8FF",7,11,3,1);R(x,"#35E8FF",14,11,3,1);R(x,"#BFF8FF",7,10,2,1)}
   if(o.sweat){R(x,"#7CE8FF",19,7,1,2);R(x,"#BFF4FF",19,7,1,1);R(x,"#7CE8FF",20,10,1,1)}
   if(o.sad){R(x,INK,9,15,1,1);R(x,INK,14,15,1,1)}
@@ -1512,7 +1516,7 @@ function fitBody(x,o,SKC){
   else if(f==="cardi"){R(x,(o.cc||"#8FB8A8"),4,17,3,7);R(x,(o.cc||"#8FB8A8"),17,17,3,7);R(x,(o.cc||"#8FB8A8"),7,16,3,8);R(x,(o.cc||"#8FB8A8"),14,16,3,8);R(x,(o.cd||"#6E9A8A"),9,16,1,8);R(x,(o.cd||"#6E9A8A"),14,16,1,8);R(x,"#fff",10,16,4,8);R(x,"#B7D3C8",10,16,1,1);R(x,"#B7D3C8",13,16,1,1);R(x,"#FFE9A8",8,18,1,1);R(x,"#FFE9A8",8,21,1,1);R(x,"#FFE9A8",15,18,1,1);R(x,"#FFE9A8",15,21,1,1);R(x,(o.cd||"#6E9A8A"),4,22,3,1);R(x,(o.cd||"#6E9A8A"),17,22,3,1);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2)}
   else if(f==="lord"){R(x,"#16161F",4,16,16,11);R(x,"#16161F",3,17,2,7);R(x,"#16161F",19,17,2,7);R(x,"#A0202C",9,16,6,6);R(x,"#fff",10,16,4,2);R(x,"#FFC94A",11,17,2,10);R(x,"#FFC94A",4,16,3,1);R(x,"#FFC94A",17,16,3,1);R(x,"#FFC94A",5,22,14,1);R(x,"#C9A030",8,19,1,1);R(x,"#C9A030",15,19,1,1);R(x,"#C0192A",3,18,1,8);R(x,"#C0192A",20,18,1,8);R(x,SKC,4,24,2,2);R(x,SKC,18,24,2,2);R(x,"#0E0E14",8,27,3,1);R(x,"#0E0E14",13,27,3,1)}
   else if(f==="blazer"){R(x,"#2A3F7A",4,17,3,7);R(x,"#2A3F7A",17,17,3,7);R(x,"#2A3F7A",7,16,3,8);R(x,"#2A3F7A",14,16,3,8);R(x,"#1D2D5C",9,16,1,8);R(x,"#1D2D5C",14,16,1,8);R(x,"#fff",10,16,4,8);R(x,"#FFC94A",8,21,1,1);R(x,"#FFC94A",15,21,1,1);R(x,"#FFC94A",7,18,2,2);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2)}
-  else if(f==="kuk"){R(x,"#C8282F",4,17,3,7);R(x,"#C8282F",17,17,3,7);R(x,"#C8282F",7,16,10,8);R(x,"#fff",7,16,1,8);R(x,"#fff",16,16,1,8);R(x,"#fff",4,18,1,5);R(x,"#fff",19,18,1,5);R(x,"#F4F6FF",10,16,4,2);R(x,"#fff",11,17,2,7);R(x,"#FFC94A",14,19,2,2);R(x,"#2A4FB8",15,20,1,1);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2);R(x,"#1C1C22",8,24,3,3);R(x,"#1C1C22",13,24,3,3);R(x,"#fff",8,25,1,2);R(x,"#fff",15,25,1,2)}
+  else if(f==="kuk"){R(x,o.outfit,4,17,3,7);R(x,o.outfit,17,17,3,7);R(x,o.outfit,7,16,10,8);R(x,"#fff",7,16,1,8);R(x,"#fff",16,16,1,8);R(x,"#fff",4,18,1,5);R(x,"#fff",19,18,1,5);R(x,"#F4F6FF",10,16,4,2);R(x,"#fff",11,17,2,7);R(x,"#FFC94A",14,19,2,2);R(x,"#2A4FB8",15,20,1,1);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2);R(x,"#1C1C22",8,24,3,3);R(x,"#1C1C22",13,24,3,3);R(x,"#fff",8,25,1,2);R(x,"#fff",15,25,1,2)}
   else if(f==="roundtee"){R(x,o.outfit,2,16,20,10);R(x,o.outfit,1,17,3,7);R(x,o.outfit,20,17,3,7);R(x,mix(o.outfit,"#ffffff",.25),7,18,10,6);R(x,mix(o.outfit,"#000000",.3),2,25,20,1);R(x,mix(o.outfit,"#000000",.25),9,16,1,5);R(x,mix(o.outfit,"#000000",.25),14,16,1,5);R(x,SKC,1,23,3,2);R(x,SKC,20,23,3,2);R(x,o.pants,6,25,5,3);R(x,o.pants,13,25,5,3)}
   else if(f==="admin"){R(x,"#0F1220",3,16,18,11);R(x,"#0F1220",2,17,2,8);R(x,"#0F1220",20,17,2,8);R(x,"#1E2A4A",9,16,6,10);R(x,"#35E8FF",3,16,1,11);R(x,"#35E8FF",20,16,1,11);R(x,"#35E8FF",10,19,1,1);R(x,"#35E8FF",11,18,1,1);R(x,"#35E8FF",11,20,1,1);R(x,"#35E8FF",13,19,1,1);R(x,"#35E8FF",12,18,1,1);R(x,"#35E8FF",12,20,1,1);R(x,"#35E8FF",3,26,18,1);R(x,"#BFF8FF",2,16,3,1);R(x,"#BFF8FF",19,16,3,1);R(x,"#35E8FF",2,22,2,1);R(x,"#35E8FF",20,22,2,1);R(x,SKC,2,25,2,1);R(x,SKC,20,25,2,1);R(x,"#07101E",7,27,3,1);R(x,"#07101E",14,27,3,1)}
   else if(f==="fatrobe"){R(x,o.outfit,2,16,20,10);R(x,o.outfit,1,17,3,7);R(x,o.outfit,20,17,3,7);R(x,"#6A3F8F",6,18,12,7);R(x,"#3A1E55",6,25,12,1);R(x,"#FFC94A",11,19,2,1);R(x,"#FFC94A",11,22,2,1);R(x,SKC,1,23,3,2);R(x,SKC,20,23,3,2);R(x,o.pants,6,25,5,3);R(x,o.pants,13,25,5,3);R(x,"#7BC043",3,18,1,1);R(x,"#7BC043",19,22,1,1)}
