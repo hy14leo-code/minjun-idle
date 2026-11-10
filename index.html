@@ -1852,7 +1852,7 @@ function sceneUrl(i){
 /* ---------- 상태 ---------- */
 var KEY="minjun-idle-v1";
 function fresh(){return {v:8,gold:0,tickets:0,stage:1,best:1,majors:0,up:[0,0,0,0,0,0,0],inv:{},equip:{weapon:null,armor:null,acc:null},shards:0,pity:0,pulls:0,title:null,tl:false,skin:"basic",autoBoss:true,autoSkill:true,bossReady:false,welcome:false,lastGift:0,last:Date.now(),gps:0,ending:null,kt:0,bk:0,ach:{},sfx:true,
-  tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,bmax:0,dgx:0,gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
+  tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,bmax:0,dgx:0,rcd:[],gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
 function norm(o){
   var f=fresh(),old=!o.v||o.v<5,hadRb=o.rbest!==undefined;
   for(var k in f){if(o[k]===undefined)o[k]=f[k]}
@@ -3599,18 +3599,27 @@ async function redeem(){
   var el=$("cp-in"),msg=$("cp-msg");if(!el||!msg)return;
   var code=String(el.value||"").trim().toUpperCase();
   if(!/^[A-Z0-9_-]{3,24}$/.test(code)){msg.textContent="코드는 영문과 숫자 3~24자예요.";return}
-  if(S.rc.indexOf(code)>=0){msg.textContent="이미 사용한 코드예요.";return}
+  if(!S.rcd)S.rcd=[];
+  if(S.rc.indexOf(code)>=0&&S.rcd.indexOf(code)>=0){msg.textContent="이미 사용한 코드예요.";return}
   if(!DBH){msg.textContent="인터넷에 연결되어 있어야 쓸 수 있어요.";return}
   try{
     var d=await rpc("mj_redeem",{p_id:UID,p_secret:ACT.secret,p_code:code});
     if(!d||!d.ok){
       var em={none:"없는 코드예요.",expired:"기간이 지난 코드예요.",full:"사용 가능한 횟수가 모두 끝났어요.",used:"이미 사용한 코드예요.",format:"코드는 영문과 숫자 3~24자예요."};
-      if(d&&d.err==="used"&&S.rc.indexOf(code)<0){S.rc.push(code);save()}
+      if(d&&d.err==="used"){
+        var rdg=clamp(parseInt(d.dungeon,10)||0,0,50);
+        if(S.rc.indexOf(code)<0)S.rc.push(code);
+        if(S.rcd.indexOf(code)<0){
+          S.rcd.push(code);
+          if(rdg>0){S.dgx=(S.dgx||0)+rdg;save();cloudSave(true);msg.textContent="이전에 받지 못했던 던전 입장 "+rdg+"회를 지금 지급했어요!";jingle([784,988,1318]);uiTop();return}
+        }
+        save();
+      }
       msg.textContent=em[d&&d.err]||"사용할 수 없는 코드예요.";return;
     }
-    if(S.rc.indexOf(code)>=0)return;
+    if(S.rc.indexOf(code)>=0&&S.rcd.indexOf(code)>=0)return;
     var tk=clamp(parseInt(d.tickets,10)||0,0,100),sh=clamp(parseInt(d.shards,10)||0,0,500),dg=clamp(parseInt(d.dungeon,10)||0,0,50);
-    S.rc.push(code);S.tickets+=tk;S.shards+=sh;S.dgx=(S.dgx||0)+dg;save();cloudSave(true);
+    S.rc.push(code);S.rcd.push(code);S.tickets+=tk;S.shards+=sh;S.dgx=(S.dgx||0)+dg;save();cloudSave(true);
     msg.textContent="받았어요! "+(tk?"뽑기권 "+tk+"장 ":"")+(sh?"조각 "+sh+"개 ":"")+(dg?"던전 입장 "+dg+"회":"");
     jingle([784,988,1318]);uiTop();
   }catch(e){msg.textContent="확인하지 못했어요. 잠시 후 다시 해 주세요."}
