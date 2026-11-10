@@ -2059,7 +2059,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v45";
+var BUILD="v46";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -3625,7 +3625,7 @@ async function redeem(){
         if(S.rc.indexOf(code)<0)S.rc.push(code);
         if(S.rcd.indexOf(code)<0){
           S.rcd.push(code);
-          if(rdg>0){S.dgx=(S.dgx||0)+rdg;save();cloudSave(true);msg.textContent="이전에 받지 못했던 던전 입장 "+rdg+"회를 지금 지급했어요!";jingle([784,988,1318]);uiTop();return}
+          if(rdg>0){S.dgx=(S.dgx||0)+rdg;save();cloudSave(true);msg.textContent="이전에 받지 못했던 던전 입장 "+rdg+"회를 지금 지급했어요!";jingle([784,988,1318]);uiTop();renderTab();return}
         }
         save();
       }
@@ -3635,7 +3635,7 @@ async function redeem(){
     var tk=clamp(parseInt(d.tickets,10)||0,0,100),sh=clamp(parseInt(d.shards,10)||0,0,500),dg=clamp(parseInt(d.dungeon,10)||0,0,50);
     S.rc.push(code);S.rcd.push(code);S.tickets+=tk;S.shards+=sh;S.dgx=(S.dgx||0)+dg;save();cloudSave(true);
     msg.textContent="받았어요! "+(tk?"뽑기권 "+tk+"장 ":"")+(sh?"조각 "+sh+"개 ":"")+(dg?"던전 입장 "+dg+"회":"");
-    jingle([784,988,1318]);uiTop();
+    jingle([784,988,1318]);uiTop();renderTab();
   }catch(e){msg.textContent="확인하지 못했어요. 잠시 후 다시 해 주세요."}
 }
 function accNote(){
