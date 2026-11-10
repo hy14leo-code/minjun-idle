@@ -3393,31 +3393,42 @@ function rlHtml(){
 /* ---------- 던전 ---------- */
 var DG={dmg:0};
 var DGT=[{n:"동메달",min:0.6,sh:3,tk:0,dia:0},{n:"은메달",min:1.2,sh:5,tk:1,dia:2},{n:"금메달",min:2.4,sh:10,tk:2,dia:5}];
-function dgRoll(){var k=dayKey(new Date());if(S.dg.d!==k)S.dg={d:k,n:0}}
-function dgRef(){return hpOf(Math.max(5,S.best))*20}
-function dgStart(){
+var DGS=[
+  {id:"a",key:"n",n:"보물 창고 던전",boss:"최우진",e:"🎯",refK:1,rw:1,need:0,desc:"45초 동안 최우진을 최대한 많이 때려요."},
+  {id:"b",key:"m",n:"똥냄새 쓰레기장 던전",boss:"박찬영 (똥냄새 쓰레기장 대마왕)",e:"💩",refK:1.8,rw:1.6,need:30,desc:"45초 동안 쓰레기장의 대마왕 박찬영을 쓰러뜨려요. 더 단단한 대신 보상이 1.6배예요."}
+];
+function dgDef(id){return DGS.filter(function(d){return d.id===id})[0]||DGS[0]}
+function dgRoll(){var k=dayKey(new Date());if(S.dg.d!==k)S.dg={d:k,n:0,m:0};if(!S.dg.m)S.dg.m=S.dg.m||0}
+function dgRef(k){return hpOf(Math.max(5,S.best))*20*(dgDef(k).refK)}
+function dgRew(x,def){return def.rw===1?x:{n:x.n,min:x.min,sh:Math.ceil(x.sh*def.rw),tk:x.tk?Math.ceil(x.tk*def.rw):0,dia:Math.round((x.dia||0)*def.rw)}}
+function dgStart(id){
+  var def=dgDef(id);
   dgRoll();
-  if(S.dg.n>=2){toast("오늘 입장 횟수를 모두 썼어요");return}
+  if(S.best<def.need){toast("스테이지 "+def.need+"에 도달하면 열려요");return}
+  if((S.dg[def.key]||0)>=2){toast("오늘 이 던전 입장 횟수를 모두 썼어요");return}
   if(F&&F.boss){toast("보스전이 끝난 뒤에 입장할 수 있어요");return}
-  S.dg.n++;DG.dmg=0;
-  F={boss:true,dungeon:true,name:"보물 창고 허수아비",wave:["🎯"],n:26,hp:1,max:1,t:45,tmax:45,rewound:false,guarded:false};
+  S.dg[def.key]=(S.dg[def.key]||0)+1;DG.dmg=0;DG.k=def.id;
+  F={boss:true,dungeon:true,name:def.boss,wave:[def.e],n:26,hp:1,max:1,t:45,tmax:45,rewound:false,guarded:false};
   paintField();bannerFx("던전 시작!");jingle([392,523,659]);save();renderTab();
 }
 function dgEnd(){
-  var r=DG.dmg/dgRef(),res=null;
-  DGT.forEach(function(x){if(r>=x.min)res=x});
+  var def=dgDef(DG.k),r=DG.dmg/dgRef(def.id),res=null;
+  DGT.forEach(function(x){if(r>=x.min)res=dgRew(x,def)});
   var dmg=DG.dmg;F=null;T.spawnT=0.6;S.dgc++;
   if(res){S.tickets+=res.tk;S.shards+=res.sh;S.dia+=res.dia||0}
   jingle(res?[523,659,784,1046]:[300,250]);
-  showOv('<div class="panel gold"><p class="banner">던전 종료</p><p style="text-align:center;margin:0 0 8px">총 피해 <b>'+fmt(dmg)+'</b></p><p style="text-align:center;margin:0 0 14px">'+(res?'<b style="color:var(--gold)">'+res.n+'</b><br>'+(res.tk?"뽑기권 "+res.tk+"장 · ":"")+(res.dia?"💎"+res.dia+" · ":"")+"조각 "+res.sh+"개":"메달을 받지 못했어요. 더 강해져서 다시 도전해요.")+'</p><button class="btn gold wide" data-a="ovx">확인</button></div>');
+  showOv('<div class="panel gold"><p class="banner">던전 종료 · '+def.boss.split(" ")[0]+'</p><p style="text-align:center;margin:0 0 8px">총 피해 <b>'+fmt(dmg)+'</b></p><p style="text-align:center;margin:0 0 14px">'+(res?'<b style="color:var(--gold)">'+res.n+'</b><br>'+(res.tk?"뽑기권 "+res.tk+"장 · ":"")+(res.dia?"💎"+res.dia+" · ":"")+"조각 "+res.sh+"개":"메달을 받지 못했어요. 더 강해져서 다시 도전해요.")+'</p><button class="btn gold wide" data-a="ovx">확인</button></div>');
   save();renderTab();uiTop();
 }
 function dgHtml(){
   dgRoll();
-  var left=2-S.dg.n,ref=dgRef();
-  var h='<section class="panel"><h2 class="h2">보물 창고 던전</h2><p class="sub">45초 동안 허수아비를 최대한 많이 때려요. 하루 2번 들어갈 수 있고 피해량에 따라 메달과 보상을 받아요.</p><div class="stats"><div class="st"><span>오늘 남은 입장</span><b>'+left+'회</b></div><div class="st"><span>누적 도전</span><b>'+S.dgc+'회</b></div></div><button class="btn gold wide" style="margin-top:16px" data-a="dggo"'+(left>0&&!(F&&F.boss)?"":" disabled")+'>'+(left>0?"입장하기":"오늘 입장 끝")+'</button></section>'+
-    '<section class="panel"><h2 class="h2">보상 기준</h2><div class="tbl"><table><tr><th>메달</th><th>필요 피해</th><th>보상</th></tr>'+DGT.map(function(x){return '<tr><td>'+x.n+'</td><td class="num">'+fmt(ref*x.min)+'</td><td>'+(x.tk?"뽑기권 "+x.tk+"장 · ":"")+(x.dia?"💎"+x.dia+" · ":"")+'조각 '+x.sh+'개</td></tr>'}).join("")+'</table></div><p class="sub" style="margin-top:8px">필요 피해는 최고 스테이지에 맞춰 달라져요. 스킬과 버프를 켜고 들어가면 유리해요.</p></section>';
-  return h;
+  var h="";
+  DGS.forEach(function(def,i){
+    var open=S.best>=def.need,left=2-(S.dg[def.key]||0),ref=dgRef(def.id);
+    h+='<section class="panel'+(i?"":"")+'"><h2 class="h2">'+def.e+" "+def.n+'</h2><p class="sub">'+def.desc+' 하루 2번 들어갈 수 있고 피해량에 따라 메달과 보상을 받아요.'+(open?"":" (스테이지 "+def.need+"에 도달하면 열려요)")+'</p><div class="stats"><div class="st"><span>오늘 남은 입장</span><b>'+(open?left+"회":"잠김")+'</b></div><div class="st"><span>누적 도전(전체)</span><b>'+S.dgc+'회</b></div></div><button class="btn gold wide" style="margin-top:16px" data-a="dggo" data-v="'+def.id+'"'+(open&&left>0&&!(F&&F.boss)?"":" disabled")+'>'+(!open?"잠김":left>0?"입장하기":"오늘 입장 끝")+'</button>'+
+      '<div class="tbl" style="margin-top:14px"><table><tr><th>메달</th><th>필요 피해</th><th>보상</th></tr>'+DGT.map(function(x0){var x=dgRew(x0,def);return '<tr><td>'+x.n+'</td><td class="num">'+fmt(ref*x.min)+'</td><td>'+(x.tk?"뽑기권 "+x.tk+"장 · ":"")+(x.dia?"💎"+x.dia+" · ":"")+'조각 '+x.sh+'개</td></tr>'}).join("")+'</table></div></section>';
+  });
+  return h+'<section class="panel"><p class="sub">필요 피해는 최고 스테이지에 맞춰 달라져요. 스킬과 버프를 켜고 들어가면 유리해요. 던전 도전 횟수는 두 던전을 합쳐서 세요.</p></section>';
 }
 function needTxt(sk){
   var t=[];
@@ -3958,7 +3969,7 @@ document.addEventListener("click",function(e){
   else if(a==="rshop")rsBuy(v);
   else if(a==="help")helpOv();
   else if(a==="spin")spinRoulette();
-  else if(a==="dggo")dgStart();
+  else if(a==="dggo")dgStart(v);
   else if(a==="nick")nickOv(true);
   else if(a==="nkset")nickSet();
   else if(a==="rbask")rebirthAsk();
