@@ -2211,7 +2211,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v69";
+var BUILD="v70";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -4627,7 +4627,7 @@ var DGS=[
 ];
 function dgDef(id){return DGS.filter(function(d){return d.id===id})[0]||DGS[0]}
 function dgRoll(){var k=dayKey(new Date());if(S.dg.d!==k)S.dg={d:k,n:0,m:0};if(!S.dg.m)S.dg.m=S.dg.m||0}
-function dgRef(k){var b5=Math.max(5,S.best);return hpOf(b5)/Math.sqrt(hpAdj(b5))*20*(dgDef(k).refK)}
+function dgRef(k){var b5=Math.max(5,S.rbest||1);return hpOf(b5)/Math.sqrt(hpAdj(b5))*20*(dgDef(k).refK)}
 function dgRew(x,def){return def.rw===1?x:{n:x.n,min:x.min,sh:Math.ceil(x.sh*def.rw),tk:x.tk?Math.ceil(x.tk*def.rw):0,dia:Math.round((x.dia||0)*def.rw)}}
 function dgStart(id){
   var def=dgDef(id);
@@ -4662,7 +4662,7 @@ function dgHtml(){
     h+='<section class="panel'+(i?"":"")+'"><h2 class="h2">'+def.ico+" "+def.n+'</h2><p class="sub">'+def.desc+' 하루 2번 들어갈 수 있고 피해량에 따라 메달과 보상을 받아요.'+(open?"":" (스테이지 "+def.need+"에 도달하면 열려요)")+'</p><div class="stats"><div class="st"><span>오늘 남은 입장</span><b>'+(open?left+"회"+(S.dgx>0?" + 쿠폰 "+S.dgx+"회":""):"잠김")+'</b></div><div class="st"><span>누적 도전(전체)</span><b>'+S.dgc+'회</b></div></div><button class="btn gold wide" style="margin-top:16px" data-a="dggo" data-v="'+def.id+'"'+(open&&(left>0||S.dgx>0)&&!(F&&F.boss)?"":" disabled")+'>'+(!open?"잠김":left>0?"입장하기":S.dgx>0?"쿠폰으로 입장":"오늘 입장 끝")+'</button>'+
       '<div class="tbl" style="margin-top:14px"><table><tr><th>메달</th><th>필요 피해</th><th>보상</th></tr>'+DGT.map(function(x0){var x=dgRew(x0,def);return '<tr><td>'+x.n+'</td><td class="num">'+fmt(ref*x.min)+'</td><td>'+(x.tk?"뽑기권 "+x.tk+"장 · ":"")+(x.dia?"💎"+x.dia+" · ":"")+'조각 '+x.sh+'개</td></tr>'}).join("")+'</table></div></section>';
   });
-  return h+'<section class="panel"><p class="sub">필요 피해는 최고 스테이지에 맞춰 달라져요. 스킬과 버프를 켜고 들어가면 유리해요. 던전 도전 횟수는 두 던전을 합쳐서 세요.</p></section>';
+  return h+'<section class="panel"><p class="sub">필요 피해는 이번 회차에서 도달한 최고 스테이지에 맞춰 달라져요. 회귀하면 다시 처음 수준으로 돌아가요. 스킬과 버프를 켜고 들어가면 유리해요. 던전 도전 횟수는 두 던전을 합쳐서 세요.</p></section>';
 }
 function needTxt(sk){
   var t=[];
