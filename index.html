@@ -2060,7 +2060,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v47";
+var BUILD="v48";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -3736,6 +3736,7 @@ var SYN=[
   {id:"t3",n:"상급 코스",tier:"A",fx:{atk:20,crit:10},d:"A등급 4종 장착: 공격력 +20%, 치명타 +10%"},
   {id:"t4",n:"최상급 코스",tier:"S",fx:{atk:40,nuke:30},d:"S등급 4종 장착: 공격력 +40%, 즉발 피해 +30%"},
   {id:"p1",n:"정석 파티",need:["c:hayeon","c:heesung","c:junbeom"],fx:{atk:20,time:5},d:"공격력 +20%, 보스 시간 +5초"},
+  {id:"p9",n:"미어캣 콤비",need:["c:jihwan","p:meerkat"],fx:{atk:25,crit:10,fr:40,spd:10},d:"공격력 +25%, 치명타 +10%, 친구 도움 +40%, 공격 속도 +10% (박지환 + 박지환의 미어캣)"},
   {id:"p2",n:"소환 군단",need:["c:jihwan","summon"],fx:{fr:60},d:"친구 도움 +60%"},
   {id:"p3",n:"스승의 가르침",need:["c:dongju","note"],fx:{spow:15},d:"스킬 효과 +15%"},
   {id:"p4",n:"광견 폭주",need:["c:byeonghwa","gut"],fx:{spd:15,crit:6},d:"공격 속도 +15%, 치명타 +6%"},
@@ -3759,7 +3760,7 @@ var SYN=[
   {id:"y17",n:"현자의 깨달음",need:["sage","think"],fx:{cdr:15,dur:20},d:"쿨타임 −15%, 지속 시간 +20%"}
 ];
 var SYc={atk:0,crit:0,spd:0,gold:0,fr:0,cdr:0,spow:0,nuke:0,dur:0,time:0,hp:0,def:0};
-function haveNeed(x){return x.indexOf("c:")===0?S.party.indexOf(x.slice(2))>=0:S.slots.indexOf(x)>=0}
+function haveNeed(x){return x.indexOf("c:")===0?S.party.indexOf(x.slice(2))>=0:x.indexOf("p:")===0?(S.pets||[]).indexOf(x.slice(2))>=0:S.slots.indexOf(x)>=0}
 function synOn(y){
   if(y.tier)return S.slots.every(function(id){return id&&SKM[id]&&SKM[id].t===y.tier});
   return y.need.every(haveNeed);
@@ -3777,7 +3778,7 @@ function synNote(b){
 function synCount(){return SYN.filter(synOn).length}
 function activeBuffs(){var n=0;SKL.forEach(function(s){if(s.buff&&eff[s.id]>0)n++});return n}
 function nukeDmg(sk,c,p){return c.atk*sk.nuke*p*(1+SYc.nuke/100)*(1+0.15*activeBuffs())}
-function synName(x){return x.indexOf("c:")===0?(CMM[x.slice(2)]?CMM[x.slice(2)].n+"(동료)":x):(SKM[x]?SKM[x].n:x)}
+function synName(x){return x.indexOf("c:")===0?(CMM[x.slice(2)]?CMM[x.slice(2)].n+"(동료)":x):x.indexOf("p:")===0?(PETM[x.slice(2)]?PETM[x.slice(2)].n+"(펫)":x):(SKM[x]?SKM[x].n:x)}
 function synHtml(){
   var h='<section class="panel"><div class="row" style="justify-content:space-between"><h2 class="h2" style="margin:0">시너지</h2><span class="sub num">발동 '+synCount()+' / '+SYN.length+'</span></div><p class="sub" style="margin:6px 0 10px">스킬과 동료 조합이 맞으면 보너스가 켜져요. 즉발 스킬은 지속 효과가 켜져 있을 때마다 피해가 15%씩 커져요(연계).</p>';
   var all=T.synAll,list=SYN.slice().sort(function(a,b){return synOn(b)-synOn(a)});
