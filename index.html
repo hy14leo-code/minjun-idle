@@ -1048,7 +1048,9 @@ var JOBD={
   },
   junbeom:{
     only:{n:"허준범 (줄넘기 국대)",role:"줄넘기 국가대표",t:"O",fx:{spd:30,atk:22,dps:2.2,def:50,hp:25,time:10,guard:14,crit:8},look:{fit:"kuk",outfit:"#C8282F",pants:"#1C1C22",hat:"none",style:"spiky",sunglass:1,noblush:1,medal:1,omega:1,sparkle:1,prop:"rope"},line:"쌩쌩이 만 번도 안 틀려요. 국가대표의 위엄!",
-      d:function(m){return "줄넘기 국대: 공격 속도 +"+f1(30*m)+"% · 공격력 +"+f1(22*m)+"% · 초당 공격력 ×"+f1(2.2*m)+" · 방어력 +"+f1(50*m)+"% · 최대 체력 +"+f1(25*m)+"% · 보스 시간 +"+f1(10*m)+"초 · 보스 시간이 끝나면 한 번 +"+f1(14*m)+"초"}}
+      d:function(m){return "줄넘기 국대: 공격 속도 +"+f1(30*m)+"% · 공격력 +"+f1(22*m)+"% · 초당 공격력 ×"+f1(2.2*m)+" · 방어력 +"+f1(50*m)+"% · 최대 체력 +"+f1(25*m)+"% · 보스 시간 +"+f1(10*m)+"초 · 보스 시간이 끝나면 한 번 +"+f1(14*m)+"초"}},
+    god:{n:"허준범 (길농의 신)",role:"길거리 농구의 신",t:"H",fx:{atk:60,spd:40,crit:25,dps:3.2,def:60,hp:40,time:12,guard:16,gold:25,spow:20,cd:12},look:{fit:"jersey",outfit:"#C8102E",pants:"#14141C",hat:"band",style:"spiky",sunglass:0,noblush:1,halo:1,sparkle:1,prop:"ball",jersey:1},line:"운동장 바닥에서 시작해 코트의 신이 됐어요. 한 번 잡은 공은 절대 안 놓쳐요.",
+      d:function(m){return "길농의 신: 초당 공격력 ×"+f1(3.2*m)+" · 공격력 +"+f1(60*m)+"% · 공격 속도 +"+f1(40*m)+"% · 치명타 +"+f1(25*m)+"% · 방어력 +"+f1(60*m)+"% · 체력 +"+f1(40*m)+"% · 쿨타임 −"+f1(12*m)+"% · 골드 +"+f1(25*m)+"% · 보스 시간 +"+f1(12*m)+"초"}}
   },
   jihwan:{
     only:{n:"박지환 (미어캣 로봇)",role:"로봇 탑승 소환사",t:"H",fx:{pet:3.6,crit:10,atk:30,dps:1.5,def:35,hp:30,time:6},look:{mech:1,halo:1,hat:"glasses",gtype:"rimless",gcol:"#B8D8F0"},line:"미어캣 로봇에 탑승! 망보기도 전투도 로봇이 해요.",
@@ -1058,12 +1060,12 @@ var JOBD={
 var JOBR={
   dohyeon:{lv:53,nm:"김도현",txt:"김도현 카드 53장(Lv.53) 달성 보상!",hide:1},
   heesung:{lv:20,nm:"원희성",txt:"원희성 Lv.20과 최고 스테이지 100을 모두 달성했어요!",cond:{t:"최고 스테이지 100",m:100,c:function(){return S.best||1}}},
-  junbeom:{lv:20,nm:"허준범",txt:"허준범 Lv.20과 보물 창고 던전 10회 도전을 달성했어요!",cond:{t:"보물 창고 던전 10회 도전",m:10,c:function(){return S.dgc||0}}},
+  junbeom:{lv:20,nm:"허준범",redo:["only"],txt:"허준범 Lv.20과 보물 창고 던전 10회 도전을 달성했어요!",cond:{t:"보물 창고 던전 10회 도전",m:10,c:function(){return S.dgc||0}}},
   jihwan:{lv:30,nm:"박지환",txt:"박지환 Lv.30과 보스 100회 격파를 달성했어요!",cond:{t:"보스 100회 격파",m:100,c:function(){return S.bk||0}}}
 };
 function jobState(id){
   var o=S.cmp[id],r=JOBR[id];if(!o||!r)return "";
-  if(o.job)return "done";
+  if(o.job){if(r.redo&&r.redo.indexOf(o.job)>=0&&JOBD[id].god&&o.job!=="god")return "redo";return "done"}
   if(o.lv<r.lv)return "lv";
   if(r.cond&&r.cond.c()<r.cond.m)return "cond";
   return "ready";
@@ -1529,6 +1531,7 @@ function drawChibi(x,o){
   if(o.horns){R(x,"#7A3FB0",3,2,2,5);R(x,"#7A3FB0",19,2,2,5);R(x,"#B07CFF",3,1,1,1);R(x,"#B07CFF",20,1,1,1);R(x,"#B07CFF",3,2,1,1);R(x,"#B07CFF",20,2,1,1)}
   if(o.stink){R(x,"#7BC043",0,9,1,3);R(x,"#5A8A2A",1,12,1,3);R(x,"#7BC043",0,15,1,2);R(x,"#7BC043",23,8,1,3);R(x,"#5A8A2A",22,11,1,3);R(x,"#7BC043",23,14,1,2);R(x,"#222",2,6,1,1);R(x,"#222",21,5,1,1);R(x,"#222",2,20,1,1)}
   if(o.prop==="racket"){R(x,"#E83A4A",18,2,5,1);R(x,"#E83A4A",17,3,1,6);R(x,"#E83A4A",23,3,1,6);R(x,"#E83A4A",18,9,5,1);R(x,"#CFE8FF",18,3,5,6);R(x,"#8AB0D8",20,3,1,6);R(x,"#8AB0D8",18,6,5,1);R(x,"#E83A4A",20,10,1,3);R(x,"#222",20,13,1,9);R(x,SKC,19,21,2,2);R(x,"#fff",1,3,2,3);R(x,"#FFC94A",1,6,2,1)}
+  if(o.prop==="ball"){R(x,"#E8772A",18,18,6,6);R(x,"#F59A4A",19,19,2,1);R(x,"#3A1A08",20,18,1,6);R(x,"#3A1A08",18,20,6,1);R(x,"#3A1A08",19,19,1,1);R(x,"#3A1A08",22,22,1,1);R(x,"#FF5A1A",17,17,1,1);R(x,"#FFC94A",24,17,0,0)}
   if(o.sunglass){R(x,"#10131C",6,9,5,4);R(x,"#10131C",13,9,5,4);R(x,"#10131C",11,10,2,1);R(x,"#10131C",5,9,1,1);R(x,"#10131C",18,9,1,1);R(x,"#6AB8FF",7,9,2,1);R(x,"#6AB8FF",14,9,2,1);R(x,"#2A3A5A",7,10,3,1);R(x,"#2A3A5A",14,10,3,1)}
   if(o.medal){R(x,"#fff",10,16,1,3);R(x,"#2A4FB8",11,16,1,3);R(x,"#D8343C",12,16,1,3);R(x,"#FFC94A",10,19,3,3);R(x,"#FFF1A8",10,19,1,1);R(x,"#B8860B",12,21,1,1)}
   if(o.omega){R(x,"#FF9A3D",1,1,3,1);R(x,"#FF9A3D",0,2,1,2);R(x,"#FF9A3D",4,2,1,2);R(x,"#FF9A3D",1,4,1,1);R(x,"#FF9A3D",3,4,1,1);R(x,"#FF9A3D",0,5,2,1);R(x,"#FF9A3D",3,5,2,1)}
@@ -1580,6 +1583,12 @@ function fitBody(x,o,SKC){
   else if(f==="lord"){R(x,"#16161F",4,16,16,11);R(x,"#16161F",3,17,2,7);R(x,"#16161F",19,17,2,7);R(x,"#A0202C",9,16,6,6);R(x,"#fff",10,16,4,2);R(x,"#FFC94A",11,17,2,10);R(x,"#FFC94A",4,16,3,1);R(x,"#FFC94A",17,16,3,1);R(x,"#FFC94A",5,22,14,1);R(x,"#C9A030",8,19,1,1);R(x,"#C9A030",15,19,1,1);R(x,"#C0192A",3,18,1,8);R(x,"#C0192A",20,18,1,8);R(x,SKC,4,24,2,2);R(x,SKC,18,24,2,2);R(x,"#0E0E14",8,27,3,1);R(x,"#0E0E14",13,27,3,1)}
   else if(f==="blazer"){R(x,"#2A3F7A",4,17,3,7);R(x,"#2A3F7A",17,17,3,7);R(x,"#2A3F7A",7,16,3,8);R(x,"#2A3F7A",14,16,3,8);R(x,"#1D2D5C",9,16,1,8);R(x,"#1D2D5C",14,16,1,8);R(x,"#fff",10,16,4,8);R(x,"#FFC94A",8,21,1,1);R(x,"#FFC94A",15,21,1,1);R(x,"#FFC94A",7,18,2,2);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2)}
   else if(f==="kuk"){R(x,o.outfit,4,17,3,7);R(x,o.outfit,17,17,3,7);R(x,o.outfit,7,16,10,8);R(x,"#fff",7,16,1,8);R(x,"#fff",16,16,1,8);R(x,"#fff",4,18,1,5);R(x,"#fff",19,18,1,5);R(x,"#F4F6FF",10,16,4,2);R(x,"#fff",11,17,2,7);R(x,"#FFC94A",14,19,2,2);R(x,"#2A4FB8",15,20,1,1);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2);R(x,"#1C1C22",8,24,3,3);R(x,"#1C1C22",13,24,3,3);R(x,"#fff",8,25,1,2);R(x,"#fff",15,25,1,2)}
+  else if(f==="jersey"){
+    R(x,o.outfit,7,16,10,9);R(x,"#fff",7,16,10,1);R(x,"#14141C",9,16,6,1);R(x,o.outfit,6,17,2,2);R(x,o.outfit,16,17,2,2);
+    R(x,SKC,5,17,2,6);R(x,SKC,17,17,2,6);R(x,"#fff",5,22,2,1);R(x,"#fff",17,22,2,1);R(x,SKC,5,23,2,2);R(x,SKC,17,23,2,2);
+    var G2=["###","..#","###","#..","###"],G3=["###","..#","###","..#","###"];
+    [[8,G2],[13,G3]].forEach(function(g){g[1].forEach(function(row,ry){for(var cx=0;cx<3;cx++)if(row.charAt(cx)==="#")R(x,"#fff",g[0]+cx,18+ry,1,1)})});
+    R(x,"#FFC94A",7,24,10,1);R(x,o.pants,8,25,3,3);R(x,o.pants,13,25,3,3);R(x,"#fff",8,25,1,3);R(x,"#fff",15,25,1,3)}
   else if(f==="roundtee"){R(x,o.outfit,2,16,20,10);R(x,o.outfit,1,17,3,7);R(x,o.outfit,20,17,3,7);R(x,mix(o.outfit,"#ffffff",.25),7,18,10,6);R(x,mix(o.outfit,"#000000",.3),2,25,20,1);R(x,mix(o.outfit,"#000000",.25),9,16,1,5);R(x,mix(o.outfit,"#000000",.25),14,16,1,5);R(x,SKC,1,23,3,2);R(x,SKC,20,23,3,2);R(x,o.pants,6,25,5,3);R(x,o.pants,13,25,5,3)}
   else if(f==="admin"){R(x,"#0F1220",3,16,18,11);R(x,"#0F1220",2,17,2,8);R(x,"#0F1220",20,17,2,8);R(x,"#1E2A4A",9,16,6,10);R(x,"#35E8FF",3,16,1,11);R(x,"#35E8FF",20,16,1,11);R(x,"#35E8FF",10,19,1,1);R(x,"#35E8FF",11,18,1,1);R(x,"#35E8FF",11,20,1,1);R(x,"#35E8FF",13,19,1,1);R(x,"#35E8FF",12,18,1,1);R(x,"#35E8FF",12,20,1,1);R(x,"#35E8FF",3,26,18,1);R(x,"#BFF8FF",2,16,3,1);R(x,"#BFF8FF",19,16,3,1);R(x,"#35E8FF",2,22,2,1);R(x,"#35E8FF",20,22,2,1);R(x,SKC,2,25,2,1);R(x,SKC,20,25,2,1);R(x,"#07101E",7,27,3,1);R(x,"#07101E",14,27,3,1)}
   else if(f==="fatrobe"){R(x,o.outfit,2,16,20,10);R(x,o.outfit,1,17,3,7);R(x,o.outfit,20,17,3,7);R(x,"#6A3F8F",6,18,12,7);R(x,"#3A1E55",6,25,12,1);R(x,"#FFC94A",11,19,2,1);R(x,"#FFC94A",11,22,2,1);R(x,SKC,1,23,3,2);R(x,SKC,20,23,3,2);R(x,o.pants,6,25,5,3);R(x,o.pants,13,25,5,3);R(x,"#7BC043",3,18,1,1);R(x,"#7BC043",19,22,1,1)}
@@ -2064,7 +2073,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v49";
+var BUILD="v50";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -2267,23 +2276,27 @@ function jobBtn(cm,o){
   var st=jobState(cm.id);
   if(st==="done")return ' <span class="chip" style="color:var(--gold)">전직 완료</span>';
   if(st==="ready")return ' <button class="btn small hot" data-a="jobask" data-v="'+cm.id+'">🎉 전직하기</button>';
+  if(st==="redo")return ' <span class="chip" style="color:var(--gold)">전직 완료</span> <button class="btn small hot" data-a="jobask" data-v="'+cm.id+'">🔁 새 전직 고르기 (레벨 유지)</button>';
   if(r.hide)return "";
   return '<div class="d" style="color:var(--gold);margin-top:4px">전직 조건 · Lv.'+Math.min(o.lv,r.lv)+' / '+r.lv+(r.cond?' · '+r.cond.t+' ('+Math.min(r.cond.c(),r.cond.m)+' / '+r.cond.m+')':'')+'</div>';
 }
 function jobOv(id){
   var r=JOBR[id],D=JOBD[id];if(!r||!D)return;
-  var keys=Object.keys(D);T.jobId=id;if(keys.length===1)T.jobSel=keys[0];
+  var redo=jobState(id)==="redo",cur=S.cmp[id]&&S.cmp[id].job;
+  var keys=Object.keys(D).filter(function(k){return !redo||k!==cur});T.jobId=id;if(keys.length===1)T.jobSel=keys[0];
   else if(!D[T.jobSel])T.jobSel="";
   var sel=T.jobSel||"";
-  showOv('<div class="panel gold"><p class="banner" style="margin-bottom:4px">'+r.nm+'의 전직</p><p style="margin:0 0 12px;text-align:center;color:var(--red);font-family:var(--f-d);font-size:15px">'+r.txt+(keys.length>1?' 한 번 정하면 바꿀 수 없어요.':'')+' '+tl(D[keys[0]].t)+' 등급으로 상승해요. 단, 레벨은 1로 초기화되고 이후 뽑기에서는 새 등급 확률로 나와요.</p><div style="display:flex;flex-direction:column;gap:14px">'+
+  showOv('<div class="panel gold"><p class="banner" style="margin-bottom:4px">'+r.nm+'의 전직</p><p style="margin:0 0 12px;text-align:center;color:var(--red);font-family:var(--f-d);font-size:15px">'+(redo?"이미 전직한 "+r.nm+"가 새 전직을 고를 수 있어요! 레벨은 그대로 유지돼요.":r.txt+(keys.length>1?' 한 번 정하면 바꿀 수 없어요.':'')+' '+tl(D[keys[0]].t)+' 등급으로 상승해요. 단, 레벨은 1로 초기화되고 이후 뽑기에서는 새 등급 확률로 나와요.')+'</p><div style="display:flex;flex-direction:column;gap:14px">'+
     keys.map(function(j){var d=D[j];
       return '<button class="tcard'+(sel===j?" sel":"")+'" data-a="jobsel" data-v="'+j+'"><div class="tn">'+d.n+' <span class="tier k-'+d.t+'">'+tl(d.t)+'</span> <span class="chip">'+d.role+'</span></div><span class="sub">'+d.d(1)+'</span></button>';
     }).join("")+'</div><button class="btn gold wide" style="margin-top:16px" data-a="jobgo"'+(sel?"":" disabled")+'>전직하기</button><button class="btn ghost wide" style="margin-top:10px" data-a="ovx">나중에</button></div>');
 }
 function jobGo(){
   var id=T.jobId,j=T.jobSel,D=JOBD[id];
-  if(!id||!D||!j||!D[j]||jobState(id)!=="ready")return;
-  S.cmp[id].job=j;S.cmp[id].lv=1;S.egg["job_"+id]=1;if(id==="dohyeon")S.egg.job=1;T.jobSel="";
+  var jst=jobState(id);
+  if(!id||!D||!j||!D[j]||(jst!=="ready"&&jst!=="redo"))return;
+  if(jst==="redo"&&S.cmp[id].job===j)return;
+  S.cmp[id].job=j;if(jst==="ready")S.cmp[id].lv=1;S.egg["job_"+id]=1;if(id==="dohyeon")S.egg.job=1;T.jobSel="";
   applyJob();refreshCM();paintParty();hideOv();
   jingle([523,659,784,1046,1318]);toast("전직! "+BASE0[id].n+"이(가) "+tl(CMM[id].t)+" 「"+CMM[id].role+"」(으)로 각성했어요");
   save();renderTab();uiTop();
@@ -2500,6 +2513,7 @@ var CAB={
   "heesung:def":{n:"성스러운 방벽",cd:14,when:function(){return T.hp<T.hpMax*0.9||(F&&F.boss)},d:function(m){return "체력 30% 회복 + 6초간 받는 피해 −60%"},run:function(){healP(30);T.drT=6;T.drV=0.6;fxSpr("🛡️",16,4.2,"pop",22,34,1.2);fxSpr("💚",16,3,"pop",30,24,1)}},
   "heesung:atk":{n:"기 모으기",cd:14,d:function(m){return "6초간 공격력 ×1.6 · 치명타 +30%p"},run:function(){cabBuff("a",1.6,6);cabBuff("c",0.3,6);fxSpr("🌟",16,4,"pop",22,30,1.2);flashFx("rgba(255,220,100,.22)")}},
   "junbeom:only":{n:"쌩쌩이",cd:14,d:function(m){return "5초간 공격 속도 ×2 · 받는 피해 −40%"},run:function(){cabBuff("s",2,5);T.drT=5;T.drV=0.4;fxSpr("🪢",16,4,"pop",22,34,1.2)}},
+  "junbeom:god":{n:"버저비터 덩크",cd:11,d:function(m){return "공을 던져 3연속 슛 (각 공격력 ×"+f1(5*m)+") + 1.5초 기절 + 4초간 공격력 ×1.5"},run:function(c,m){T.stun=1.5;cabBuff("a",1.5,4);cabHit(c,5,m,"🏀",3);flashFx("rgba(255,170,40,.3)")}},
   "jihwan:only":{n:"로봇 미사일",cd:12,d:function(m){return "미사일 3발 (각 공격력 ×"+f1(4*m)+") + 1초 기절"},run:function(c,m){T.stun=1;cabHit(c,4,m,"🚀",3)}},
   "dohyeon:atk":{n:"턱 베기",cd:15,d:function(m){return "공격력 ×"+f1(12*m)+" 베기 피해"},run:function(c,m){cabHit(c,12,m,"⚔️")}},
   "dohyeon:def":{n:"강철 턱",cd:15,when:function(){return T.hp<T.hpMax*0.85||(F&&F.boss)},d:function(m){return "체력 15% 회복 + 5초간 받는 피해 −70%"},run:function(){healP(15);T.drT=5;T.drV=0.7;fxSpr("🛡️",16,4,"pop",22,34,1.2)}}
@@ -4007,7 +4021,7 @@ function subDot(key,id){
       if(id==="ach")return AC.some(function(a){return !S.ach[a.id]&&a.cur()>=a.max});
     }
     if(key==="party"){
-      if(id==="cm")return (S.party.indexOf(null)>=0&&Object.keys(S.cmp).some(function(c){return S.party.indexOf(c)<0&&c!=="juyul"}))||Object.keys(JOBR).some(function(c){return jobState(c)==="ready"});
+      if(id==="cm")return (S.party.indexOf(null)>=0&&Object.keys(S.cmp).some(function(c){return S.party.indexOf(c)<0&&c!=="juyul"}))||Object.keys(JOBR).some(function(c){var js=jobState(c);return js==="ready"||js==="redo"});
       if(id==="pt")return S.pets.indexOf(null)>=0&&Object.keys(S.pet).some(function(c){return S.pets.indexOf(c)<0});
     }
   }catch(e){}
