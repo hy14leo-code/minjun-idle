@@ -20,7 +20,7 @@
   --ring:#04050C; --bg0:#0B0D1E; --panel:#1C2350; --panel2:#2A3478; --edge:#4A58C8;
   --ink:#F4F6FF; --ink2:#AEB8F0; --ink3:#7683CC;
   --gold:#FFC94A; --gold2:#FF9B1F; --cyan:#5BE8FF; --red:#FF5470; --green:#52E3A4;
-  --t-common:#9AA6D6; --t-rare:#4DA3FF; --t-epic:#B07CFF; --t-legend:#FFB62E; --t-trash:#A57F4B; --t-ultra:#FF5C7A;
+  --t-common:#9AA6D6; --t-rare:#4DA3FF; --t-epic:#B07CFF; --t-legend:#FFB62E; --t-trash:#A57F4B; --t-ultra:#FF5C7A; --t-omega:#FF9A3D; --t-hyper:#FFD84D; --t-mystic:#7CFFE8;
   --k-C:#9AA6D6; --k-B:#4DA3FF; --k-A:#B07CFF; --k-S:#FFB62E; --k-N:#FF4DD2; --k-U:#FF5C7A; --k-O:#FF9A3D; --k-D:#7A7A88; --k-X:#FF2D55; --k-H:#FFD84D; --k-M:#7CFFE8;
   --f-d:"Do Hyeon","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",sans-serif;
   --f-b:"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
@@ -104,7 +104,7 @@ tr:last-child td{border-bottom:0}
 .tbl{overflow-x:auto}
 .bt th,.bt td{white-space:nowrap;padding:7px 4px;font-size:12.5px}
 .tier{display:inline-block;color:#fff;background:var(--tc);padding:0 8px;font-size:11px;font-weight:700}
-.t-common{--tc:var(--t-common)} .t-rare{--tc:var(--t-rare)} .t-epic{--tc:var(--t-epic)} .t-legend{--tc:var(--t-legend)} .t-trash{--tc:var(--t-trash)} .t-ultra{--tc:var(--t-ultra)}
+.t-common{--tc:var(--t-common)} .t-rare{--tc:var(--t-rare)} .t-epic{--tc:var(--t-epic)} .t-legend{--tc:var(--t-legend)} .t-trash{--tc:var(--t-trash)} .t-ultra{--tc:var(--t-ultra)} .t-omega{--tc:var(--t-omega)} .t-hyper{--tc:var(--t-hyper)} .t-mystic{--tc:var(--t-mystic)}
 .k-C{--tc:var(--k-C)} .k-B{--tc:var(--k-B)} .k-A{--tc:var(--k-A)} .k-S{--tc:var(--k-S)} .k-N{--tc:var(--k-N)} .k-U{--tc:var(--k-U)} .k-O{--tc:var(--k-O)} .k-D{--tc:var(--k-D)} .k-X{--tc:var(--k-X)} .k-H{--tc:var(--k-H)} .k-M{--tc:var(--k-M)} .t-pet{--tc:#FFB62E}
 .tier.k-N,.tier.k-U{animation:rb 1.2s steps(6) infinite}
 .tier.k-M{background:linear-gradient(90deg,#FF5C7A,#FFC94A,#52E3A4,#4DA3FF,#B07CFF);color:#fff;animation:rb 1.2s steps(6) infinite}
@@ -752,6 +752,11 @@ body,.panel,.btn{text-shadow:none}
 .subtabs .btn{position:relative}
 .subtabs .sdot{top:3px;right:3px;width:10px;height:10px;background:#FF3B3B;box-shadow:0 0 0 2px #1A110B}
 .subtabs .sdot[hidden]{display:none}
+
+.tier.t-omega{background:linear-gradient(90deg,#FFB02E,#FF6A3D,#FF4DD2);color:#1A1030;animation:rb 1.2s steps(6) infinite}
+.tier.t-hyper{background:linear-gradient(90deg,#FFD84D,#FF6FD8,#7CE8FF);color:#1A1030;animation:rb 1.2s steps(6) infinite}
+.tier.t-mystic{background:linear-gradient(90deg,#7CFFE8,#B07CFF,#FF5C7A,#FFD84D);color:#1A1030;animation:rb 1.2s steps(6) infinite}
+.pcard.t-omega::after,.pcard.t-hyper::after,.pcard.t-mystic::after{content:"";position:absolute;inset:-4px;border:4px solid var(--tc);animation:rb 1.2s steps(6) infinite;pointer-events:none}
 </style>
 
 <div class="wrap">
@@ -818,7 +823,10 @@ var UP=[
 ];
 
 var TIERS=[
-  {id:"ultra",n:"울트라",p:1,sh:15,rank:5},
+  {id:"mystic",n:"미스틱",p:0.15,sh:40,rank:8},
+  {id:"hyper",n:"하이퍼",p:0.4,sh:25,rank:7},
+  {id:"ultra",n:"울트라",p:1,sh:15,rank:6},
+  {id:"omega",n:"오메가",p:1.8,sh:10,rank:5},
   {id:"legend",n:"전설",p:5,sh:8,rank:4},
   {id:"epic",n:"영웅",p:10,sh:4,rank:3},
   {id:"rare",n:"희귀",p:28,sh:2,rank:2},
@@ -904,6 +912,15 @@ var ITEMS=[
   {id:"sword",n:"수능 만점의 검",e:"🗡️",t:"ultra",slot:"weapon",fx:{atk:175,crit:30,spd:35},pr:{k:"burst",c:9,m:10,n:"만점의 일격",e:"💯"},d:"풀지 못하는 문제는 베어 버린다."},
   {id:"attend",n:"개근상 갑옷",e:"🏅",t:"ultra",slot:"armor",fx:{def:160,hp:160,atk:60,time:10},pr:{k:"reflect",v:35,n:"개근의 가시"},d:"단 하루도 빠지지 않은 자의 갑옷."},
   {id:"crown",n:"학급회장 왕관",e:"👑",t:"ultra",slot:"acc",fx:{gold:140,atk:60,crit:25,friend:90,cd:18},pr:{k:"killheal",v:12,n:"회장의 위엄"},d:"교실 맨 앞에서 모두를 이끈다."},
+  {id:"omegablade",n:"Ω 블레이드",e:"⚔️",t:"omega",slot:"weapon",fx:{atk:130,crit:20,spd:25},pr:{k:"burst",c:8,m:10,n:"오메가 절삭",e:"Ω"},d:"끝(Ω)을 아는 자의 칼날. 베이지 않는 것이 없다."},
+  {id:"omegaarmor",n:"Ω 아머",e:"🦾",t:"omega",slot:"armor",fx:{def:125,hp:125,time:9},pr:{k:"reflect",v:25,n:"오메가 장갑"},d:"관절마다 푸른 불꽃이 새어 나온다."},
+  {id:"omegacore",n:"Ω 코어",e:"🔮",t:"omega",slot:"acc",fx:{gold:90,atk:45,cd:16,friend:60},pr:{k:"gb",c:7,m:12,n:"코어 공명"},d:"심장처럼 두근거리는 에너지 결정."},
+  {id:"hypersword",n:"신성검 하이페리온",e:"🌠",t:"hyper",slot:"weapon",fx:{atk:235,crit:35,spd:40},pr:{k:"burst",c:10,m:14,n:"유성 일섬",e:"🌠"},d:"한 번 휘두르면 밤하늘이 갈라진다."},
+  {id:"hyperarmor",n:"초월의 갑주",e:"🪽",t:"hyper",slot:"armor",fx:{def:215,hp:225,atk:80,time:12},pr:{k:"revive",v:60,n:"불사의 날개"},d:"등 뒤로 빛의 날개가 펼쳐진다."},
+  {id:"hyperring",n:"하이퍼 링",e:"💍",t:"hyper",slot:"acc",fx:{gold:180,atk:80,crit:30,friend:110,cd:20},pr:{k:"killheal",v:14,n:"황금 맥동"},d:"끼는 순간 모든 숫자가 두 배로 보인다."},
+  {id:"mysticstaff",n:"은하의 지팡이",e:"🪐",t:"mystic",slot:"weapon",fx:{atk:340,crit:45,spd:50,cd:25},pr:{k:"burst",c:12,m:20,n:"성운 폭발",e:"🌌"},d:"끝에서 작은 은하가 천천히 돌고 있다."},
+  {id:"mysticrobe",n:"별빛 로브",e:"🌌",t:"mystic",slot:"armor",fx:{def:310,hp:330,atk:120,time:15},pr:{k:"reflect",v:45,n:"별의 가시"},d:"입은 사람 주위로 별똥별이 흘러내린다."},
+  {id:"mysticeye",n:"우주의 눈",e:"🧿",t:"mystic",slot:"acc",fx:{gold:270,atk:120,crit:40,friend:150,cd:25},pr:{k:"gb",c:9,m:30,n:"만물 투시"},d:"모든 보물의 위치를 꿰뚫어 본다."},
   {id:"tornpaper",n:"찢어진 시험지",e:"📃",t:"trash",slot:"weapon",fx:{atk:-9,hp:-10},d:"점수는 가려졌지만 마음은 아프다."},
   {id:"brokenglasses",n:"깨진 안경",e:"🥽",t:"trash",slot:"acc",fx:{crit:-8,gold:-8},d:"세상이 갈라져 보인다."}
 ];
@@ -1973,7 +1990,7 @@ function f1(n){return (Math.round(n*100)/100).toString()}
 function r0(n){return Math.round(n)}
 function mult(k,v,lv){return v>0?(k==="time"?Math.round(v*(1+0.25*lv)*10)/10:Math.round(v*(1+0.25*lv))):v}
 function zero(){return {atk:0,spd:0,crit:0,gold:0,time:0,friend:0,cd:0,hp:0,def:0}}
-var SETB={rare:{atk:5},epic:{atk:12,gold:10},legend:{atk:25,gold:20,spd:10},ultra:{atk:50,gold:40,spd:20,crit:10}};
+var SETB={rare:{atk:5},epic:{atk:12,gold:10},legend:{atk:25,gold:20,spd:10},omega:{atk:70,gold:50,spd:25,crit:12},ultra:{atk:50,gold:40,spd:20,crit:10},hyper:{atk:110,gold:70,spd:35,crit:18,cd:10},mystic:{atk:170,gold:110,spd:50,crit:25,cd:20,hp:50,def:50}};
 function setTier(){
   var t=null,ok=true;
   SLOTS.forEach(function(s){
@@ -2096,7 +2113,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v55";
+var BUILD="v56";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -2875,9 +2892,10 @@ function rollTier(pool){
   return adj[adj.length-1].t;
 }
 function pullOne(pool){
-  S.pity++;
-  var t=(S.pity>=100&&S.best>=30)?TI.ultra:rollTier(pool||TIERS);
-  if(t.id==="ultra")S.pity=0;
+  S.pity++;S.pityH=(S.pityH||0)+1;
+  var t=(S.pityH>=400&&S.best>=60)?TI.hyper:(S.pity>=100&&S.best>=30)?TI.ultra:rollTier(pool||TIERS);
+  if(t.id==="ultra"||t.id==="hyper"||t.id==="mystic")S.pity=0;
+  if(t.id==="hyper"||t.id==="mystic")S.pityH=0;
   var list=ITEMS.filter(function(i){return i.t===t.id});
   var it=pickRand(list),own=S.inv[it.id],isNew=false,sh=0;
   if(!own){S.inv[it.id]={n:1,lv:0};isNew=true}
