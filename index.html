@@ -770,6 +770,21 @@ body,.panel,.btn{text-shadow:none}
 .sbar.six .skw.mg::before{content:"";position:absolute;left:-3px;top:2px;bottom:14px;width:2px;background:var(--gold,#FFC94A);opacity:.7}
 
 .pxt{display:inline-block;height:1.2em;width:auto;vertical-align:-.25em;margin:0 .06em;image-rendering:pixelated;image-rendering:crisp-edges}
+
+.pwc{font-family:var(--f-d);font-size:12px;color:var(--gold,#FFC94A);margin-left:6px;white-space:nowrap}
+.inp{height:40px;border:0;border-radius:0;padding:0 10px;font-family:var(--f-d);font-size:15px;color:var(--ink);background:#0B0F28;box-shadow:inset 0 0 0 2px #3A4590}
+.duel .dgrid{display:grid;grid-template-columns:1fr 32px 1fr;gap:6px;align-items:end;margin:10px 0}
+.dfi{position:relative;text-align:center;min-width:0}
+.dfi-b .dsp{transform:scaleX(-1)}
+.dsp{min-height:96px;display:grid;place-items:end center}
+.dnm{font-family:var(--f-d);font-size:15px;margin-top:6px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dpw{font-family:var(--f-d);font-size:12px;color:var(--gold,#FFC94A);margin:2px 0 6px}
+.dhp{height:12px;background:#1A1030;box-shadow:inset 0 0 0 2px #3A4590;overflow:hidden}
+.dhp i{display:block;height:100%;width:100%;background:linear-gradient(180deg,#7CFFB2,#2FBF71);transition:width .25s steps(6)}
+.dvs{font-family:var(--f-p);font-size:14px;color:var(--gold,#FFC94A);align-self:center;text-align:center}
+.dpop{position:absolute;left:0;right:0;top:-2px;font-family:var(--f-d);font-size:17px;color:#fff;text-shadow:0 2px 0 #000;opacity:0;pointer-events:none}
+.dpop.on{opacity:1;transform:translateY(-8px);transition:transform .25s}
+.dpop.crit{color:#FFD84D;font-size:22px}
 </style>
 
 <div class="wrap">
@@ -777,7 +792,7 @@ body,.panel,.btn{text-shadow:none}
     <header class="hud">
       <div class="portrait" id="hud-av"></div>
       <div class="hud-mid">
-        <div class="hud-name">이민준 <span class="rbc" id="hud-rb" hidden></span></div>
+        <div class="hud-name">이민준 <span class="rbc" id="hud-rb" hidden></span> <span class="pwc" id="hud-pw"></span></div>
         <span class="rib" id="hud-title" hidden></span><div class="evb" id="hud-ev" hidden></div>
       </div>
       <div class="caps">
@@ -2121,6 +2136,44 @@ function calc(L){
   var defp=Math.max(0,Math.min(3000,L[6]*2.5+b.def));
   return {atk:atk,spd:spd,cc:cc,cd:cd,fr:fr,pd:pd,bz:CMc.bz,gold:Math.max(0.1,1+b.gold/100)*SFc.goldM*EVc.g*pityM(),time:24+(b.time>0?16*(1-Math.exp(-b.time/20)):b.time*0.5),hp:hp,def:defp,dr:defp/(100+defp),rg:0.006+CMc.regen/100};
 }
+/* ---------- 전투력 / 대련용 능력치 ---------- */
+function battleSnap(){
+  var sf=SFc,ev=EVc,rv=T.revolt,cf=T.cbf,c;
+  SFc={atkM:1,spdM:1,critAdd:0,cdAdd:0,goldM:1,frM:1,dmgM:1,dot:0,freeze:false,crit100:false,dr:1,charm:false};
+  EVc={g:1,a:1};T.revolt=0;T.cbf=null;
+  try{c=calc()}finally{SFc=sf;EVc=ev;T.revolt=rv;T.cbf=cf}
+  var ns=0,bm=1,cdc=cdCut();
+  allSlots().forEach(function(id){
+    var sk=id&&SKM[id];if(!sk||!S.skl[id])return;
+    var p=sPow(id),ce=Math.max(sk.cd*0.2,sk.cd*(1-cdc));
+    if(sk.nuke)ns+=c.atk*sk.nuke*p*(1+SYc.nuke/100)/ce;
+    if(sk.buff){
+      var b=sk.buff,g=0;
+      if(b.atkM)g+=(b.atkM-1)*p;
+      if(b.dmgM)g+=(b.dmgM-1)*p;
+      if(b.spdM)g+=(b.spdM-1)*p;
+      if(b.critAdd)g+=b.critAdd*p*(c.cd-1)/(1+c.cc*(c.cd-1));
+      var dur=sk.dur*(1+0.1*(eLv(S.skl[id].lv,5,0.25)-1))*(1+SYc.dur/100);
+      bm+=g*Math.min(1,dur/ce);
+    }
+  });
+  bm=Math.min(4,bm);
+  return {hp:c.hp,dr:c.dr,rg:c.rg,atk:c.atk,spd:c.spd,cc:c.cc,cd:c.cd,fr:c.fr,pd:c.pd,ns:ns,bm:bm};
+}
+function powerOf(b){
+  var dps=b.atk*b.spd*(1+b.cc*(b.cd-1))*b.bm+b.fr+b.pd+b.ns;
+  var ehp=b.hp/(1-Math.min(b.dr,0.97))*(1+Math.min(0.5,b.rg*20));
+  var v=Math.sqrt(Math.max(0,dps*ehp));
+  return isFinite(v)?v:0;
+}
+var PWR={bs:null,pw:0,t:0};
+function myPower(){
+  if(!PWR.bs||Date.now()-PWR.t>2500){
+    try{PWR.bs=battleSnap();PWR.pw=powerOf(PWR.bs)}catch(e){}
+    PWR.t=Date.now();
+  }
+  return PWR.pw;
+}
 function hpAdj(s){return 1+Math.pow(s/55,3)}
 function hpOf(s){return 18*Math.pow(1.45,s-1)*hpAdj(s)}
 function goldOf(s){return s<=20?6*Math.pow(1.2,s-1):6*Math.pow(1.2,20-1)*Math.pow(1.3,s-20)}
@@ -2145,7 +2198,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v64";
+var BUILD="v65";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -3644,7 +3697,7 @@ var DBH=null,USR=null,UID=null,LV={notice:null,event:null},EVc={g:1,a:1},RK=[],P
 var cloud={on:false,block:false,busy:false,sig:"",t:0,err:""},NT={cs:0,rk:0,rsig:""};
 function rankScore(o){var t=(o.rp||0)+rpGain(o.rbest||1);return t*1e6+Math.min(999,o.best||1)*1e3+Math.min(999,o.bk||0)}
 function progOf(o){return (o.rb||0)*1e6+(o.best||1)*1e3+Math.min(999,o.bk||0)}
-function progSig(){return S.kt+"|"+S.pulls+"|"+S.tickets+"|"+S.best+"|"+S.rb+"|"+S.up.join(",")}
+function progSig(){return S.kt+"|"+S.pulls+"|"+S.tickets+"|"+S.best+"|"+S.rb+"|"+S.up.join(",")+"|"+Math.floor(Math.log(myPower()+1)*30)}
 function cpath(){return "data/users/"+UID+"/game"}
 function parseSave(str){
   try{var o=JSON.parse(str);if(!o||typeof o.gold!=="number"||!Array.isArray(o.up))return null;return norm(o)}catch(e){return null}
@@ -3684,8 +3737,8 @@ async function fetchRank(){
   if(!DBH)return;
   rkT=Date.now();
   try{
-    var rows=await rpc("mj_rank",{p_id:UID});
-    RK=(rows||[]).map(function(x,i){return {rk:Number(x.rk)||i+1,id:x.me?UID:"x"+i,score:Number(x.score)||0,best:Number(x.best)||0,rb:Number(x.rb)||0,lv:Number(x.lv)||0,nick:String(x.nick||"").slice(0,10)}});
+    var rows=await rpc("mj_rank2",{p_id:UID});
+    RK=(rows||[]).map(function(x,i){return {rk:Number(x.rk)||i+1,id:x.me?UID:"x"+i,power:Number(x.power)||0,best:Number(x.best)||0,rb:Number(x.rb)||0,lv:Number(x.lv)||0,dw:Number(x.dw)||0,dl:Number(x.dl)||0,me:!!x.me,nick:String(x.nick||"").slice(0,10)}});
     if(tab==="quest"&&sub.quest==="rank")renderTab();
   }catch(e){}
 }
@@ -3728,7 +3781,7 @@ async function cloudSave(force){
   cloud.busy=true;
   try{
     S.last=Date.now();
-    await rpc("mj_sync",{p_id:UID,p_secret:ACT.secret,p_nick:S.nick||"",p_score:rankScore(S),p_best:S.best,p_rb:S.rb,p_lv:charLv(),p_data:JSON.stringify(S),p_p:progOf(S)});
+    PWR.t=0;await rpc("mj_sync2",{p_id:UID,p_secret:ACT.secret,p_nick:S.nick||"",p_data:JSON.stringify(S),p_p:progOf(S),p_bs:JSON.stringify(PWR.bs||battleSnap())});
     cloud.sig=sg;cloud.t=Date.now();cloud.err="";
   }catch(e){cloud.err=(e&&e.code)||"err"}
   cloud.busy=false;
@@ -3858,21 +3911,86 @@ function cloudTxt(){
 }
 function rankHtml(){
   if(!DBH)return '<section class="panel"><h2 class="h2">랭킹</h2><p class="sub">인터넷에 연결되면 랭킹이 보여요.</p></section>';
-  var bank=S.rp||0,pend=rpGain(S.rbest||1),tot=bank+pend,mine=null;
+  var mine=null,pw=myPower();
   RK.forEach(function(r){if(r.id===UID)mine=r});
-  var h='<section class="panel gold"><h2 class="h2">내 랭킹</h2><div class="stats" style="margin-top:0"><div class="st"><span>내 순위</span><b>'+(mine?mine.rk+"위":(S.nick?"집계 중":"닉네임 필요"))+'</b></div><div class="st"><span>성장 점수</span><b style="color:var(--gold)">'+tot+'점</b></div><div class="st"><span>회귀로 모은 점수</span><b>'+bank+'점</b></div><div class="st"><span>지금 회귀하면 +</span><b>'+pend+'점</b></div></div>'+
-    '<p class="sub" style="margin-top:10px">순위는 <b>성장 점수</b>로 정해요. 성장 점수 = 회귀로 모은 점수 + 지금 회귀하면 받을 점수라서, 회귀해도 점수가 줄지 않고 낮은 스테이지에서 회귀를 반복해도 늘지 않아요. 점수가 같으면 최고 스테이지, 그다음은 보스 격파 수가 높은 쪽이 앞서요. 점수는 높은 스테이지에 갈수록 크게 올라요.'+(S.nick?"":" 닉네임을 정해야 랭킹에 올라가요.")+(RKW?"":" 이 계정은 기록을 올릴 권한이 없어 보기만 할 수 있어요.")+'</p></section><section class="panel"><h2 class="h2">TOP 30</h2>';
+  var h='<section class="panel gold"><h2 class="h2">내 전투력</h2><div class="stats" style="margin-top:0"><div class="st"><span>내 순위</span><b>'+(mine?mine.rk+"위":(S.nick?"집계 중":"닉네임 필요"))+'</b></div><div class="st"><span>전투력</span><b style="color:var(--gold)">'+fmt(pw)+'</b></div><div class="st"><span>최고 스테이지</span><b>'+S.best+'</b></div><div class="st"><span>대련 기록</span><b>'+(mine?mine.dw+"승 "+mine.dl+"패":"-")+'</b></div></div>'+
+    '<p class="sub" style="margin-top:10px">순위는 <b>전투력</b> 순이에요. 전투력은 공격·속도·치명타·체력·방어·스킬·동료·펫을 모두 합친 지금의 실제 전투 능력이에요. 장비·동료·스킬을 바꾸면 바로 달라지고, 회귀하면 능력 레벨이 초기화되어 내려가요. 기록은 서버가 능력치를 검증해서 올려요.</p>'+
+    (S.nick?'':'<button class="btn small gold wide" style="margin-top:8px" data-a="nick">닉네임 정하기</button>')+'</section>';
+  h+='<section class="panel"><h2 class="h2">친구와 대련</h2><p class="sub" style="margin-bottom:8px">친구 닉네임을 정확히 입력하면 서버가 두 사람의 전투력으로 대련 결과를 계산해요. 승패 기록만 남고 보상이나 순위 변화는 없어요.</p>'+
+    '<div class="row" style="gap:8px"><input class="inp" id="duel-nick" maxlength="10" placeholder="친구 닉네임" style="flex:1;min-width:0"><button class="btn small gold" data-a="duelgo">대련!</button></div></section>';
+  h+='<section class="panel"><h2 class="h2">전투력 랭킹</h2>';
   if(!RK.length)h+='<p class="sub">아직 등록된 기록이 없어요.</p>';
   var prev=0;
   RK.forEach(function(r,i){
-    var me=r.id===UID,p=PROF[r.id],nm=r.nick||(p&&p.name)||(me?"나":"플레이어");
+    var me=r.id===UID,nm=r.nick||(me?"나":"플레이어");
     var ico=r.rk===1?"🥇":r.rk===2?"🥈":r.rk===3?"🥉":null;
     if(prev&&r.rk>prev+1)h+='<p class="sub" style="text-align:center;margin:4px 0">⋮</p>';
     prev=r.rk;
-    h+='<div class="irow"><div class="ie2">'+(ico?spr(ico,16,2.4):'<span class="px">'+r.rk+'</span>')+'</div><div class="ib"><div class="t">'+esc(nm)+(me?' <span class="chip">나</span>':"")+' <span class="chip num">'+Math.floor(r.score/1e6)+'점</span></div><div class="d num" style="margin:0">최고 스테이지 '+r.best+' · 회귀 '+r.rb+'회 · Lv.'+r.lv+'</div></div></div>';
+    h+='<div class="irow"><div class="ie2">'+(ico?spr(ico,16,2.4):'<span class="px">'+r.rk+'</span>')+'</div><div class="ib"><div class="t">'+esc(nm)+(me?' <span class="chip">나</span>':"")+' <span class="chip num" style="color:var(--gold)">⚔ '+fmt(r.power)+'</span></div><div class="d num" style="margin:0">최고 스테이지 '+r.best+' · 회귀 '+r.rb+'회 · '+r.dw+'승 '+r.dl+'패</div>'+(me?'':'<button class="btn small ghost" style="margin-top:6px" data-a="duel" data-v="'+esc(r.nick)+'">⚔ 대련하기</button>')+'</div></div>';
   });
   return h+'</section>';
 }
+
+/* ---------- 대련 ---------- */
+var DUEL={busy:false,timer:null};
+function duelFighter(side,name,power,best,skin){
+  return '<div class="dfi dfi-'+side+'"><div class="dsp">'+pimg(phIdx(Math.max(1,best)),skin||"basic",2.2)+'</div><div class="dnm">'+esc(name)+'</div><div class="dpw">⚔ '+fmt(power)+'</div><div class="dhp"><i id="dh-'+side+'"></i></div><div class="dpop" id="dp-'+side+'"></div></div>';
+}
+function duelMsg(t){
+  showOv('<div class="panel gold" style="text-align:center"><p class="banner">⚔ 대련</p><p style="margin:12px 0">'+t+'</p><button class="btn gold wide" data-a="ovx">확인</button></div>');
+}
+async function duelStart(nick){
+  nick=String(nick||"").trim();
+  if(!DBH||!UID||!ACT){duelMsg("인터넷에 연결되어야 대련할 수 있어요.");return}
+  if(!S.nick){duelMsg("먼저 닉네임을 정해야 해요. (랭킹 탭에서 닉네임 정하기)");return}
+  if(!nick){toast("친구 닉네임을 입력해 주세요");return}
+  if(DUEL.busy)return;
+  DUEL.busy=true;
+  showOv('<div class="panel gold" style="text-align:center"><p class="banner">⚔ 대련</p><p style="margin:16px 0">상대를 찾는 중…</p></div>');
+  var d=null;
+  try{
+    PWR.t=0;await cloudSave(true);
+    d=await rpc("mj_duel",{p_id:UID,p_secret:ACT.secret,p_target:nick});
+  }catch(e){d=null}
+  DUEL.busy=false;
+  if(!d||!d.ok){
+    var er=d&&d.err;
+    duelMsg(er==="notfound"?"「"+esc(nick)+"」 닉네임의 플레이어를 찾지 못했어요. 닉네임이 정확한지, 상대가 새 버전으로 접속한 적이 있는지 확인해 주세요.":er==="rate"?"잠시 후에 다시 대련할 수 있어요. (3초 간격)":er==="nopower"?"내 전투력이 아직 서버에 저장되지 않았어요. 잠시 뒤에 다시 시도해 주세요.":er==="flagged"?"기록 검사 중인 계정은 대련할 수 없어요.":"대련에 실패했어요. 잠시 후 다시 시도해 주세요.");
+    return;
+  }
+  duelPlay(d);
+}
+function duelPlay(d){
+  var log=d.log||[],n=Math.floor(log.length/6),i=0,A=d.a,B=d.b;
+  showOv('<div class="panel gold duel"><p class="banner">⚔ 대련</p><div class="dgrid">'+duelFighter("a",A.nick,A.power,A.best,A.skin)+'<div class="dvs">VS</div>'+duelFighter("b",B.nick,B.power,B.best,B.skin)+'</div><p class="sub" id="d-msg" style="text-align:center;min-height:22px;margin:10px 0">대련 시작!</p><div id="d-btn"></div></div>');
+  if(DUEL.timer)clearInterval(DUEL.timer);
+  function pop(side,txt,crit){
+    var el=$("dp-"+side);if(!el)return;
+    el.textContent=txt;el.className="dpop"+(crit?" crit":"")+" on";
+    setTimeout(function(){if(el)el.classList.remove("on")},300);
+  }
+  function bar(side,v){var el=$("dh-"+side);if(el)el.style.width=Math.max(0,Math.min(100,v*100))+"%"}
+  bar("a",1);bar("b",1);
+  DUEL.timer=setInterval(function(){
+    if(!$("dh-a")){clearInterval(DUEL.timer);DUEL.timer=null;return}
+    if(i>=n){
+      clearInterval(DUEL.timer);DUEL.timer=null;
+      var win=d.win==="a",pm=$("d-msg");
+      if(pm)pm.innerHTML=win?'<b style="color:var(--gold);font-size:20px">승리!</b><br>'+esc(B.nick)+'님을 이겼어요 · 내 기록 '+A.w+'승 '+A.l+'패':'<b style="font-size:20px">패배…</b><br>'+esc(B.nick)+'님이 더 강했어요 · 내 기록 '+A.w+'승 '+A.l+'패';
+      var bt=$("d-btn");if(bt)bt.innerHTML='<div class="grid2"><button class="btn gold" data-a="duel" data-v="'+esc(B.nick)+'">한 번 더</button><button class="btn ghost" data-a="ovx">닫기</button></div>';
+      jingle(win?[784,1046,1318]:[330,262]);fetchRank();
+      return;
+    }
+    var o=i*6;
+    bar("a",log[o]);bar("b",log[o+1]);
+    var da=log[o+2],db=log[o+3];
+    if(da>0)pop("b","−"+(da*100<10?(da*100).toFixed(1):Math.round(da*100))+"%",log[o+4]);
+    if(db>0)pop("a","−"+(db*100<10?(db*100).toFixed(1):Math.round(db*100))+"%",log[o+5]);
+    snd(log[o+4]||log[o+5]?520:330,0.06,"square",0.03,200);
+    i++;
+  },Math.max(200,Math.min(600,14000/Math.max(1,n))));
+}
+
 function mailOv(msg){
   var a=attInfo(),n=LV.notice,ev=LV.event;
   var h='<div class="panel gold"><p class="banner" style="margin-bottom:6px">우편함</p>';
@@ -4495,7 +4613,7 @@ function infoHtml(){
     '<div class="st"><span>동료 피해</span><b id="s-pd"></b></div><div class="st"><span>골드 배율</span><b id="s-gold"></b></div>'+
     '<div class="st"><span>초당 골드</span><b id="s-gps"></b></div><div class="st"><span>정체 보너스 (골드)</span><b id="s-pity"></b></div><div class="st"><span>보스 시간</span><b id="s-time"></b></div>'+
     '<div class="st"><span>쿨타임 감소</span><b id="s-cd"></b></div><div class="st"><span>강화 비용</span><b id="s-dc"></b></div>'+
-    '<div class="st"><span>최대 체력</span><b id="s-hp"></b></div><div class="st"><span>방어 (피해 감소)</span><b id="s-def"></b></div><div class="st"><span>초당 회복</span><b id="s-rg"></b></div><div class="st"><span>쓰러진 횟수</span><b id="s-dth"></b></div></div></section>';
+    '<div class="st"><span>전투력</span><b id="s-pw" style="color:var(--gold)"></b></div><div class="st"><span>최대 체력</span><b id="s-hp"></b></div><div class="st"><span>방어 (피해 감소)</span><b id="s-def"></b></div><div class="st"><span>초당 회복</span><b id="s-rg"></b></div><div class="st"><span>쓰러진 횟수</span><b id="s-dth"></b></div></div></section>';
   if(t)h+='<section class="panel gold"><div class="ttl">'+spr(t.e,18,2.6)+'<div style="min-width:0"><div class="sub">내 칭호 · 변경 불가</div><div class="disp" style="font-size:21px;line-height:1.2">'+t.n+'</div><span class="chip">'+t.tag+'</span></div></div>'+
     '<div class="chips" style="margin:10px 0 0">'+chipsFx(t.fx)+'</div>'+(t.extra.length?'<ul class="sub" style="margin:8px 0 0;padding-left:18px">'+t.extra.map(function(x){return "<li>"+x+"</li>"}).join("")+"</ul>":"")+'</section>';
   h+='<section class="panel"><h2 class="h2">보너스 합계</h2><div class="tbl"><table class="bt"><tr><th>효과</th><th>장비</th><th>칭호</th><th>스킨</th><th>동료</th><th>기타</th><th>합계</th></tr>';
@@ -4526,7 +4644,7 @@ function uiInfo(){
   $("s-time").textContent=Math.round(c.time)+"초";
   $("s-cd").textContent="−"+Math.round(cdCut()*100)+"%";
   $("s-dc").textContent="−"+Math.round(CMc.disc)+"%";
-  $("s-hp").textContent=fmt(c.hp);$("s-def").textContent=f1(c.def)+"% (−"+Math.round(c.dr*100)+"%)";$("s-rg").textContent=f1(c.rg*100)+"%/초";$("s-dth").textContent=(S.dth||0)+"회";
+  $("s-hp").textContent=fmt(c.hp);if($("s-pw"))$("s-pw").textContent=fmt(myPower());$("s-def").textContent=f1(c.def)+"% (−"+Math.round(c.dr*100)+"%)";$("s-rg").textContent=f1(c.rg*100)+"%/초";$("s-dth").textContent=(S.dth||0)+"회";
 }
 
 /* ---------- 탭: 스킬 ---------- */
@@ -4717,7 +4835,7 @@ function uiTop(){
   var lv=$("hud-lv");if(lv)lv.textContent="Lv."+charLv();
   $("dot-q").hidden=!canClaim();
   $("dot-m").hidden=attInfo().claimed&&!(LV.notice&&String(LV.notice.id)!==S.ln);
-  var rbc=$("hud-rb");rbc.hidden=!S.rb;rbc.textContent="회귀 "+S.rb;
+  var rbc=$("hud-rb");rbc.hidden=!S.rb;rbc.textContent="회귀 "+S.rb;var hpw=$("hud-pw");if(hpw){var pwt="⚔ "+fmt(myPower());if(hpw.dataset.v!==pwt){hpw.dataset.v=pwt;hpw.textContent=pwt}}
   var ev=$("hud-ev"),wd=wdNow();
   ev.hidden=false;
   ev.textContent=wd.n+" · "+wd.d+((EVc.g>1||EVc.a>1)?" | 이벤트 "+(EVc.g>1?"골드×"+EVc.g+" ":"")+(EVc.a>1?"공격×"+EVc.a:""):"");
@@ -4815,6 +4933,8 @@ document.addEventListener("click",function(e){
   else if(a==="tbuy")buyTicket(parseInt(v,10));
   else if(a==="equip")equip(v);
   else if(a==="synall"){T.synAll=!T.synAll;renderTab()}
+  else if(a==="duel")duelStart(v);
+  else if(a==="duelgo"){var dn=$("duel-nick");duelStart(dn?dn.value:"")}
   else if(a==="admopen"){if(ADM)admOv("coupon");else admLoginOv()}
   else if(a==="admlogin")admLogin();
   else if(a==="admtab"){T.admConfirm=false;admOv(v)}
