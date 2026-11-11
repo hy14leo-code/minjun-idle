@@ -786,11 +786,13 @@ body,.panel,.btn{text-shadow:none}
 .dpop.on{opacity:1;transform:translateY(-8px);transition:transform .25s}
 .dpop.crit{color:#FFD84D;font-size:22px}
 
-.wks{position:absolute;z-index:6;border:0;border-radius:50%;padding:0;transform:translate(-50%,-50%);background:radial-gradient(circle,#FFF6B0 0 18%,#FF4D5E 20% 42%,transparent 44%),repeating-radial-gradient(circle,#FFD84D 0 3px,transparent 3px 8px);box-shadow:0 0 0 3px #1A1030,0 0 14px 4px rgba(255,90,90,.8);animation:wkp .5s steps(4) infinite}
-.wks[hidden]{display:none}
-@keyframes wkp{50%{filter:brightness(1.5);transform:translate(-50%,-50%) scale(1.12)}}
-.skb.pf{box-shadow:inset 0 0 0 3px #FFD84D,0 0 0 3px #FFD84D,0 0 14px 4px rgba(255,216,77,.9)!important;animation:pfp .5s steps(4) infinite}
-@keyframes pfp{50%{filter:brightness(1.45)}}
+
+.mgp .mgh{display:flex;justify-content:space-between;font-family:var(--f-d);font-size:15px;margin-bottom:8px}
+.mga{position:relative;height:340px;background:repeating-linear-gradient(0deg,#0B0F28 0 24px,#10163A 24px 48px);box-shadow:inset 0 0 0 3px #3A4590;overflow:hidden;touch-action:none}
+.mgt{position:absolute;border-radius:50%;background:radial-gradient(circle,#FFF6B0 0 16%,#FF4D5E 18% 40%,#fff 42% 56%,#FF4D5E 58% 80%,transparent 82%);box-shadow:0 0 0 3px #1A1030;cursor:pointer;animation:mgp .3s steps(3) infinite}
+@keyframes mgp{50%{filter:brightness(1.35)}}
+.dact{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.dact .btn small{display:inline}
 </style>
 
 <div class="wrap">
@@ -823,7 +825,6 @@ body,.panel,.btn{text-shadow:none}
         <div class="wave"><div class="en e2" id="b-e2"><span class="sprite"></span></div><div class="en e1" id="b-e1"><span class="sprite"></span></div><div class="en e0" id="b-e0"><span class="sprite"></span></div></div>
         <div class="eshadow"></div>
       </div>
-      <button class="wks" id="b-wk" data-a="wk" hidden aria-label="약점"></button>
       <div class="combo" id="b-combo"></div><div class="fx" id="b-fx"></div>
       <div class="kop" id="b-ko" hidden><b>쓰러졌어요!</b><div class="row" style="justify-content:center;gap:8px;margin-top:6px"><button class="btn small gold" data-a="koretry">이 보스 재도전</button><button class="btn small ghost" data-a="koback">아래에서 파밍</button></div><i id="b-kot"></i></div>
     </section>
@@ -2210,7 +2211,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v68";
+var BUILD="v69";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -2298,7 +2299,7 @@ function bossWin(e){
   kills=0;
   var msg=e.name+" 격파!"+(ever?" 뽑기권 +"+t:" (이미 보상을 받은 보스예요)");
   if(e.major&&ever){
-    S.dia+=10;msg+=" · 💎+10";
+    S.dia+=6;msg+=" · 💎+6";
     var m=Math.min(8,s/20);
     if(m>S.majors){
       S.majors=m;msg+=" · 영구 공격력 ×1.5";
@@ -2328,7 +2329,7 @@ function elemGrant(el){
   var law=ELG[el]===1;
   S.el[el]=1;var id="el_"+el,sk=SKM[id],skn=SKIN["mage_"+el];
   var had=!!S.skl[id];if(!had){S.skl[id]={n:1,lv:1};var ei=S.ms.indexOf(null);if(ei>=0)S.ms[ei]=id;renderSbar()}
-  var tk=law?10:5,dm=law?40:20;S.tickets+=tk;S.dia+=dm;
+  var tk=law?10:5,dm=law?24:12;S.tickets+=tk;S.dia+=dm;
   var n=elemCount(law?1:0),extra="";
   if(n>=8)extra='<p style="margin:0 0 10px;color:var(--gold)">'+(law?'법칙의 수호자 8명을 모두 쓰러뜨렸어요! 스킨 「법칙의 지배자」도 해금!':'정령왕 8명을 모두 쓰러뜨렸어요! 스킨 「원소 대마법사」도 해금!')+'</p>';
   if(!law&&n>=8)extra+='<p style="margin:0 0 10px">원소의 끝에서 새로운 문이 열린다. 시간, 공간, 중력… 세계를 지배하는 여덟 가지 법칙의 영역이다.</p>';
@@ -2336,7 +2337,7 @@ function elemGrant(el){
   showOv('<div class="panel gold" style="text-align:center"><p class="sub">'+(law?'법칙 획득':'원소 마법 획득')+'</p><div style="margin:8px 0">'+spr(sk.e,22,4)+'</div><h2 class="h2" style="justify-content:center;font-size:24px">'+(law?ELN[el]+'의 법칙을 손에 넣었다':ELN[el]+'의 마법을 얻었다')+'</h2><p style="margin:0 0 10px">스킬 「'+sk.n+'」 획득 · 스킨 「'+skn.n+'」 해금</p>'+extra+'<p class="sub" style="margin-bottom:14px">보상: 뽑기권 '+tk+'장 · 💎'+dm+' ('+n+' / 8)</p><button class="btn gold wide" data-a="ovx">계속 도전하기</button></div>');
 }
 function hellOv(){
-  S.hell=1;S.tickets+=20;S.dia+=60;save();
+  S.hell=1;S.tickets+=20;S.dia+=40;save();
   showOv('<div class="panel gold" style="text-align:center"><p class="sub">지옥 돌파</p><div style="margin:8px 0">'+spr("👿",22,4)+'</div><h2 class="h2" style="justify-content:center;font-size:24px">지옥 대마왕을 쓰러뜨렸다</h2><p style="margin:0 0 12px">불길 속을 걸어 나온 이민준 앞에, 하얀 연꽃이 핀 길이 열린다. 다음은 윤회의 땅, 환생이다.</p><p class="sub" style="margin-bottom:14px">보상: 뽑기권 20장 · 💎60 · 스킨 「지옥 기사」 해금</p><button class="btn gold wide" data-a="ovx">계속 도전하기</button></div>');
 }
 function finalSeq(pg){
@@ -2348,11 +2349,11 @@ function finalSeq(pg){
     ['🪄','낯선 하늘로 떨어진다','눈을 떠 보니 처음 보는 세계. 불, 물, 바람, 땅, 번개, 얼음, 빛, 어둠 — 여덟 정령왕이 지배하는 마법의 세계였다. 정령왕을 쓰러뜨리고 원소 마법을 손에 넣어라!']
   ];
   var p=pages[pg];
-  if(pg===0){S.reinc=1;S.tickets+=50;S.dia+=200;save()}
+  if(pg===0){S.reinc=1;S.tickets+=50;S.dia+=120;save()}
   showOv('<div class="panel gold" style="text-align:center"><p class="sub">'+(pg<2?'최종 엔딩':'새로운 이야기')+' · '+(pg+1)+' / 3</p><div style="margin:8px 0">'+spr(p[0],22,4)+'</div><h2 class="h2" style="justify-content:center;font-size:24px">'+p[1]+'</h2><p style="margin:0 0 14px">'+p[2]+'</p>'+(pg===0?'<p class="sub" style="margin-bottom:12px">보상: 뽑기권 50장 · 💎200 · 스킨 「환생자의 법의」 해금</p>':'')+(pg<2?'<button class="btn gold wide" data-a="endnext">다음</button>':'<button class="btn gold wide" data-a="ovx">이세계로 떨어지기</button>')+'</div>');
 }
 function transcOv(){
-  S.transc=true;S.tickets+=30;S.dia+=100;save();
+  S.transc=true;S.tickets+=30;S.dia+=60;save();
   showOv('<div class="panel gold" style="text-align:center"><p class="sub">초월 엔딩</p><div style="margin:8px 0">'+spr("🌌",22,4)+'</div><h2 class="h2" style="justify-content:center;font-size:26px">초월자가 되었다</h2><p style="margin:0 0 12px">모든 시간을 건너 마침내 한계를 넘어선 이민준은 초월자가 되었다.</p><p class="sub" style="margin-bottom:14px">보상: 뽑기권 30장 · 💎100 · 스킨 「초월자의 로브」 해금</p><button class="btn gold wide" data-a="ovx">계속 도전하기</button></div>');
 }
 function endingOv(){
@@ -2552,37 +2553,6 @@ function tap(){
   if(T.sndT<=0){T.sndT=0.06;if(cr)snd(700,0.1,"square",0.04,1100);else snd(320,0.06,"square",0.03,170)}
 }
 
-/* ---------- 약점 노리기 (직접 조작) ---------- */
-function wkTick(dt){
-  var el=$("b-wk");
-  if(!el||!F||paused()){if(el&&!el.hidden){el.hidden=true;T.wk=null}return}
-  if(T.wk){
-    T.wk.t-=dt;
-    if(T.wk.t<=0){T.wk=null;T.wks=0;el.hidden=true}
-    return;
-  }
-  T.wkN=(T.wkN===undefined?rnd(2,4):T.wkN)-dt;
-  if(T.wkN>0)return;
-  T.wkN=rnd(3,5.5);
-  var life=Math.max(0.9,1.6-(T.wks||0)*0.06);
-  T.wk={t:life};
-  el.style.left=rnd(50,86).toFixed(1)+"%";el.style.top=rnd(34,66).toFixed(1)+"%";
-  var sz=Math.max(34,52-(T.wks||0)*1.5);el.style.width=el.style.height=sz+"px";
-  el.hidden=false;
-}
-function wkHit(){
-  var el=$("b-wk");
-  if(!T.wk||!F)return;
-  var c=calc(),st=T.wks=(T.wks||0)+1;
-  var d=autoDps(c)*4*(1+Math.min(1.5,st*0.1)),cr=true;
-  deal(d);T.combo+=5;T.comboT=1.2;
-  popAt("약점! "+fmt(d),"crit",0.72,0.32);
-  shoot("m");flashHit();snd(880,0.08,"square",0.05,1500);
-  S.wkc=(S.wkc||0)+1;
-  T.wk=null;if(el)el.hidden=true;
-  T.wkN=rnd(1.2,2.4);
-  if(st%5===0){cabBuff("a",1.3,8);toast("집중 "+st+"연속! 8초간 공격력 +30%");bannerFx("집중!")}
-}
 function isMg(id){return !!id&&id.indexOf("el_")===0}
 function slotAt(i){return i<4?S.slots[i]:S.ms[i-4]}
 function allSlots(){return S.slots.concat(S.ms||[])}
@@ -2602,14 +2572,10 @@ function elemRepeat(el){
   if(o.lv<SKMAX){o.lv++;toast(sk.n+" Lv."+o.lv+" 상승! (정령왕·수호자 재격파)")}
   else{S.shards+=15;toast("재격파 보상: 조각 15개")}
 }
-var RDY={};
-function perfectOk(id){return cds[id]<=0&&RDY[id]!==undefined&&RDY[id]<=1.2}
-function useSkill(id,manual){
+function useSkill(id){
   var sk=SKM[id];
   if(!sk||!S.skl[id]||cds[id]>0||!F)return;
-  var pf=!!manual&&perfectOk(id);
-  var lv=S.skl[id].lv,p=sPow(id)*(pf?1.4:1),c=calc();
-  if(pf){S.pfc=(S.pfc||0)+1;T.pfx=(T.pfx||0)+1;popAt("퍼펙트! ×1.4","gold",0.5,0.22);snd(880,0.1,"square",0.04,1320)}
+  var lv=S.skl[id].lv,p=sPow(id),c=calc();
   cds[id]=sk.cd*(1-cdCut());dqAdd("s",1);S.skt=(S.skt||0)+1;
   try{skillFx(id)}catch(e){}
   if(sk.nuke){
@@ -3322,10 +3288,10 @@ function mqListHtml(){
 
 /* ---------- 다이아 사용처: 프리미엄 뽑기, 선택 레벨업, 영구 특훈 ---------- */
 var PREM={
-  eq:{n:"전설 이상 장비 확정 뽑기",e:"🎒",min:4,cost:120,lim:3},
-  sk:{n:"S등급 이상 스킬 확정 뽑기",e:"📖",min:5,cost:200,lim:3},
-  cm:{n:"A등급 이상 동료 확정 뽑기",e:"👥",min:4,cost:150,lim:3},
-  pt:{n:"A등급 이상 펫 확정 뽑기",e:"🐾",min:4,cost:150,lim:3}
+  eq:{n:"전설 이상 장비 확정 뽑기",e:"🎒",min:4,cost:240,lim:1},
+  sk:{n:"S등급 이상 스킬 확정 뽑기",e:"📖",min:5,cost:400,lim:1},
+  cm:{n:"A등급 이상 동료 확정 뽑기",e:"👥",min:4,cost:300,lim:1},
+  pt:{n:"A등급 이상 펫 확정 뽑기",e:"🐾",min:4,cost:300,lim:1}
 };
 function premPull(kind){
   shopRoll();
@@ -3344,18 +3310,18 @@ function premPull(kind){
   save();renderSbar();renderTab();uiTop();
 }
 var LVK={
-  sk:{n:"스킬",max:function(){return SKMAX},cost:function(l){return 25+5*l},has:function(){return Object.keys(S.skl)},o:function(id){return S.skl[id]},nm:function(id){return SKM[id].n},t:function(id){return SKM[id].t},ic:function(id){return spr(SKM[id].e,16,2)}},
-  cm:{n:"동료",max:function(){return CMAX},cost:function(l){return 20+2*l},has:function(){return Object.keys(S.cmp).filter(function(id){return CMM[id]&&id!=="juyul"})},o:function(id){return S.cmp[id]},nm:function(id){return CMM[id].n},t:function(id){return CMM[id].t},ic:function(id){return cimg(id,1.6)}},
-  pt:{n:"펫",max:function(){return PMAX},cost:function(l){return 25+4*l},has:function(){return Object.keys(S.pet).filter(function(id){return PETM[id]})},o:function(id){return S.pet[id]},nm:function(id){return PETM[id].n},t:function(id){return PETM[id].t},ic:function(id){return petImg(id,1.8)}}
+  sk:{n:"스킬",max:function(){return SKMAX},cost:function(l){return Math.round(60*Math.pow(1.16,l))},has:function(){return Object.keys(S.skl)},o:function(id){return S.skl[id]},nm:function(id){return SKM[id].n},t:function(id){return SKM[id].t},ic:function(id){return spr(SKM[id].e,16,2)}},
+  cm:{n:"동료",max:function(){return CMAX},cost:function(l){return Math.round(50*Math.pow(1.07,l))},has:function(){return Object.keys(S.cmp).filter(function(id){return CMM[id]&&id!=="juyul"})},o:function(id){return S.cmp[id]},nm:function(id){return CMM[id].n},t:function(id){return CMM[id].t},ic:function(id){return cimg(id,1.6)}},
+  pt:{n:"펫",max:function(){return PMAX},cost:function(l){return Math.round(60*Math.pow(1.1,l))},has:function(){return Object.keys(S.pet).filter(function(id){return PETM[id]})},o:function(id){return S.pet[id]},nm:function(id){return PETM[id].n},t:function(id){return PETM[id].t},ic:function(id){return petImg(id,1.8)}}
 };
 function lvOv(kind,msg){
   var K=LVK[kind];if(!K)return;
-  var ids=K.has().sort(function(a,b){return (rk(kind,K.t(b))||0)-(rk(kind,K.t(a))||0)}),h='<div class="panel gold"><p class="banner">'+K.n+' 레벨업</p><p class="sub" style="text-align:center;margin-bottom:8px">다이아로 원하는 '+K.n+'의 레벨을 1 올려요. 💎 '+S.dia+'</p>'+(msg?'<p class="sub" style="text-align:center;color:var(--gold)">'+esc(msg)+'</p>':'');
+  var ids=K.has().sort(function(a,b){return (rk(kind,K.t(b))||0)-(rk(kind,K.t(a))||0)}),h='<div class="panel gold"><p class="banner">'+K.n+' 레벨업</p><p class="sub" style="text-align:center;margin-bottom:8px">다이아로 원하는 '+K.n+'의 레벨을 1 올려요. 하루 '+DAYCAP.lvup+'회까지 (오늘 '+dayLeft("lvup")+'회 남음) · 💎 '+S.dia+'</p>'+(msg?'<p class="sub" style="text-align:center;color:var(--gold)">'+esc(msg)+'</p>':'');
   h+='<div style="max-height:46vh;overflow:auto">';
   ids.forEach(function(id){
     var o=K.o(id),lv=o.lv,c=K.cost(lv),mx=lv>=K.max();
     h+='<div class="irow"><div class="ie2 k-'+K.t(id)+'">'+K.ic(id)+'</div><div class="ib"><div class="t">'+K.nm(id)+' <span class="tier k-'+K.t(id)+'">'+K.t(id)+'</span> <span class="chip">Lv.'+lv+' / '+K.max()+'</span></div></div>'+
-      '<button class="btn small gold" data-a="dlv" data-v="'+kind+':'+id+'"'+(mx||S.dia<c?" disabled":"")+'>'+(mx?"최대":"💎 "+c)+'</button></div>';
+      '<button class="btn small gold" data-a="dlv" data-v="'+kind+':'+id+'"'+(mx||S.dia<c||dayLeft("lvup")<=0?" disabled":"")+'>'+(mx?"최대":"💎 "+c)+'</button></div>';
   });
   h+='</div><button class="btn ghost wide" style="margin-top:10px" data-a="ovx">닫기</button></div>';
   showOv(h);
@@ -3363,8 +3329,9 @@ function lvOv(kind,msg){
 function dlvBuy(v){
   var p=String(v).split(":"),K=LVK[p[0]];if(!K)return;
   var o=K.o(p[1]);if(!o||o.lv>=K.max())return;
+  if(dayLeft("lvup")<=0){lvOv(p[0],"오늘은 더 이상 레벨업할 수 없어요");return}
   var c=K.cost(o.lv);if(S.dia<c)return;
-  S.dia-=c;o.lv++;refreshCM();refreshSYN();jingle([660,880]);save();uiTop();
+  S.dia-=c;dayUse("lvup");o.lv++;refreshCM();refreshSYN();jingle([660,880]);save();uiTop();
   lvOv(p[0],K.nm(p[1])+" Lv."+o.lv+"!");
 }
 
@@ -3374,7 +3341,7 @@ var SHOP=[
   {id:"sh",n:"강화 조각 30개",e:"💠",pay:"dia",cost:18,lim:5,f:function(){S.shards+=30}},
   {id:"gb",n:"골드 ×2 (30분)",e:"🪙",pay:"dia",cost:30,lim:3,f:function(){S.lk=Math.max(Date.now(),S.lk)+30*60000}},
   {id:"ab",n:"공격력 ×2 (15분)",e:"⚔️",pay:"dia",cost:30,lim:3,f:function(){S.ak=Math.max(Date.now(),S.ak)+15*60000}},
-  {id:"dg",n:"보물 창고 던전 입장 +1회",e:"🏸",pay:"dia",cost:40,lim:5,f:function(){S.dgx=(S.dgx||0)+1}},
+  {id:"dg",n:"보물 창고 던전 입장 +1회",e:"🏸",pay:"dia",cost:60,lim:3,f:function(){S.dgx=(S.dgx||0)+1}},
   {id:"xs",n:"조각을 뽑기권으로",e:"🔄",pay:"sh",cost:25,lim:4,f:function(){S.tickets+=1},unit:"뽑기권 1장"}
 ];
 function shopRoll(){var k=dayKey(new Date());if(S.sd.d!==k)S.sd={d:k,b:{}}}
@@ -3390,7 +3357,7 @@ function shopBuy(id){
 function shopHtml(){
   shopRoll();
   var h='<section class="panel gold"><div class="cp"><div><div class="sub">보유 다이아</div><div class="cpn">💎 '+S.dia+'</div></div><div style="text-align:right"><div class="sub">보유 조각</div><b class="disp" style="font-size:20px">💠 '+S.shards+'</b></div></div>'+
-    '<p class="sub" style="margin-top:8px">다이아는 10스테이지를 처음 돌파할 때마다(+5), 성장 보스(+10), 성장 목표, 일일 퀘스트 전부 완료, 던전 메달로 모아요. 아래에서 확정 뽑기, 선택 레벨업, 영구 특훈에 쓸 수 있어요. 모두 게임 안에서만 얻어요.'+
+    '<p class="sub" style="margin-top:8px">다이아는 10스테이지를 처음 돌파할 때마다(+3), 성장 보스(+6), 성장 목표, 일일 퀘스트 전부 완료, 던전 메달로 모아요. 아래에서 확정 뽑기, 선택 레벨업, 영구 특훈에 쓸 수 있어요. 모두 게임 안에서만 얻어요.'+
     (S.lk>Date.now()?'<br>골드 ×2 '+evLeft(S.lk)+' 남음':'')+(S.ak>Date.now()?'<br>공격력 ×2 '+evLeft(S.ak)+' 남음':'')+'</p></section><section class="panel"><h2 class="h2">상점</h2>';
   SHOP.forEach(function(it){
     var used=S.sd.b[it.id]||0,left=it.lim-used,have=it.pay==="dia"?S.dia:S.shards;
@@ -3398,17 +3365,17 @@ function shopHtml(){
       '<button class="btn small gold" data-a="shop" data-v="'+it.id+'"'+(left>0&&have>=it.cost?"":" disabled")+'>'+(it.pay==="dia"?"💎 ":"💠 ")+it.cost+'</button></div>';
   });
   h+='</section>';
-  h+='<section class="panel"><h2 class="h2">프리미엄 확정 뽑기</h2><p class="sub" style="margin-bottom:8px">다이아로 높은 등급만 나오는 뽑기를 해요. (하루 종류별 3회)</p>';
+  h+='<section class="panel"><h2 class="h2">프리미엄 확정 뽑기</h2><p class="sub" style="margin-bottom:8px">다이아로 높은 등급만 나오는 뽑기를 해요. (하루 종류별 1회)</p>';
   ["eq","sk","cm","pt"].forEach(function(k){
     var P=PREM[k],used=S.sd.b["pm_"+k]||0,left=P.lim-used;
     h+='<div class="irow"><div class="ie2">'+spr(P.e,16,2.4)+'</div><div class="ib"><div class="t">'+P.n+'</div><div class="d" style="margin:0">오늘 남은 구매 '+left+' / '+P.lim+'회</div></div><button class="btn small gold" data-a="prem" data-v="'+k+'"'+(left>0&&S.dia>=P.cost?"":" disabled")+'>💎 '+P.cost+'</button></div>';
   });
-  h+='</section><section class="panel"><h2 class="h2">선택 레벨업</h2><p class="sub" style="margin-bottom:8px">원하는 스킬·동료·펫을 골라 레벨을 올려요. 레벨이 높을수록 다이아가 더 들어요.</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+
+  h+='</section><section class="panel"><h2 class="h2">선택 레벨업</h2><p class="sub" style="margin-bottom:8px">원하는 스킬·동료·펫을 골라 레벨을 올려요. 레벨이 높을수록 다이아가 크게 늘고, 하루 4회까지만 할 수 있어요.</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+
     ["sk","cm","pt"].map(function(k){return '<button class="btn small" data-a="lvov" data-v="'+k+'">'+LVK[k].n+'</button>'}).join("")+'</div></section>';
-  h+='<section class="panel"><h2 class="h2">영구 특훈</h2><p class="sub" style="margin-bottom:8px">다이아로 영구 능력치를 올려요. 단계가 오를수록 비용이 늘어요. (최대 Lv.20)</p>';
+  h+='<section class="panel"><h2 class="h2">영구 특훈</h2><p class="sub" style="margin-bottom:8px">다이아로 영구 능력치를 올려요. 단계가 오를수록 비용이 크게 늘어요. (최대 Lv.15 · 하루 2회)</p>';
   DTR.forEach(function(r){
     var l=dtLv(r.id),mx=l>=r.max,c=dtCost(r);
-    h+='<div class="irow"><div class="ie2">'+spr(r.e,16,2.4)+'</div><div class="ib"><div class="t">'+r.n+' <span class="chip">Lv.'+l+' / '+r.max+'</span></div><div class="d" style="margin:0">'+r.u+f1(r.per*l)+r.sfx+(mx?"":" → "+f1(r.per*(l+1))+r.sfx)+'</div></div><button class="btn small gold" data-a="dtr" data-v="'+r.id+'"'+(mx||S.dia<c?" disabled":"")+'>'+(mx?"최대":"💎 "+c)+'</button></div>';
+    h+='<div class="irow"><div class="ie2">'+spr(r.e,16,2.4)+'</div><div class="ib"><div class="t">'+r.n+' <span class="chip">Lv.'+l+' / '+r.max+'</span></div><div class="d" style="margin:0">'+r.u+f1(r.per*l)+r.sfx+(mx?"":" → "+f1(r.per*(l+1))+r.sfx)+'</div></div><button class="btn small gold" data-a="dtr" data-v="'+r.id+'"'+(mx||S.dia<c||dayLeft("dtr")<=0?" disabled":"")+'>'+(mx?"최대":"💎 "+c)+'</button></div>';
   });
   return h+'</section>';
 }
@@ -3429,7 +3396,7 @@ function updateDots(){
 }
 function milestone(){
   var m=Math.floor(S.best/10);if(S.sm>=m)return;
-  var n=m-S.sm;S.sm=m;S.dia+=n*5;
+  var n=m-S.sm;S.sm=m;S.dia+=n*3;
   toast("스테이지 "+(m*10)+" 돌파! 💎 +"+(n*5));
 }
 function helpOv(){
@@ -3658,7 +3625,7 @@ function attInfo(){
 }
 function attend(){
   var a=attInfo();if(a.claimed)return;
-  S.att={last:a.k,streak:a.next};S.tickets+=ATR[a.next-1];if(a.next===7){S.dia+=20;toast("7일 연속 출석! 💎+20")}
+  S.att={last:a.k,streak:a.next};S.tickets+=ATR[a.next-1];if(a.next===7){S.dia+=12;toast("7일 연속 출석! 💎+12")}
   jingle([784,988,1318]);toast("출석 보상! 뽑기권 +"+ATR[a.next-1]);save();mailOv();uiTop();
 }
 
@@ -3714,19 +3681,24 @@ function pad2(n){return n<10?"0"+n:""+n}
 
 /* ---------- 회귀(환생) ---------- */
 var DTR=[
-  {id:"atk",n:"공격 특훈",e:"💪",base:40,per:3,u:"공격력 +",sfx:"%",max:20},
-  {id:"gold",n:"재력 특훈",e:"🪙",base:40,per:3,u:"골드 +",sfx:"%",max:20},
-  {id:"hp",n:"체력 단련",e:"❤️",base:30,per:3,u:"최대 체력 +",sfx:"%",max:20},
-  {id:"def",n:"방어 단련",e:"🛡️",base:30,per:4,u:"방어력 +",sfx:"",max:20},
-  {id:"spd",n:"민첩 특훈",e:"🏃",base:55,per:1.5,u:"공격 속도 +",sfx:"%",max:20}
+  {id:"atk",n:"공격 특훈",e:"💪",base:120,per:3,u:"공격력 +",sfx:"%",max:15},
+  {id:"gold",n:"재력 특훈",e:"🪙",base:120,per:3,u:"골드 +",sfx:"%",max:15},
+  {id:"hp",n:"체력 단련",e:"❤️",base:90,per:3,u:"최대 체력 +",sfx:"%",max:15},
+  {id:"def",n:"방어 단련",e:"🛡️",base:90,per:4,u:"방어력 +",sfx:"",max:15},
+  {id:"spd",n:"민첩 특훈",e:"🏃",base:160,per:1.5,u:"공격 속도 +",sfx:"%",max:15}
 ];
 function dtLv(id){return (S.dt&&S.dt[id])||0}
-function dtCost(r){return Math.round(r.base*Math.pow(1.28,dtLv(r.id)))}
+function dtCost(r){return Math.round(r.base*Math.pow(1.35,dtLv(r.id)))}
+var DAYCAP={dtr:2,lvup:4};
+function dayUsed(k){shopRoll();return S.sd.b["d_"+k]||0}
+function dayLeft(k){return DAYCAP[k]-dayUsed(k)}
+function dayUse(k){shopRoll();S.sd.b["d_"+k]=(S.sd.b["d_"+k]||0)+1}
 function dtBuy(id){
   var r=DTR.filter(function(x){return x.id===id})[0];if(!r)return;
   var l=dtLv(id);if(l>=r.max)return;
+  if(dayLeft("dtr")<=0){toast("오늘 영구 특훈은 "+DAYCAP.dtr+"회까지만 할 수 있어요");return}
   var c=dtCost(r);if(S.dia<c){toast("다이아가 부족해요 ("+c+"개 필요)");return}
-  S.dia-=c;if(!S.dt)S.dt={};S.dt[id]=l+1;
+  S.dia-=c;dayUse("dtr");if(!S.dt)S.dt={};S.dt[id]=l+1;
   jingle([660,880,1175]);toast(r.n+" Lv."+(l+1)+"!");save();renderTab();uiTop();
 }
 var RBMIN=20,RPB=5;
@@ -3790,7 +3762,7 @@ function claimDq(id){
   dqRoll();var d=S.dq;
   if(id==="all"){
     if(d.cl.all||!DQ.every(function(q){return d.cl[q.id]}))return;
-    d.cl.all=1;S.tickets+=3;S.dia+=10;toast("일일 퀘스트 완료 보너스! 뽑기권 +3 · 💎+10");
+    d.cl.all=1;S.tickets+=3;S.dia+=6;toast("일일 퀘스트 완료 보너스! 뽑기권 +3 · 💎+6");
   }else{
     var q=DQ.filter(function(x){return x.id===id})[0];
     if(!q||d.cl[id]||(d.c[id]||0)<q.max)return;
@@ -3812,11 +3784,12 @@ function dqHtml(){
   return h;
 }
 function questHtml(){
-  var h=subHtml("quest",[["dq","일일"],["mq","목표"],["dg","던전"],["ach","업적"],["rank","랭킹"]]);
+  var h=subHtml("quest",[["dq","일일"],["mq","목표"],["dg","던전"],["ach","업적"],["rank","랭킹"],["mini","미니게임"]]);
   if(sub.quest==="mq")return h+mqListHtml();
   if(sub.quest==="dg")return h+dgHtml();
   if(sub.quest==="ach")return h+achHtml();
   if(sub.quest==="rank")return h+rankHtml();
+  if(sub.quest==="mini")return h+miniHtml();
   return h+dqHtml();
 }
 
@@ -4044,8 +4017,8 @@ function rankHtml(){
   var h='<section class="panel gold"><h2 class="h2">내 전투력</h2><div class="stats" style="margin-top:0"><div class="st"><span>내 순위</span><b>'+(mine?mine.rk+"위":(S.nick?"집계 중":"닉네임 필요"))+'</b></div><div class="st"><span>전투력</span><b style="color:var(--gold)">'+fmt(pw)+'</b></div><div class="st"><span>최고 스테이지</span><b>'+S.best+'</b></div><div class="st"><span>대련 기록</span><b>'+(mine?mine.dw+"승 "+mine.dl+"패":"-")+'</b></div></div>'+
     '<p class="sub" style="margin-top:10px">순위는 <b>전투력</b> 순이에요. 전투력은 공격·속도·치명타·체력·방어·스킬·동료·펫을 모두 합친 지금의 실제 전투 능력이에요. 장비·동료·스킬을 바꾸면 바로 달라지고, 회귀하면 능력 레벨이 초기화되어 내려가요. 기록은 서버가 능력치를 검증해서 올려요.</p>'+
     (S.nick?'':'<button class="btn small gold wide" style="margin-top:8px" data-a="nick">닉네임 정하기</button>')+'</section>';
-  h+='<section class="panel"><h2 class="h2">친구와 대련</h2><p class="sub" style="margin-bottom:8px">친구 닉네임을 정확히 입력하면 서버가 두 사람의 전투력으로 대련 결과를 계산해요. 승패 기록만 남고 보상이나 순위 변화는 없어요.</p>'+
-    '<div class="row" style="gap:8px"><input class="inp" id="duel-nick" maxlength="10" placeholder="친구 닉네임" style="flex:1;min-width:0"><button class="btn small gold" data-a="duelgo">대련!</button></div></section>';
+  h+='<section class="panel"><h2 class="h2">친구와 대련</h2><p class="sub" style="margin-bottom:8px">친구 닉네임을 정확히 입력하세요. <b>자동 대련</b>은 서버가 전투력으로 결과를 계산하고, <b>직접 대련</b>은 방어·필살·회복을 직접 골라 싸워요. 승패 기록만 남고 보상이나 순위 변화는 없어요.</p>'+
+    '<div class="row" style="gap:8px"><input class="inp" id="duel-nick" maxlength="10" placeholder="친구 닉네임" style="flex:1;min-width:0"></div><div class="grid2" style="margin-top:8px"><button class="btn small" data-a="duelgo">⚔ 자동 대련</button><button class="btn small gold" data-a="duelmgo">🎮 직접 대련</button></div></section>';
   h+='<section class="panel"><h2 class="h2">전투력 랭킹</h2>';
   if(!RK.length)h+='<p class="sub">아직 등록된 기록이 없어요.</p>';
   var prev=0;
@@ -4054,7 +4027,7 @@ function rankHtml(){
     var ico=r.rk===1?"🥇":r.rk===2?"🥈":r.rk===3?"🥉":null;
     if(prev&&r.rk>prev+1)h+='<p class="sub" style="text-align:center;margin:4px 0">⋮</p>';
     prev=r.rk;
-    h+='<div class="irow"><div class="ie2">'+(ico?spr(ico,16,2.4):'<span class="px">'+r.rk+'</span>')+'</div><div class="ib"><div class="t">'+esc(nm)+(me?' <span class="chip">나</span>':"")+' <span class="chip num" style="color:var(--gold)">⚔ '+fmt(r.power)+'</span></div><div class="d num" style="margin:0">최고 스테이지 '+r.best+' · 회귀 '+r.rb+'회 · '+r.dw+'승 '+r.dl+'패</div>'+(me?'':'<button class="btn small ghost" style="margin-top:6px" data-a="duel" data-v="'+esc(r.nick)+'">⚔ 대련하기</button>')+'</div></div>';
+    h+='<div class="irow"><div class="ie2">'+(ico?spr(ico,16,2.4):'<span class="px">'+r.rk+'</span>')+'</div><div class="ib"><div class="t">'+esc(nm)+(me?' <span class="chip">나</span>':"")+' <span class="chip num" style="color:var(--gold)">⚔ '+fmt(r.power)+'</span></div><div class="d num" style="margin:0">최고 스테이지 '+r.best+' · 회귀 '+r.rb+'회 · '+r.dw+'승 '+r.dl+'패</div>'+(me?'':'<div class="grid2" style="margin-top:6px"><button class="btn small ghost" data-a="duel" data-v="'+esc(r.nick)+'">⚔ 자동</button><button class="btn small gold" data-a="duelm" data-v="'+esc(r.nick)+'">🎮 직접 대련</button></div>')+'</div></div>';
   });
   return h+'</section>';
 }
@@ -4117,6 +4090,173 @@ function duelPlay(d){
     snd(log[o+4]||log[o+5]?520:330,0.06,"square",0.03,200);
     i++;
   },Math.max(200,Math.min(600,14000/Math.max(1,n))));
+}
+
+
+/* ---------- 직접 조작 대련 ---------- */
+var DL=null;
+async function duelLiveStart(nick){
+  nick=String(nick||"").trim();
+  if(!DBH||!UID||!ACT){duelMsg("인터넷에 연결되어야 대련할 수 있어요.");return}
+  if(!S.nick){duelMsg("먼저 닉네임을 정해야 해요. (랭킹 탭에서 닉네임 정하기)");return}
+  if(!nick){toast("친구 닉네임을 입력해 주세요");return}
+  if(DUEL.busy)return;
+  DUEL.busy=true;
+  showOv('<div class="panel gold" style="text-align:center"><p class="banner">🎮 직접 대련</p><p style="margin:16px 0">상대를 찾는 중…</p></div>');
+  var d=null;
+  try{PWR.t=0;await cloudSave(true);d=await rpc("mj_duel_start",{p_id:UID,p_secret:ACT.secret,p_target:nick})}catch(e){d=null}
+  DUEL.busy=false;
+  if(!d||!d.ok){
+    var er=d&&d.err;
+    duelMsg(er==="notfound"?"「"+esc(nick)+"」 닉네임의 플레이어를 찾지 못했어요.":er==="rate"?"잠시 후에 다시 대련할 수 있어요. (3초 간격)":er==="nopower"?"내 전투력이 아직 서버에 저장되지 않았어요. 잠시 뒤에 다시 시도해 주세요.":er==="flagged"?"기록 검사 중인 계정은 대련할 수 없어요.":"대련을 시작하지 못했어요. 잠시 후 다시 시도해 주세요.");
+    return;
+  }
+  DL={id:d.id,A:d.a,B:d.b,pend:"atk",cg:0,cb:0,ch:0,busy:false,done:false,tick:0};
+  showOv('<div class="panel gold duel"><p class="banner">🎮 직접 대련</p><div class="dgrid">'+duelFighter("a",d.a.nick,d.a.power,d.a.best,d.a.skin)+'<div class="dvs">VS</div>'+duelFighter("b",d.b.nick,d.b.power,d.b.best,d.b.skin)+'</div>'+
+    '<p class="sub" id="d-msg" style="text-align:center;min-height:36px;margin:8px 0">버튼으로 행동을 고르세요. 고르지 않으면 기본 공격을 해요.</p>'+
+    '<div class="dact"><button class="btn small" id="da-guard" data-a="dact" data-v="guard">🛡 방어<small id="dc-guard"></small></button><button class="btn small hot" id="da-burst" data-a="dact" data-v="burst">⚡ 필살<small id="dc-burst"></small></button><button class="btn small" id="da-heal" data-a="dact" data-v="heal">💚 회복<small id="dc-heal"></small></button></div>'+
+    '<p class="sub" style="text-align:center;font-size:12px;margin:6px 0 0">방어: 받는 피해 70%↓(내 공격은 약해져요) · 필살: 한 번에 3배 · 회복: 체력 10%</p><div id="d-btn"></div></div>');
+  bar2("a",1);bar2("b",1);
+  if(DUEL.timer)clearInterval(DUEL.timer);
+  DUEL.timer=setInterval(dlTick,950);
+}
+function bar2(side,v){var el=$("dh-"+side);if(el)el.style.width=Math.max(0,Math.min(100,v*100))+"%"}
+function dlPop(side,txt,crit){
+  var el=$("dp-"+side);if(!el)return;
+  el.textContent=txt;el.className="dpop"+(crit?" crit":"")+" on";
+  setTimeout(function(){if(el)el.classList.remove("on")},300);
+}
+function dlAct(v){
+  if(!DL||DL.done)return;
+  if((v==="guard"&&DL.cg>0)||(v==="burst"&&DL.cb>0)||(v==="heal"&&DL.ch>0)){toast("아직 쓸 수 없어요");return}
+  DL.pend=DL.pend===v?"atk":v;
+  ["guard","burst","heal"].forEach(function(k){var b=$("da-"+k);if(b)b.classList.toggle("gold",DL.pend===k)});
+  snd(600,0.05,"square",0.03,800);
+}
+function dlCd(){
+  [["guard","cg"],["burst","cb"],["heal","ch"]].forEach(function(p){
+    var b=$("da-"+p[0]),c=DL[p[1]],sm=$("dc-"+p[0]);
+    if(b)b.disabled=c>0;
+    if(sm)sm.textContent=c>0?" ("+c+")":"";
+  });
+}
+async function dlTick(){
+  if(!DL||!$("dh-a")){clearInterval(DUEL.timer);DUEL.timer=null;return}
+  if(DL.busy||DL.done)return;
+  DL.busy=true;
+  var act=DL.pend;DL.pend="atk";
+  ["guard","burst","heal"].forEach(function(k){var b=$("da-"+k);if(b)b.classList.remove("gold")});
+  var r=null;
+  try{r=await rpc("mj_duel_act",{p_id:UID,p_secret:ACT.secret,p_duel:DL.id,p_act:act})}catch(e){r=null}
+  DL.busy=false;
+  if(!DL||!$("dh-a"))return;
+  if(!r||!r.ok){
+    if(r&&r.err==="rate"){DL.pend=act;return}
+    clearInterval(DUEL.timer);DUEL.timer=null;DL.done=true;
+    var m0=$("d-msg");if(m0)m0.textContent="연결이 끊겨 대련이 중단됐어요.";
+    var b0=$("d-btn");if(b0)b0.innerHTML='<button class="btn ghost wide" style="margin-top:8px" data-a="ovx">닫기</button>';
+    return;
+  }
+  DL.cg=r.cg;DL.cb=r.cb;DL.ch=r.ch;DL.tick=r.tick;
+  bar2("a",r.ha);bar2("b",r.hb);
+  if(r.da>0)dlPop("b","−"+(r.da*100<10?(r.da*100).toFixed(1):Math.round(r.da*100))+"%",r.ca||r.act==="burst");
+  if(r.db>0)dlPop("a","−"+(r.db*100<10?(r.db*100).toFixed(1):Math.round(r.db*100))+"%",r.cbk||r.bact==="burst");
+  var N={atk:"공격",guard:"방어",burst:"필살기",heal:"회복"};
+  var m=$("d-msg");if(m)m.innerHTML='나: <b>'+N[r.act]+'</b> · 상대: <b>'+N[r.bact]+'</b>';
+  snd(r.act==="burst"||r.bact==="burst"?520:330,0.06,"square",0.03,200);
+  dlCd();
+  if(r.done){
+    DL.done=true;clearInterval(DUEL.timer);DUEL.timer=null;
+    ["guard","burst","heal"].forEach(function(k){var bb=$("da-"+k);if(bb){bb.disabled=true;bb.classList.remove("gold")}});
+    var win=r.win==="a",B=DL.B;
+    if(m)m.innerHTML=win?'<b style="color:var(--gold);font-size:20px">승리!</b><br>'+esc(B.nick)+'님을 이겼어요':'<b style="font-size:20px">패배…</b><br>'+esc(B.nick)+'님이 더 강했어요';
+    var bt=$("d-btn");if(bt)bt.innerHTML='<div class="grid2" style="margin-top:8px"><button class="btn gold" data-a="duelm" data-v="'+esc(B.nick)+'">한 번 더</button><button class="btn ghost" data-a="ovx">닫기</button></div>';
+    jingle(win?[784,1046,1318]:[330,262]);fetchRank();
+  }
+}
+
+/* ---------- 미니게임: 과녁 챌린지 ---------- */
+var MG={on:false},MINI=[],MINIR=[[300,6],[600,12],[900,24],[1200,48]];
+async function fetchMini(){
+  if(!DBH)return;
+  try{
+    var rows=await rpc("mj_mini_rank",{p_id:UID});
+    MINI=(rows||[]).map(function(x){return {rk:Number(x.rk)||0,nick:String(x.nick||"").slice(0,10),best:Number(x.best)||0,hits:Number(x.hits)||0,me:!!x.me}});
+    if(tab==="quest"&&sub.quest==="mini")renderTab();
+  }catch(e){}
+}
+function miniHtml(){
+  var best=S.minib||0;
+  var h='<section class="panel gold"><h2 class="h2">과녁 챌린지</h2><p class="sub" style="margin:4px 0 10px">30초 동안 나타나는 과녁을 빠르게 눌러요. 연속으로 맞힐수록 점수가 커지지만 과녁이 작아지고 빨리 사라져요. 놓치면 연속이 끊겨요. (한 번에 최대 30점)</p>'+
+    '<div class="stats" style="margin-top:0"><div class="st"><span>내 최고 점수</span><b style="color:var(--gold)">'+best+'점</b></div><div class="st"><span>기록 달성 보상</span><b>'+MINIR.map(function(m){return (best>=m[0]?"✔":"")+m[0]}).join(" · ")+'</b></div></div>'+
+    '<p class="sub" style="margin-top:8px">처음 달성할 때마다 다이아 '+MINIR.map(function(m){return m[0]+"점 💎"+m[1]}).join(" · ")+'</p>'+
+    '<button class="btn gold wide" style="margin-top:10px" data-a="mgstart">도전하기</button></section>';
+  h+='<section class="panel"><h2 class="h2">미니게임 랭킹</h2>';
+  if(!DBH)h+='<p class="sub">인터넷에 연결되면 랭킹이 보여요.</p>';
+  else if(!MINI.length)h+='<p class="sub">아직 기록이 없어요. 첫 기록을 남겨 보세요!</p>';
+  MINI.forEach(function(r){
+    var ico=r.rk===1?"🥇":r.rk===2?"🥈":r.rk===3?"🥉":null;
+    h+='<div class="irow"><div class="ie2">'+(ico?spr(ico,16,2.4):'<span class="px">'+r.rk+'</span>')+'</div><div class="ib"><div class="t">'+esc(r.nick)+(r.me?' <span class="chip">나</span>':"")+' <span class="chip num" style="color:var(--gold)">'+r.best+'점</span></div><div class="d num" style="margin:0">명중 '+r.hits+'회</div></div></div>';
+  });
+  return h+'</section>';
+}
+function mgOv(){
+  showOv('<div class="panel gold mgp"><div class="mgh"><span>남은 시간 <b id="mg-t">30.0</b></span><span>점수 <b id="mg-s">0</b></span><span id="mg-c"></span></div><div class="mga" id="mg-a"></div><p class="sub" id="mg-m" style="text-align:center;margin:8px 0 0;min-height:20px">시작하면 과녁이 나타나요!</p><div id="mg-b" style="margin-top:8px"><button class="btn gold wide" data-a="mggo">시작</button></div></div>');
+}
+function mgStart(){
+  if(MG.timer)clearInterval(MG.timer);
+  MG={on:true,t0:Date.now(),score:0,hits:0,combo:0,maxc:0,tg:null,next:Date.now()+300};
+  var bt=$("mg-b");if(bt)bt.innerHTML="";
+  var m=$("mg-m");if(m)m.textContent="";
+  MG.timer=setInterval(mgTick,40);
+}
+function mgTick(){
+  var area=$("mg-a");
+  if(!area){clearInterval(MG.timer);MG.on=false;return}
+  var now=Date.now(),left=30-(now-MG.t0)/1000;
+  $("mg-t").textContent=Math.max(0,left).toFixed(1);
+  if(left<=0){mgEnd();return}
+  if(MG.tg&&now>=MG.tg.exp){
+    if(MG.tg.el&&MG.tg.el.parentNode)MG.tg.el.parentNode.removeChild(MG.tg.el);
+    MG.tg=null;MG.combo=0;MG.next=now+150;$("mg-c").textContent="";snd(220,0.08,"sawtooth",0.03,120);
+  }
+  if(!MG.tg&&now>=MG.next)mgSpawn();
+}
+function mgSpawn(){
+  var area=$("mg-a");if(!area)return;
+  var sz=Math.max(34,60-MG.combo*1.2),life=Math.max(650,1300-MG.combo*30);
+  var w=area.clientWidth-sz,h=area.clientHeight-sz;
+  var el=document.createElement("div");
+  el.className="mgt";el.style.width=el.style.height=sz+"px";
+  el.style.left=(Math.random()*w)+"px";el.style.top=(Math.random()*h)+"px";
+  var tg={el:el,exp:Date.now()+life,life:life,t:Date.now()};
+  el.addEventListener("pointerdown",function(ev){ev.preventDefault();ev.stopPropagation();mgHit(tg)});
+  area.appendChild(el);MG.tg=tg;
+}
+function mgHit(tg){
+  if(!MG.on||MG.tg!==tg)return;
+  var pts=10+Math.min(20,MG.combo*2);
+  MG.score+=pts;MG.hits++;MG.combo++;MG.maxc=Math.max(MG.maxc,MG.combo);
+  $("mg-s").textContent=MG.score;$("mg-c").textContent=MG.combo>1?MG.combo+"연속!":"";
+  if(tg.el.parentNode)tg.el.parentNode.removeChild(tg.el);
+  MG.tg=null;MG.next=Date.now()+120;
+  snd(520+Math.min(600,MG.combo*30),0.06,"square",0.04,900);
+}
+async function mgEnd(){
+  clearInterval(MG.timer);MG.on=false;
+  var a=$("mg-a");if(a)a.innerHTML="";
+  var sc=MG.score,hits=MG.hits,nb=sc>(S.minib||0),msg="";
+  var got=0;
+  MINIR.forEach(function(m){if(sc>=m[0]&&!(S.minim&&S.minim[m[0]])){if(!S.minim)S.minim={};S.minim[m[0]]=1;S.dia+=m[1];got+=m[1]}});
+  if(nb)S.minib=sc;
+  save();uiTop();
+  jingle(nb?[523,659,784,1046]:[523,659]);
+  var m=$("mg-m");
+  if(m)m.innerHTML='<b style="font-size:20px;color:var(--gold)">'+sc+'점</b> · 명중 '+hits+'회 · 최대 '+MG.maxc+'연속'+(nb?'<br>🎉 개인 신기록!':"")+(got?'<br>기록 보상 💎 +'+got:"");
+  var bt=$("mg-b");if(bt)bt.innerHTML='<div class="grid2"><button class="btn gold" data-a="mggo">다시 도전</button><button class="btn ghost" data-a="ovx">닫기</button></div>';
+  if(DBH&&UID&&ACT&&hits>0){
+    try{await rpc("mj_mini_set",{p_id:UID,p_secret:ACT.secret,p_score:sc,p_hits:hits});fetchMini()}catch(e){}
+  }
 }
 
 function mailOv(msg){
@@ -4540,11 +4680,9 @@ function needTxt(sk){
 /* ---------- 틱 ---------- */
 function step(dt){
   SKL.forEach(function(sk){
-    if(cds[sk.id]>0){cds[sk.id]=Math.max(0,cds[sk.id]-dt);if(cds[sk.id]<=0)RDY[sk.id]=0}
-    else if(RDY[sk.id]!==undefined&&RDY[sk.id]<9)RDY[sk.id]+=dt;
+    if(cds[sk.id]>0)cds[sk.id]=Math.max(0,cds[sk.id]-dt);
     if(eff[sk.id]>0)eff[sk.id]=Math.max(0,eff[sk.id]-dt);
   });
-  wkTick(dt);
   refreshSF();refreshEV();
   if(S.stage>S.rbest){S.rbest=S.stage;S.stuckT=0}
   if(!paused())S.stuckT=(S.stuckT||0)+dt;
@@ -4997,6 +5135,7 @@ function renderTab(){
   else h=questHtml();
   v.innerHTML=h;
   if(tab==="quest"&&sub.quest==="rank"&&DBH&&Date.now()-rkT>15000)fetchRank();
+  if(tab==="quest"&&sub.quest==="mini"&&DBH&&Date.now()-(window.__mkT||0)>15000){window.__mkT=Date.now();fetchMini()}
   if(tab==="char"&&sub.char==="up")uiGrow();
   else if(tab==="char"&&sub.char==="info")uiInfo();
   else if(tab==="gacha")uiGacha();
@@ -5063,7 +5202,6 @@ function uiBattle(){
     el.disabled=cd>0;
     el.classList.toggle("act",on);
     el.classList.toggle("rdy",cd<=0&&!on);
-    el.classList.toggle("pf",perfectOk(id)&&!on);
     $("cdm-"+s).style.height=cd>0?Math.min(100,cd/tot*100)+"%":"0";
     $("cdt-"+s).textContent=cd>0?Math.ceil(cd):on?Math.ceil(eff[id]):"";
   }
@@ -5092,8 +5230,7 @@ document.addEventListener("click",function(e){
   if(a!=="reset")resetArmed=false;
   if(a==="tab"){tab=v;renderTab();window.scrollTo(0,0);snd(440,0.04,"square",0.025)}
   else if(a==="sub"){var p=v.split(":");sub[p[0]]=p[1];renderTab()}
-  else if(a==="cast")useSkill(slotAt(parseInt(v,10)),true);
-  else if(a==="wk")wkHit();
+  else if(a==="cast")useSkill(slotAt(parseInt(v,10)));
   else if(a==="mup")magicUp(v);
   else if(a==="boss"){enterBoss();uiBattle()}
   else if(a==="tog"){
@@ -5171,6 +5308,11 @@ document.addEventListener("click",function(e){
   else if(a==="mq")claimMq();
   else if(a==="shop")shopBuy(v);
   else if(a==="prem")premPull(v);
+  else if(a==="mgstart")mgOv();
+  else if(a==="mggo")mgStart();
+  else if(a==="duelm")duelLiveStart(v);
+  else if(a==="duelmgo"){var dn2=$("duel-nick");duelLiveStart(dn2?dn2.value:"")}
+  else if(a==="dact")dlAct(v);
   else if(a==="lvov")lvOv(v);
   else if(a==="dlv")dlvBuy(v);
   else if(a==="dtr")dtBuy(v);
@@ -5203,7 +5345,7 @@ function boot(){
   if(!S.petG){S.petG=true;if(Object.keys(S.pet).length===0){S.pet.coco={n:1,lv:1};if(!S.pets[0])S.pets[0]="coco";petNew=true;refreshCM();paintParty()}}
   if(S.balNote){
     S.balNote=false;save();
-    setTimeout(function(){showOv('<div class="panel gold"><p class="banner">밸런스 개편 안내</p><p style="margin:0 0 8px;text-align:center">정식 출시를 앞두고 난이도 곡선을 다시 맞췄어요.</p><div class="tbl" style="margin:8px 0"><table><tr><th>변경</th><th>내용</th></tr><tr><td>스테이지 난이도</td><td>초·중반이 더 길고 단단해졌어요</td></tr><tr><td>후반부</td><td>정체 구간을 풀어 끝까지 도전할 수 있어요</td></tr><tr><td>전투력</td><td>랭킹은 전투력 순, 친구와 대련 가능</td></tr><tr><td>회귀 점수</td><td>점수가 많을수록 효율이 줄어요. 상점에 쓴 점수는 전부 돌려드렸으니 새로 골라 주세요</td></tr><tr><td>스킨 · 시너지</td><td>스킨 능력치를 비슷하게 맞추고, A·B·C 조합 시너지를 늘렸어요</td></tr></table></div><p class="sub" style="text-align:center;margin-bottom:12px">약점 노리기, 퍼펙트 타이밍 같은 직접 조작 보너스도 생겼어요.<br>(기존 플레이어 보상: 뽑기권 +10 · 다이아 +100 · 조각 +50)</p><button class="btn gold wide" data-a="ovx">알겠어요</button></div>')},900);
+    setTimeout(function(){showOv('<div class="panel gold"><p class="banner">밸런스 개편 안내</p><p style="margin:0 0 8px;text-align:center">정식 출시를 앞두고 난이도 곡선을 다시 맞췄어요.</p><div class="tbl" style="margin:8px 0"><table><tr><th>변경</th><th>내용</th></tr><tr><td>스테이지 난이도</td><td>초·중반이 더 길고 단단해졌어요</td></tr><tr><td>후반부</td><td>정체 구간을 풀어 끝까지 도전할 수 있어요</td></tr><tr><td>전투력</td><td>랭킹은 전투력 순, 친구와 대련 가능</td></tr><tr><td>회귀 점수</td><td>점수가 많을수록 효율이 줄어요. 상점에 쓴 점수는 전부 돌려드렸으니 새로 골라 주세요</td></tr><tr><td>스킨 · 시너지</td><td>스킨 능력치를 비슷하게 맞추고, A·B·C 조합 시너지를 늘렸어요</td></tr></table></div><p class="sub" style="text-align:center;margin-bottom:12px">과녁 챌린지(미니게임 기록 랭킹)와 직접 조작 대련이 생겼어요. 다이아는 수급과 사용처를 함께 조정했어요.<br>(기존 플레이어 보상: 뽑기권 +10 · 다이아 +100 · 조각 +50)</p><button class="btn gold wide" data-a="ovx">알겠어요</button></div>')},900);
   }
   if(!S.welcome){
     S.welcome=true;S.tickets+=5;S.lastGift=now;
