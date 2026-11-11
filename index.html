@@ -748,6 +748,10 @@ body,.panel,.btn{text-shadow:none}
 .tier.k-L{background:linear-gradient(90deg,#FFD23F,#7A5CFF,#4CE878,#B84AB8,#FF4D5E,#FFFFFF);color:#1A1030;animation:rb 1.2s steps(6) infinite}
 @keyframes archglow2{0%{filter:drop-shadow(0 0 3px #FFD23F) drop-shadow(0 0 8px #FFD23F)}14%{filter:drop-shadow(0 0 3px #7A5CFF) drop-shadow(0 0 8px #7A5CFF)}28%{filter:drop-shadow(0 0 3px #9A9AAE) drop-shadow(0 0 8px #9A9AAE)}42%{filter:drop-shadow(0 0 3px #4CE878) drop-shadow(0 0 8px #4CE878)}56%{filter:drop-shadow(0 0 3px #B84AB8) drop-shadow(0 0 8px #B84AB8)}70%{filter:drop-shadow(0 0 3px #FF8ACD) drop-shadow(0 0 8px #FF8ACD)}84%{filter:drop-shadow(0 0 3px #FF4D5E) drop-shadow(0 0 8px #FF4D5E)}100%{filter:drop-shadow(0 0 3px #FFFFFF) drop-shadow(0 0 8px #FFFFFF)}}
 .pxi.arch2{animation:archglow2 4s steps(16) infinite}
+
+.subtabs .btn{position:relative}
+.subtabs .sdot{top:3px;right:3px;width:10px;height:10px;background:#FF3B3B;box-shadow:0 0 0 2px #1A110B}
+.subtabs .sdot[hidden]{display:none}
 </style>
 
 <div class="wrap">
@@ -2060,7 +2064,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v48";
+var BUILD="v49";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -3139,6 +3143,8 @@ function updateDots(){
   f.gacha=S.tickets>0;
   var ds=document.querySelectorAll("#nav .dot");
   for(var i=0;i<ds.length;i++)ds[i].hidden=!f[ds[i].getAttribute("data-d")];
+  var sd=document.querySelectorAll(".sdot");
+  for(var k=0;k<sd.length;k++)sd[k].hidden=!subDot(sd[k].getAttribute("data-sk"),sd[k].getAttribute("data-si"));
 }
 function milestone(){
   var m=Math.floor(S.best/10);if(S.sm>=m)return;
@@ -3993,8 +3999,22 @@ function navHtml(){
   var N=[["char","🎓","캐릭터"],["skill","✨","스킬"],["gear","🎒","장비"],["party","👥","동료"],["gacha","🎰","뽑기"]];
   return N.map(function(x){return '<button class="tab'+(tab===x[0]?" on":"")+'" data-a="tab" data-v="'+x[0]+'">'+spr(x[1],16,2)+x[2]+'<span class="dot" data-d="'+x[0]+'" hidden></span></button>'}).join("");
 }
+function subDot(key,id){
+  try{
+    if(key==="quest"){
+      if(id==="dq")return dqCanClaim()||S.rl!==dayKey(new Date());
+      if(id==="mq")return mqCan();
+      if(id==="ach")return AC.some(function(a){return !S.ach[a.id]&&a.cur()>=a.max});
+    }
+    if(key==="party"){
+      if(id==="cm")return (S.party.indexOf(null)>=0&&Object.keys(S.cmp).some(function(c){return S.party.indexOf(c)<0&&c!=="juyul"}))||Object.keys(JOBR).some(function(c){return jobState(c)==="ready"});
+      if(id==="pt")return S.pets.indexOf(null)>=0&&Object.keys(S.pet).some(function(c){return S.pets.indexOf(c)<0});
+    }
+  }catch(e){}
+  return false;
+}
 function subHtml(key,list){
-  return '<div class="subtabs">'+list.map(function(x){return '<button class="btn small ghost'+(sub[key]===x[0]?" on":"")+'" data-a="sub" data-v="'+key+':'+x[0]+'">'+x[1]+"</button>"}).join("")+"</div>";
+  return '<div class="subtabs">'+list.map(function(x){return '<button class="btn small ghost'+(sub[key]===x[0]?" on":"")+'" data-a="sub" data-v="'+key+':'+x[0]+'">'+x[1]+'<span class="dot sdot" data-sk="'+key+'" data-si="'+x[0]+'"'+(subDot(key,x[0])?"":" hidden")+'></span></button>'}).join("")+"</div>";
 }
 var UQ={
   memo:{d:function(p){return "5초 뒤 같은 피해를 50% 한 번 더 (복습)"},run:function(c,p){var d=nukeDmg(SKM.memo,c,p)*0.5;setTimeout(function(){if(F){popAt("복습! "+fmt(d),"big",0.7,0.35);deal(d)}},5000)}},
