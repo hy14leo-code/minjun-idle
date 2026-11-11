@@ -898,20 +898,10 @@ var ITEMS=[
   {id:"diploma",n:"졸업장 갑옷",e:"🎓",t:"ultra",slot:"armor",fx:{atk:80,spd:30,time:12,cd:10},d:"끝까지 버틴 자만이 입을 수 있다."},
   {id:"perfect",n:"만점 성적표",e:"💯",t:"ultra",slot:"acc",fx:{gold:120,crit:20,friend:80,cd:15},d:"부모님 얼굴에 웃음꽃이 핀다."},
   {id:"bag",n:"가방",e:"🎒",t:"common",slot:"armor",fx:{hp:12,def:6},d:"책이 가득 들어 있어서 무겁다."},
-  {id:"lunch",n:"도시락",e:"🍱",t:"rare",slot:"acc",fx:{hp:30,def:8,friend:10},d:"엄마가 싸 주신 든든한 한 끼."},
   {id:"textbook",n:"두꺼운 교과서",e:"📚",t:"epic",slot:"armor",fx:{def:50,hp:30,time:3},d:"막으면 어지간한 건 다 막는다."},
-  {id:"ruler",n:"30cm 자",e:"📏",t:"common",slot:"weapon",fx:{atk:7,def:2},d:"손바닥 맞는 소리가 일품이다."},
   {id:"gymsuit",n:"체육복",e:"🥋",t:"common",slot:"armor",fx:{hp:14,def:6,spd:3},d:"무릎이 약간 늘어났다."},
   {id:"eraser",n:"지우개",e:"🧼",t:"common",slot:"acc",fx:{gold:6,hp:6},d:"실수를 깨끗이 지워 준다."},
   {id:"triangle",n:"삼각자",e:"📐",t:"rare",slot:"weapon",fx:{atk:20,crit:5},d:"모서리가 꽤 아프다."},
-  {id:"vest",n:"교복 조끼",e:"🦺",t:"rare",slot:"armor",fx:{hp:32,def:16,time:2},d:"단단하게 여민 단추가 든든하다."},
-  {id:"keyring",n:"열쇠고리",e:"🔑",t:"rare",slot:"acc",fx:{gold:16,hp:12,friend:12},d:"가방에서 짤랑짤랑 소리가 난다."},
-  {id:"bat",n:"체육관 배트",e:"🏏",t:"epic",slot:"weapon",fx:{atk:48,crit:8},pr:{k:"burst",c:7,m:5,n:"풀스윙",e:"⚾"},d:"한 방 제대로 휘두르면 시원하다."},
-  {id:"shield",n:"방탄 책가방",e:"🛡️",t:"epic",slot:"armor",fx:{def:65,hp:45},pr:{k:"reflect",v:12,n:"가방 모서리"},d:"받아도 튕겨 낸다."},
-  {id:"shades",n:"선글라스",e:"🕶️",t:"epic",slot:"acc",fx:{crit:13,atk:18,spd:8},pr:{k:"dodge",v:8,n:"눈부신 시선"},d:"쓰는 순간 분위기가 바뀐다."},
-  {id:"chalk",n:"마법의 분필",e:"🪄",t:"legend",slot:"weapon",fx:{atk:105,cd:18,spd:15},pr:{k:"burst",c:7,m:9,n:"칠판 번쩍",e:"🧙"},d:"판서가 끝나면 몬스터도 사라진다."},
-  {id:"labcoat",n:"과학실 가운",e:"🥼",t:"legend",slot:"armor",fx:{def:95,hp:90,time:8},pr:{k:"revive",v:45,n:"실험 정신"},d:"약품이 튀어도 끄떡없다."},
-  {id:"medal",n:"금메달",e:"🥇",t:"legend",slot:"acc",fx:{gold:70,atk:35,time:6},pr:{k:"gb",c:6,m:10,n:"메달 광택"},d:"목에 걸면 어깨가 펴진다."},
   {id:"sword",n:"수능 만점의 검",e:"🗡️",t:"ultra",slot:"weapon",fx:{atk:175,crit:30,spd:35},pr:{k:"burst",c:9,m:10,n:"만점의 일격",e:"💯"},d:"풀지 못하는 문제는 베어 버린다."},
   {id:"attend",n:"개근상 갑옷",e:"🏅",t:"ultra",slot:"armor",fx:{def:160,hp:160,atk:60,time:10},pr:{k:"reflect",v:35,n:"개근의 가시"},d:"단 하루도 빠지지 않은 자의 갑옷."},
   {id:"crown",n:"학급회장 왕관",e:"👑",t:"ultra",slot:"acc",fx:{gold:140,atk:60,crit:25,friend:90,cd:18},pr:{k:"killheal",v:12,n:"회장의 위엄"},d:"교실 맨 앞에서 모두를 이끈다."},
@@ -1903,7 +1893,14 @@ function sceneUrl(i){
 var KEY="minjun-idle-v1";
 function fresh(){return {v:8,gold:0,tickets:0,stage:1,best:1,majors:0,up:[0,0,0,0,0,0,0],inv:{},equip:{weapon:null,armor:null,acc:null},shards:0,pity:0,pulls:0,title:null,tl:false,skin:"basic",autoBoss:true,autoSkill:true,bossReady:false,welcome:false,lastGift:0,last:Date.now(),gps:0,ending:null,kt:0,bk:0,ach:{},sfx:true,
   tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,bmax:0,dgx:0,rcd:[],gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],ms:[null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
-function migMagic(o){
+var GONE_ITEMS={ruler:1,vest:2,keyring:2,lunch:2,bat:4,shield:4,shades:4,chalk:8,labcoat:8,medal:8};
+function migItems(o){
+  var n=0,k;
+  if(o.inv)for(k in GONE_ITEMS)if(o.inv[k]){delete o.inv[k];n+=GONE_ITEMS[k]}
+  if(o.equip)for(var sl in o.equip)if(o.equip[sl]&&GONE_ITEMS[o.equip[sl]])o.equip[sl]=null;
+  if(n)o.shards=(o.shards||0)+n;
+}
+function migMagic(o){migItems(o);
   if(!Array.isArray(o.ms))o.ms=[null,null];
   while(o.ms.length<2)o.ms.push(null);
   for(var i=0;i<o.slots.length;i++){
@@ -2134,7 +2131,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v59";
+var BUILD="v60";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
