@@ -785,6 +785,12 @@ body,.panel,.btn{text-shadow:none}
 .dpop{position:absolute;left:0;right:0;top:-2px;font-family:var(--f-d);font-size:17px;color:#fff;text-shadow:0 2px 0 #000;opacity:0;pointer-events:none}
 .dpop.on{opacity:1;transform:translateY(-8px);transition:transform .25s}
 .dpop.crit{color:#FFD84D;font-size:22px}
+
+.wks{position:absolute;z-index:6;border:0;border-radius:50%;padding:0;transform:translate(-50%,-50%);background:radial-gradient(circle,#FFF6B0 0 18%,#FF4D5E 20% 42%,transparent 44%),repeating-radial-gradient(circle,#FFD84D 0 3px,transparent 3px 8px);box-shadow:0 0 0 3px #1A1030,0 0 14px 4px rgba(255,90,90,.8);animation:wkp .5s steps(4) infinite}
+.wks[hidden]{display:none}
+@keyframes wkp{50%{filter:brightness(1.5);transform:translate(-50%,-50%) scale(1.12)}}
+.skb.pf{box-shadow:inset 0 0 0 3px #FFD84D,0 0 0 3px #FFD84D,0 0 14px 4px rgba(255,216,77,.9)!important;animation:pfp .5s steps(4) infinite}
+@keyframes pfp{50%{filter:brightness(1.45)}}
 </style>
 
 <div class="wrap">
@@ -817,6 +823,7 @@ body,.panel,.btn{text-shadow:none}
         <div class="wave"><div class="en e2" id="b-e2"><span class="sprite"></span></div><div class="en e1" id="b-e1"><span class="sprite"></span></div><div class="en e0" id="b-e0"><span class="sprite"></span></div></div>
         <div class="eshadow"></div>
       </div>
+      <button class="wks" id="b-wk" data-a="wk" hidden aria-label="약점"></button>
       <div class="combo" id="b-combo"></div><div class="fx" id="b-fx"></div>
       <div class="kop" id="b-ko" hidden><b>쓰러졌어요!</b><div class="row" style="justify-content:center;gap:8px;margin-top:6px"><button class="btn small gold" data-a="koretry">이 보스 재도전</button><button class="btn small ghost" data-a="koback">아래에서 파밍</button></div><i id="b-kot"></i></div>
     </section>
@@ -1144,39 +1151,39 @@ var TT={}; TITLES.forEach(function(t){TT[t.id]=t});
 /* 스킨: 성장 보스를 잡을 때마다 하나씩 열린다 */
 var SKINS=[
   {id:"basic",n:"기본 교복",need:0,fx:{},o:"#2E4FA3",pants:"#26305C",hair:"#2B2340",look:"collar"},
-  {id:"gym",n:"체육복",need:1,fx:{spd:10},o:"#E8416A",pants:"#B72D51",hair:"#2B2340",look:"gym"},
-  {id:"hood",n:"후드 생존자",need:2,fx:{gold:15},o:"#5B6585",pants:"#2F3555",hair:"#2B2340",look:"hood"},
-  {id:"gown",n:"졸업 가운",need:3,fx:{crit:8,cd:5},o:"#22223F",pants:"#22223F",hair:"#2B2340",look:"gown"},
-  {id:"hero",n:"용사의 망토",need:4,fx:{atk:25},o:"#7C8BC9",pants:"#3A4690",hair:"#2B2340",look:"hero"},
-  {id:"gold",n:"황금 정장",need:5,fx:{atk:20,gold:20},o:"#E0A417",pants:"#B07C0B",hair:"#2B2340",look:"gold"},
-  {id:"crim",n:"파워 레인저",need:0,rb:2,fx:{atk:25,cd:5},o:"#E0262E",pants:"#B01B24",hair:"#2B2340",look:"ranger"},
-  {id:"flame",n:"불꽃 체육복",need:0,rb:3,fx:{atk:30,spd:10},o:"#FF7A1F",pants:"#B8420F",hair:"#2B2340",look:"gym"},
-  {id:"topless",n:"상탈",need:0,rb:6,fx:{atk:35,spd:10},o:"#FFB27A",pants:"#2E4FA3",hair:"#2B2340",look:"topless"},
-  {id:"royal",n:"왕실 정장",need:0,rb:8,fx:{atk:60,gold:40},o:"#8E4DE0",pants:"#5A2BA6",hair:"#2B2340",look:"gold"},
-  {id:"bald",n:"빡빡이",need:0,rb:2,fx:{atk:15,def:15},o:"#C9CED8",pants:"#555B6A",hair:"#2B2340",look:"bald"},
-  {id:"yakuza",n:"장발 야쿠자",need:0,rb:4,fx:{atk:35,crit:12,def:30},o:"#14141C",pants:"#14141C",hair:"#1A1020",look:"yakuza"},
-  {id:"dad",n:"육아 아빠",need:0,rb:3,fx:{atk:20,def:20,hp:25},o:"#2B3556",pants:"#555B6A",hair:"#2B2340",look:"collar"},
-  {id:"hellk",n:"지옥 기사",need:0,hell:1,fx:{atk:70,def:40,hp:30},o:"#3A0E14",pants:"#1A0608",hair:"#2B2340",look:"hellk"},
-  {id:"reinc",n:"환생자의 법의",need:0,reinc:1,fx:{atk:90,gold:80,crit:20,def:50,hp:50},o:"#F4EBD0",pants:"#E2D2A0",hair:"#2B2340",look:"gown"},
-  {id:"mage_fire",n:"불마법사",need:0,el:"fire",fx:{atk:45,crit:10},o:"#E8482A",pants:"#5A1A10",hair:"#2B2340",look:"mage"},
-  {id:"mage_water",n:"물마법사",need:0,el:"water",fx:{hp:40,def:30},o:"#2F7FE0",pants:"#12305A",hair:"#2B2340",look:"mage"},
-  {id:"mage_wind",n:"바람마법사",need:0,el:"wind",fx:{spd:30,cd:10},o:"#3FCB8A",pants:"#16503A",hair:"#2B2340",look:"mage"},
-  {id:"mage_earth",n:"땅마법사",need:0,el:"earth",fx:{def:60,hp:30},o:"#A8793A",pants:"#50381A",hair:"#2B2340",look:"mage"},
-  {id:"mage_lightning",n:"번개마법사",need:0,el:"lightning",fx:{crit:20,spd:20},o:"#E8C82A",pants:"#5A4A10",hair:"#2B2340",look:"mage"},
+  {id:"gym",n:"체육복",need:1,fx:{spd:40},o:"#E8416A",pants:"#B72D51",hair:"#2B2340",look:"gym"},
+  {id:"hood",n:"후드 생존자",need:2,fx:{gold:100},o:"#5B6585",pants:"#2F3555",hair:"#2B2340",look:"hood"},
+  {id:"gown",n:"졸업 가운",need:3,fx:{crit:18,cd:12},o:"#22223F",pants:"#22223F",hair:"#2B2340",look:"gown"},
+  {id:"hero",n:"용사의 망토",need:4,fx:{atk:60},o:"#7C8BC9",pants:"#3A4690",hair:"#2B2340",look:"hero"},
+  {id:"gold",n:"황금 정장",need:5,fx:{atk:38,gold:38},o:"#E0A417",pants:"#B07C0B",hair:"#2B2340",look:"gold"},
+  {id:"crim",n:"파워 레인저",need:0,rb:2,fx:{atk:43,cd:9},o:"#E0262E",pants:"#B01B24",hair:"#2B2340",look:"ranger"},
+  {id:"flame",n:"불꽃 체육복",need:0,rb:3,fx:{atk:40,spd:13},o:"#FF7A1F",pants:"#B8420F",hair:"#2B2340",look:"gym"},
+  {id:"topless",n:"상탈",need:0,rb:6,fx:{atk:42,spd:12},o:"#FFB27A",pants:"#2E4FA3",hair:"#2B2340",look:"topless"},
+  {id:"royal",n:"왕실 정장",need:0,rb:8,fx:{atk:43,gold:29},o:"#8E4DE0",pants:"#5A2BA6",hair:"#2B2340",look:"gold"},
+  {id:"bald",n:"빡빡이",need:0,rb:2,fx:{atk:40,def:40},o:"#C9CED8",pants:"#555B6A",hair:"#2B2340",look:"bald"},
+  {id:"yakuza",n:"장발 야쿠자",need:0,rb:4,fx:{atk:28,crit:10,def:24},o:"#14141C",pants:"#14141C",hair:"#1A1020",look:"yakuza"},
+  {id:"dad",n:"육아 아빠",need:0,rb:3,fx:{atk:28,def:28,hp:35},o:"#2B3556",pants:"#555B6A",hair:"#2B2340",look:"collar"},
+  {id:"hellk",n:"지옥 기사",need:0,hell:1,fx:{atk:41,def:24,hp:18},o:"#3A0E14",pants:"#1A0608",hair:"#2B2340",look:"hellk"},
+  {id:"reinc",n:"환생자의 법의",need:0,reinc:1,fx:{atk:26,gold:23,crit:6,def:14,hp:14},o:"#F4EBD0",pants:"#E2D2A0",hair:"#2B2340",look:"gown"},
+  {id:"mage_fire",n:"불마법사",need:0,el:"fire",fx:{atk:42,crit:9},o:"#E8482A",pants:"#5A1A10",hair:"#2B2340",look:"mage"},
+  {id:"mage_water",n:"물마법사",need:0,el:"water",fx:{hp:69,def:51},o:"#2F7FE0",pants:"#12305A",hair:"#2B2340",look:"mage"},
+  {id:"mage_wind",n:"바람마법사",need:0,el:"wind",fx:{spd:28,cd:9},o:"#3FCB8A",pants:"#16503A",hair:"#2B2340",look:"mage"},
+  {id:"mage_earth",n:"땅마법사",need:0,el:"earth",fx:{def:80,hp:40},o:"#A8793A",pants:"#50381A",hair:"#2B2340",look:"mage"},
+  {id:"mage_lightning",n:"번개마법사",need:0,el:"lightning",fx:{crit:17,spd:17},o:"#E8C82A",pants:"#5A4A10",hair:"#2B2340",look:"mage"},
   {id:"mage_ice",n:"얼음마법사",need:0,el:"ice",fx:{def:25,cd:15,time:6},o:"#7FD0F0",pants:"#2A5A78",hair:"#2B2340",look:"mage"},
-  {id:"mage_light",n:"빛마법사",need:0,el:"light",fx:{gold:40,hp:20,atk:20},o:"#FFE88A",pants:"#8A7A30",hair:"#2B2340",look:"mage"},
-  {id:"mage_dark",n:"어둠마법사",need:0,el:"dark",fx:{atk:60,crit:15},o:"#7A4AC0",pants:"#2A1650",hair:"#2B2340",look:"mage"},
-  {id:"mage_time",n:"시간마법사",need:0,el:"time",fx:{atk:60,cd:20,time:8},o:"#FFD23F",pants:"#5A4A10",hair:"#2B2340",look:"mage"},
-  {id:"mage_space",n:"공간마법사",need:0,el:"space",fx:{atk:50,spd:25,crit:12},o:"#7A5CFF",pants:"#2A1E70",hair:"#2B2340",look:"mage"},
-  {id:"mage_gravity",n:"중력마법사",need:0,el:"gravity",fx:{def:80,hp:40,atk:30},o:"#9A9AAE",pants:"#3A3A4A",hair:"#2B2340",look:"mage"},
-  {id:"mage_life",n:"생명마법사",need:0,el:"life",fx:{hp:80,def:30,gold:30},o:"#4CE878",pants:"#165A2A",hair:"#2B2340",look:"mage"},
-  {id:"mage_death",n:"죽음마법사",need:0,el:"death",fx:{atk:80,crit:20},o:"#B84AB8",pants:"#401A40",hair:"#2B2340",look:"mage"},
-  {id:"mage_dream",n:"꿈마법사",need:0,el:"dream",fx:{gold:70,cd:20,hp:30},o:"#FF8ACD",pants:"#702A58",hair:"#2B2340",look:"mage"},
-  {id:"mage_chaos",n:"혼돈마법사",need:0,el:"chaos",fx:{atk:60,crit:25,spd:25},o:"#FF4D5E",pants:"#6A1A24",hair:"#2B2340",look:"mage"},
-  {id:"mage_void",n:"허무마법사",need:0,el:"void",fx:{atk:90,def:50,hp:50},o:"#6A6A88",pants:"#1A1A28",hair:"#2B2340",look:"mage"},
-  {id:"mage_law",n:"법칙의 지배자",need:0,all8L:1,fx:{atk:160,crit:35,gold:100,def:90,hp:90,cd:30,spd:30},o:"#14142E",pants:"#0A0A1A",hair:"#FFFFFF",look:"lawmage"},
-  {id:"mage_all",n:"원소 대마법사",need:0,all8:1,fx:{atk:100,crit:25,gold:60,def:60,hp:60,cd:20},o:"#2A1660",pants:"#1A0E40",hair:"#E8F0FF",look:"archmage"},
-  {id:"ascend",n:"초월자의 로브",need:0,tr:1,fx:{atk:80,gold:60,crit:15,def:50,hp:40},o:"#EFEAFF",pants:"#CFC6F0",hair:"#2B2340",look:"gown"}
+  {id:"mage_light",n:"빛마법사",need:0,el:"light",fx:{gold:44,hp:22,atk:22},o:"#FFE88A",pants:"#8A7A30",hair:"#2B2340",look:"mage"},
+  {id:"mage_dark",n:"어둠마법사",need:0,el:"dark",fx:{atk:40,crit:10},o:"#7A4AC0",pants:"#2A1650",hair:"#2B2340",look:"mage"},
+  {id:"mage_time",n:"시간마법사",need:0,el:"time",fx:{atk:29,cd:10,time:4},o:"#FFD23F",pants:"#5A4A10",hair:"#2B2340",look:"mage"},
+  {id:"mage_space",n:"공간마법사",need:0,el:"space",fx:{atk:27,spd:13,crit:6},o:"#7A5CFF",pants:"#2A1E70",hair:"#2B2340",look:"mage"},
+  {id:"mage_gravity",n:"중력마법사",need:0,el:"gravity",fx:{def:53,hp:27,atk:20},o:"#9A9AAE",pants:"#3A3A4A",hair:"#2B2340",look:"mage"},
+  {id:"mage_life",n:"생명마법사",need:0,el:"life",fx:{hp:66,def:25,gold:25},o:"#4CE878",pants:"#165A2A",hair:"#2B2340",look:"mage"},
+  {id:"mage_death",n:"죽음마법사",need:0,el:"death",fx:{atk:40,crit:10},o:"#B84AB8",pants:"#401A40",hair:"#2B2340",look:"mage"},
+  {id:"mage_dream",n:"꿈마법사",need:0,el:"dream",fx:{gold:43,cd:12,hp:19},o:"#FF8ACD",pants:"#702A58",hair:"#2B2340",look:"mage"},
+  {id:"mage_chaos",n:"혼돈마법사",need:0,el:"chaos",fx:{atk:24,crit:10,spd:10},o:"#FF4D5E",pants:"#6A1A24",hair:"#2B2340",look:"mage"},
+  {id:"mage_void",n:"허무마법사",need:0,el:"void",fx:{atk:39,def:21,hp:21},o:"#6A6A88",pants:"#1A1A28",hair:"#2B2340",look:"mage"},
+  {id:"mage_law",n:"법칙의 지배자",need:0,all8L:1,fx:{atk:23,crit:5,gold:14,def:13,hp:13,cd:4,spd:4},o:"#14142E",pants:"#0A0A1A",hair:"#FFFFFF",look:"lawmage"},
+  {id:"mage_all",n:"원소 대마법사",need:0,all8:1,fx:{atk:23,crit:6,gold:14,def:14,hp:14,cd:5},o:"#2A1660",pants:"#1A0E40",hair:"#E8F0FF",look:"archmage"},
+  {id:"ascend",n:"초월자의 로브",need:0,tr:1,fx:{atk:28,gold:21,crit:5,def:17,hp:14},o:"#EFEAFF",pants:"#CFC6F0",hair:"#2B2340",look:"gown"}
 ];
 var SKIN={}; SKINS.forEach(function(s){SKIN[s.id]=s});
 var NEEDTXT=["처음부터","성장 보스 1회 격파","성장 보스 2회 격파","성장 보스 3회 격파","성장 보스 4회 격파","성장 보스 5회 격파"];
@@ -1920,7 +1927,7 @@ function sceneUrl(i){
 
 /* ---------- 상태 ---------- */
 var KEY="minjun-idle-v1";
-function fresh(){return {balv:2,v:8,gold:0,tickets:0,stage:1,best:1,majors:0,up:[0,0,0,0,0,0,0],inv:{},equip:{weapon:null,armor:null,acc:null},shards:0,pity:0,pulls:0,title:null,tl:false,skin:"basic",autoBoss:true,autoSkill:true,bossReady:false,welcome:false,lastGift:0,last:Date.now(),gps:0,ending:null,kt:0,bk:0,ach:{},sfx:true,
+function fresh(){return {balv:3,dt:{},v:8,gold:0,tickets:0,stage:1,best:1,majors:0,up:[0,0,0,0,0,0,0],inv:{},equip:{weapon:null,armor:null,acc:null},shards:0,pity:0,pulls:0,title:null,tl:false,skin:"basic",autoBoss:true,autoSkill:true,bossReady:false,welcome:false,lastGift:0,last:Date.now(),gps:0,ending:null,kt:0,bk:0,ach:{},sfx:true,
   tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,bmax:0,dgx:0,rcd:[],gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],ms:[null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
 var GONE_ITEMS={ruler:1,vest:2,keyring:2,lunch:2,bat:4,shield:4,shades:4,chalk:8,labcoat:8,medal:8};
 function migItems(o){
@@ -1941,7 +1948,7 @@ function migMagic(o){migItems(o);
   }
 }
 function norm(o){
-  var f=fresh(),old=!o.v||o.v<5,hadRb=o.rbest!==undefined,needBal=(o.balv||0)<2;
+  var f=fresh(),old=!o.v||o.v<5,hadRb=o.rbest!==undefined,needBal=(o.balv||0)<2,needRp=(o.balv||0)<3;
   for(var k in f){if(o[k]===undefined)o[k]=f[k]}
   if(!SKIN[o.skin])o.skin="basic";
   if(o.bmax===undefined)o.bmax=Math.floor(((o.best||1)-1)/10)*10;
@@ -1958,6 +1965,7 @@ function norm(o){
   if(!o.sd||typeof o.sd!=="object"||!o.sd.b)o.sd={d:"",b:{}};
   if(!o.dq||typeof o.dq!=="object"||!o.dq.c||!o.dq.cl)o.dq=f.dq;
   if(!Array.isArray(o.rc))o.rc=[];
+  if(!o.dt||typeof o.dt!=="object")o.dt={};
   if(!Array.isArray(o.up))o.up=[0,0,0,0,0];
   while(o.up.length<5)o.up.push(0);
   if(o.up.length<7){o.up[5]=Math.floor(o.up[0]*0.8);o.up[6]=Math.floor(o.up[0]*0.5);o.m8=true}
@@ -1970,7 +1978,8 @@ function norm(o){
   if(!Array.isArray(o.slots))o.slots=["memo",null,null,null];
   while(o.slots.length<4)o.slots.push(null);
   migMagic(o);
-  if(needBal){o.balv=2;o.tickets=(o.tickets||0)+10;o.dia=(o.dia||0)+100;o.shards=(o.shards||0)+50;o.balNote=true}
+  if(needRp){o.balv=3;o.rs={};o.rps=0;o.balNote=true}
+  if(needBal){o.balv=3;o.tickets=(o.tickets||0)+10;o.dia=(o.dia||0)+100;o.shards=(o.shards||0)+50;o.balNote=true}
   if(!Array.isArray(o.party))o.party=[null,null,null];
   while(o.party.length<3)o.party.push(null);
   return o;
@@ -2070,7 +2079,9 @@ function bonus(){
 }
 function cdLv(L){return 0.65*L/(L+60)}
 function cdCut(){return Math.min(0.8,cdLv(S.up[4])+bonus().cd/100)}
-function cmM(id){return 1+0.25*(eLv((S.cmp[id]&&S.cmp[id].lv)||1,10,0.2)-1)}
+var TMUL={C:1.45,B:1.3,A:1.15};
+function tierMul(t){return TMUL[t]||1}
+function cmM(id){return (1+0.25*(eLv((S.cmp[id]&&S.cmp[id].lv)||1,10,0.2)-1))*tierMul(CMM[id]&&CMM[id].t)}
 function migPetMove(){
   var ch=false;
   ["pomu","manjyu"].forEach(function(id){
@@ -2099,7 +2110,7 @@ function refreshCM(){
   o.disc=Math.min(40,o.disc);o.bz=Math.min(30,o.bz)/100;o.sponge=Math.min(40,o.sponge)/100;
   CMc=o;
 }
-function sPow(id){var s=S.skl[id];return (1+0.2*(eLv((s&&s.lv)||1,5,0.25)-1))*(1+(CMc.spow+SYc.spow)/100)}
+function sPow(id){var s=S.skl[id];return (1+0.2*(eLv((s&&s.lv)||1,5,0.25)-1))*tierMul(SKM[id]&&SKM[id].t)*(1+(CMc.spow+SYc.spow)/100)}
 function refreshSF(){
   refreshSYN();
   var r={atkM:1,spdM:1,critAdd:0,cdAdd:0,goldM:1,frM:1,dmgM:1,dot:0,freeze:false,crit100:false,dr:1,charm:false};
@@ -2176,7 +2187,7 @@ function myPower(){
   return PWR.pw;
 }
 function hpAdj(s){return (1+Math.pow(s/55,3))*(1+29*Math.min(1,Math.max(0,(s-15)/105)))}
-function hpOf(s){return 18*Math.pow(1.45,s-1)*Math.pow(0.97,Math.max(0,s-250))*hpAdj(s)}
+function hpOf(s){return 18*Math.pow(1.45,s-1)*Math.pow(0.955,Math.max(0,s-250))*hpAdj(s)}
 function goldOf(s){return s<=20?6*Math.pow(1.2,s-1):6*Math.pow(1.2,20-1)*Math.pow(1.3,s-20)}
 function rnd(a,b){return a+Math.random()*(b-a)}
 function pickRand(a){return a[Math.floor(Math.random()*a.length)]}
@@ -2199,7 +2210,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v66";
+var BUILD="v68";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -2540,6 +2551,38 @@ function tap(){
   flashHit();
   if(T.sndT<=0){T.sndT=0.06;if(cr)snd(700,0.1,"square",0.04,1100);else snd(320,0.06,"square",0.03,170)}
 }
+
+/* ---------- 약점 노리기 (직접 조작) ---------- */
+function wkTick(dt){
+  var el=$("b-wk");
+  if(!el||!F||paused()){if(el&&!el.hidden){el.hidden=true;T.wk=null}return}
+  if(T.wk){
+    T.wk.t-=dt;
+    if(T.wk.t<=0){T.wk=null;T.wks=0;el.hidden=true}
+    return;
+  }
+  T.wkN=(T.wkN===undefined?rnd(2,4):T.wkN)-dt;
+  if(T.wkN>0)return;
+  T.wkN=rnd(3,5.5);
+  var life=Math.max(0.9,1.6-(T.wks||0)*0.06);
+  T.wk={t:life};
+  el.style.left=rnd(50,86).toFixed(1)+"%";el.style.top=rnd(34,66).toFixed(1)+"%";
+  var sz=Math.max(34,52-(T.wks||0)*1.5);el.style.width=el.style.height=sz+"px";
+  el.hidden=false;
+}
+function wkHit(){
+  var el=$("b-wk");
+  if(!T.wk||!F)return;
+  var c=calc(),st=T.wks=(T.wks||0)+1;
+  var d=autoDps(c)*4*(1+Math.min(1.5,st*0.1)),cr=true;
+  deal(d);T.combo+=5;T.comboT=1.2;
+  popAt("약점! "+fmt(d),"crit",0.72,0.32);
+  shoot("m");flashHit();snd(880,0.08,"square",0.05,1500);
+  S.wkc=(S.wkc||0)+1;
+  T.wk=null;if(el)el.hidden=true;
+  T.wkN=rnd(1.2,2.4);
+  if(st%5===0){cabBuff("a",1.3,8);toast("집중 "+st+"연속! 8초간 공격력 +30%");bannerFx("집중!")}
+}
 function isMg(id){return !!id&&id.indexOf("el_")===0}
 function slotAt(i){return i<4?S.slots[i]:S.ms[i-4]}
 function allSlots(){return S.slots.concat(S.ms||[])}
@@ -2559,10 +2602,14 @@ function elemRepeat(el){
   if(o.lv<SKMAX){o.lv++;toast(sk.n+" Lv."+o.lv+" 상승! (정령왕·수호자 재격파)")}
   else{S.shards+=15;toast("재격파 보상: 조각 15개")}
 }
-function useSkill(id){
+var RDY={};
+function perfectOk(id){return cds[id]<=0&&RDY[id]!==undefined&&RDY[id]<=1.2}
+function useSkill(id,manual){
   var sk=SKM[id];
   if(!sk||!S.skl[id]||cds[id]>0||!F)return;
-  var lv=S.skl[id].lv,p=sPow(id),c=calc();
+  var pf=!!manual&&perfectOk(id);
+  var lv=S.skl[id].lv,p=sPow(id)*(pf?1.4:1),c=calc();
+  if(pf){S.pfc=(S.pfc||0)+1;T.pfx=(T.pfx||0)+1;popAt("퍼펙트! ×1.4","gold",0.5,0.22);snd(880,0.1,"square",0.04,1320)}
   cds[id]=sk.cd*(1-cdCut());dqAdd("s",1);S.skt=(S.skt||0)+1;
   try{skillFx(id)}catch(e){}
   if(sk.nuke){
@@ -3272,12 +3319,62 @@ function mqListHtml(){
   return h+'</section>';
 }
 
+
+/* ---------- 다이아 사용처: 프리미엄 뽑기, 선택 레벨업, 영구 특훈 ---------- */
+var PREM={
+  eq:{n:"전설 이상 장비 확정 뽑기",e:"🎒",min:4,cost:120,lim:3},
+  sk:{n:"S등급 이상 스킬 확정 뽑기",e:"📖",min:5,cost:200,lim:3},
+  cm:{n:"A등급 이상 동료 확정 뽑기",e:"👥",min:4,cost:150,lim:3},
+  pt:{n:"A등급 이상 펫 확정 뽑기",e:"🐾",min:4,cost:150,lim:3}
+};
+function premPull(kind){
+  shopRoll();
+  var P=PREM[kind];if(!P)return;
+  var used=S.sd.b["pm_"+kind]||0;if(used>=P.lim){toast("오늘 구매 한도를 다 썼어요");return}
+  if(S.dia<P.cost){toast("다이아가 부족해요 ("+P.cost+"개 필요)");return}
+  var pool=tiersOf(kind).filter(function(t){return t.rank>=P.min&&!t.sink&&t.p>0});
+  if(!pool.length)return;
+  var fn=kind==="sk"?pullSk:kind==="cm"?pullCm:kind==="pt"?pullPt:pullOne;
+  S.dia-=P.cost;S.sd.b["pm_"+kind]=used+1;
+  var r=fn(pool);
+  if(kind!=="eq")S.pulls+=1;
+  var b=rk(kind,r.t);
+  if(b>=4)jingle([523,659,784,1046,1318]);else jingle([523,659,784]);
+  lastPull={kind:kind,res:[r]};sub.gacha=kind;tab="gacha";
+  save();renderSbar();renderTab();uiTop();
+}
+var LVK={
+  sk:{n:"스킬",max:function(){return SKMAX},cost:function(l){return 25+5*l},has:function(){return Object.keys(S.skl)},o:function(id){return S.skl[id]},nm:function(id){return SKM[id].n},t:function(id){return SKM[id].t},ic:function(id){return spr(SKM[id].e,16,2)}},
+  cm:{n:"동료",max:function(){return CMAX},cost:function(l){return 20+2*l},has:function(){return Object.keys(S.cmp).filter(function(id){return CMM[id]&&id!=="juyul"})},o:function(id){return S.cmp[id]},nm:function(id){return CMM[id].n},t:function(id){return CMM[id].t},ic:function(id){return cimg(id,1.6)}},
+  pt:{n:"펫",max:function(){return PMAX},cost:function(l){return 25+4*l},has:function(){return Object.keys(S.pet).filter(function(id){return PETM[id]})},o:function(id){return S.pet[id]},nm:function(id){return PETM[id].n},t:function(id){return PETM[id].t},ic:function(id){return petImg(id,1.8)}}
+};
+function lvOv(kind,msg){
+  var K=LVK[kind];if(!K)return;
+  var ids=K.has().sort(function(a,b){return (rk(kind,K.t(b))||0)-(rk(kind,K.t(a))||0)}),h='<div class="panel gold"><p class="banner">'+K.n+' 레벨업</p><p class="sub" style="text-align:center;margin-bottom:8px">다이아로 원하는 '+K.n+'의 레벨을 1 올려요. 💎 '+S.dia+'</p>'+(msg?'<p class="sub" style="text-align:center;color:var(--gold)">'+esc(msg)+'</p>':'');
+  h+='<div style="max-height:46vh;overflow:auto">';
+  ids.forEach(function(id){
+    var o=K.o(id),lv=o.lv,c=K.cost(lv),mx=lv>=K.max();
+    h+='<div class="irow"><div class="ie2 k-'+K.t(id)+'">'+K.ic(id)+'</div><div class="ib"><div class="t">'+K.nm(id)+' <span class="tier k-'+K.t(id)+'">'+K.t(id)+'</span> <span class="chip">Lv.'+lv+' / '+K.max()+'</span></div></div>'+
+      '<button class="btn small gold" data-a="dlv" data-v="'+kind+':'+id+'"'+(mx||S.dia<c?" disabled":"")+'>'+(mx?"최대":"💎 "+c)+'</button></div>';
+  });
+  h+='</div><button class="btn ghost wide" style="margin-top:10px" data-a="ovx">닫기</button></div>';
+  showOv(h);
+}
+function dlvBuy(v){
+  var p=String(v).split(":"),K=LVK[p[0]];if(!K)return;
+  var o=K.o(p[1]);if(!o||o.lv>=K.max())return;
+  var c=K.cost(o.lv);if(S.dia<c)return;
+  S.dia-=c;o.lv++;refreshCM();refreshSYN();jingle([660,880]);save();uiTop();
+  lvOv(p[0],K.nm(p[1])+" Lv."+o.lv+"!");
+}
+
 /* ---------- 상점 (다이아·조각) ---------- */
 var SHOP=[
-  {id:"t5",n:"뽑기권 5장",e:"🎟️",pay:"dia",cost:6,lim:5,f:function(){S.tickets+=5}},
-  {id:"sh",n:"강화 조각 30개",e:"💠",pay:"dia",cost:5,lim:5,f:function(){S.shards+=30}},
-  {id:"gb",n:"골드 ×2 (30분)",e:"🪙",pay:"dia",cost:8,lim:3,f:function(){S.lk=Math.max(Date.now(),S.lk)+30*60000}},
-  {id:"ab",n:"공격력 ×2 (15분)",e:"⚔️",pay:"dia",cost:8,lim:3,f:function(){S.ak=Math.max(Date.now(),S.ak)+15*60000}},
+  {id:"t5",n:"뽑기권 5장",e:"🎟️",pay:"dia",cost:25,lim:4,f:function(){S.tickets+=5}},
+  {id:"sh",n:"강화 조각 30개",e:"💠",pay:"dia",cost:18,lim:5,f:function(){S.shards+=30}},
+  {id:"gb",n:"골드 ×2 (30분)",e:"🪙",pay:"dia",cost:30,lim:3,f:function(){S.lk=Math.max(Date.now(),S.lk)+30*60000}},
+  {id:"ab",n:"공격력 ×2 (15분)",e:"⚔️",pay:"dia",cost:30,lim:3,f:function(){S.ak=Math.max(Date.now(),S.ak)+15*60000}},
+  {id:"dg",n:"보물 창고 던전 입장 +1회",e:"🏸",pay:"dia",cost:40,lim:5,f:function(){S.dgx=(S.dgx||0)+1}},
   {id:"xs",n:"조각을 뽑기권으로",e:"🔄",pay:"sh",cost:25,lim:4,f:function(){S.tickets+=1},unit:"뽑기권 1장"}
 ];
 function shopRoll(){var k=dayKey(new Date());if(S.sd.d!==k)S.sd={d:k,b:{}}}
@@ -3293,12 +3390,25 @@ function shopBuy(id){
 function shopHtml(){
   shopRoll();
   var h='<section class="panel gold"><div class="cp"><div><div class="sub">보유 다이아</div><div class="cpn">💎 '+S.dia+'</div></div><div style="text-align:right"><div class="sub">보유 조각</div><b class="disp" style="font-size:20px">💠 '+S.shards+'</b></div></div>'+
-    '<p class="sub" style="margin-top:8px">다이아는 10스테이지를 처음 돌파할 때마다(+5), 성장 보스(+10), 성장 목표, 일일 퀘스트 전부 완료, 던전 메달로 모아요. 모두 게임 안에서만 얻어요.'+
+    '<p class="sub" style="margin-top:8px">다이아는 10스테이지를 처음 돌파할 때마다(+5), 성장 보스(+10), 성장 목표, 일일 퀘스트 전부 완료, 던전 메달로 모아요. 아래에서 확정 뽑기, 선택 레벨업, 영구 특훈에 쓸 수 있어요. 모두 게임 안에서만 얻어요.'+
     (S.lk>Date.now()?'<br>골드 ×2 '+evLeft(S.lk)+' 남음':'')+(S.ak>Date.now()?'<br>공격력 ×2 '+evLeft(S.ak)+' 남음':'')+'</p></section><section class="panel"><h2 class="h2">상점</h2>';
   SHOP.forEach(function(it){
     var used=S.sd.b[it.id]||0,left=it.lim-used,have=it.pay==="dia"?S.dia:S.shards;
     h+='<div class="irow"><div class="ie2">'+spr(it.e,16,2.4)+'</div><div class="ib"><div class="t">'+it.n+'</div><div class="d" style="margin:0">오늘 남은 구매 '+left+' / '+it.lim+'회</div></div>'+
       '<button class="btn small gold" data-a="shop" data-v="'+it.id+'"'+(left>0&&have>=it.cost?"":" disabled")+'>'+(it.pay==="dia"?"💎 ":"💠 ")+it.cost+'</button></div>';
+  });
+  h+='</section>';
+  h+='<section class="panel"><h2 class="h2">프리미엄 확정 뽑기</h2><p class="sub" style="margin-bottom:8px">다이아로 높은 등급만 나오는 뽑기를 해요. (하루 종류별 3회)</p>';
+  ["eq","sk","cm","pt"].forEach(function(k){
+    var P=PREM[k],used=S.sd.b["pm_"+k]||0,left=P.lim-used;
+    h+='<div class="irow"><div class="ie2">'+spr(P.e,16,2.4)+'</div><div class="ib"><div class="t">'+P.n+'</div><div class="d" style="margin:0">오늘 남은 구매 '+left+' / '+P.lim+'회</div></div><button class="btn small gold" data-a="prem" data-v="'+k+'"'+(left>0&&S.dia>=P.cost?"":" disabled")+'>💎 '+P.cost+'</button></div>';
+  });
+  h+='</section><section class="panel"><h2 class="h2">선택 레벨업</h2><p class="sub" style="margin-bottom:8px">원하는 스킬·동료·펫을 골라 레벨을 올려요. 레벨이 높을수록 다이아가 더 들어요.</p><div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">'+
+    ["sk","cm","pt"].map(function(k){return '<button class="btn small" data-a="lvov" data-v="'+k+'">'+LVK[k].n+'</button>'}).join("")+'</div></section>';
+  h+='<section class="panel"><h2 class="h2">영구 특훈</h2><p class="sub" style="margin-bottom:8px">다이아로 영구 능력치를 올려요. 단계가 오를수록 비용이 늘어요. (최대 Lv.20)</p>';
+  DTR.forEach(function(r){
+    var l=dtLv(r.id),mx=l>=r.max,c=dtCost(r);
+    h+='<div class="irow"><div class="ie2">'+spr(r.e,16,2.4)+'</div><div class="ib"><div class="t">'+r.n+' <span class="chip">Lv.'+l+' / '+r.max+'</span></div><div class="d" style="margin:0">'+r.u+f1(r.per*l)+r.sfx+(mx?"":" → "+f1(r.per*(l+1))+r.sfx)+'</div></div><button class="btn small gold" data-a="dtr" data-v="'+r.id+'"'+(mx||S.dia<c?" disabled":"")+'>'+(mx?"최대":"💎 "+c)+'</button></div>';
   });
   return h+'</section>';
 }
@@ -3379,7 +3489,7 @@ var PTTI={};PTTIERS.forEach(function(t){PTTI[t.id]=t});
 var FXLAB={atk:["공격력 +","%"],crit:["치명타 확률 +","%"],gold:["골드 +","%"],def:["방어력 +","%"],hp:["최대 체력 +","%"],regen:["초당 체력 회복 +","%"],dps:["초당 공격력 ×",""],time:["보스 시간 +","초"],cd:["쿨타임 −","%"],spow:["스킬 효과 +","%"],friend:["친구 도움 +","%"]};
 function fxTxt(fx,m){var a=[];for(var k in fx)if(FXLAB[k])a.push(FXLAB[k][0]+f1(fx[k]*m)+FXLAB[k][1]);return a.join(" · ")}
 function pM(id){
-  var o=S.pet[id],lv=(o&&o.lv)||1,m=1+0.2*(eLv(lv,10,0.2)-1),p=PETM[id];
+  var o=S.pet[id],lv=(o&&o.lv)||1,p=PETM[id],m=(1+0.2*(eLv(lv,10,0.2)-1))*tierMul(p&&p.t);
   if(p&&p.own&&S.party.indexOf(p.own)>=0)m*=1.5;
   return m;
 }
@@ -3603,12 +3713,29 @@ function clamp(n,a,b){n=Number(n);if(!isFinite(n))n=a;return Math.max(a,Math.min
 function pad2(n){return n<10?"0"+n:""+n}
 
 /* ---------- 회귀(환생) ---------- */
+var DTR=[
+  {id:"atk",n:"공격 특훈",e:"💪",base:40,per:3,u:"공격력 +",sfx:"%",max:20},
+  {id:"gold",n:"재력 특훈",e:"🪙",base:40,per:3,u:"골드 +",sfx:"%",max:20},
+  {id:"hp",n:"체력 단련",e:"❤️",base:30,per:3,u:"최대 체력 +",sfx:"%",max:20},
+  {id:"def",n:"방어 단련",e:"🛡️",base:30,per:4,u:"방어력 +",sfx:"",max:20},
+  {id:"spd",n:"민첩 특훈",e:"🏃",base:55,per:1.5,u:"공격 속도 +",sfx:"%",max:20}
+];
+function dtLv(id){return (S.dt&&S.dt[id])||0}
+function dtCost(r){return Math.round(r.base*Math.pow(1.28,dtLv(r.id)))}
+function dtBuy(id){
+  var r=DTR.filter(function(x){return x.id===id})[0];if(!r)return;
+  var l=dtLv(id);if(l>=r.max)return;
+  var c=dtCost(r);if(S.dia<c){toast("다이아가 부족해요 ("+c+"개 필요)");return}
+  S.dia-=c;if(!S.dt)S.dt={};S.dt[id]=l+1;
+  jingle([660,880,1175]);toast(r.n+" Lv."+(l+1)+"!");save();renderTab();uiTop();
+}
 var RBMIN=20,RPB=5;
+function rpBonus(r){return r<=50?r*5:250*Math.pow(r/50,0.75)}
 function rpGain(s){return s>=RBMIN?Math.floor(Math.pow(s/10,2.2)):0}
 function colCount(){return ITEMS.filter(function(i){return i.t!=="trash"&&S.inv[i.id]}).length+Object.keys(S.skl).length+Object.keys(S.cmp).length+Object.keys(S.pet).length}
 function colMax(){return ITEMS.filter(function(i){return i.t!=="trash"}).length+SKL.length+CM.length+PETS.length}
 function miscBonus(){
-  var b=zero(),v=colCount()*0.5+S.rp*RPB;b.atk=v;b.gold=v;
+  var b=zero(),v=colCount()*0.5+rpBonus(rpAvail());b.atk=v+3*dtLv("atk");b.gold=v+3*dtLv("gold");b.hp+=3*dtLv("hp");b.def+=4*dtLv("def");b.spd+=1.5*dtLv("spd");
   b.atk+=rsLv("atkm")*15;b.gold+=rsLv("gold")*8;b.time+=rsLv("boss")*2;
   if(nerdOn()){b.atk+=40;b.crit+=15;b.def+=30}
   b.hp+=SYc.hp;b.def+=SYc.def;b.atk+=SYc.atk;b.gold+=SYc.gold;b.crit+=SYc.crit;b.spd+=SYc.spd;b.friend+=SYc.fr;b.cd+=SYc.cdr;b.time+=SYc.time;
@@ -3632,12 +3759,12 @@ function rebirthGo(){
 function rebirthHtml(){
   var g=rpGain(S.rbest),can=g>=1;
   var h='<section class="panel gold"><div class="cp"><div><div class="sub">회귀 점수</div><div class="cpn">'+S.rp+'점</div></div><div style="text-align:right"><div class="sub">회귀 횟수</div><b class="disp" style="font-size:20px">'+S.rb+'회</b></div></div>'+
-    '<p class="sub" style="margin-top:10px">점수 1점마다 공격력과 골드가 영구적으로 +'+RPB+'%씩 올라요. 지금은 +'+f1(S.rp*RPB)+'%예요.</p></section>'+
+    '<p class="sub" style="margin-top:10px">쓸 수 있는 점수가 많을수록 공격력·골드가 영구적으로 오르지만, <b>50점까지는 1점당 +5%, 그 뒤로는 점점 효율이 떨어져요.</b> 지금은 +'+f1(rpBonus(rpAvail()))+'%예요. 아래 상점에 점수를 쓰면 그만큼 이 보너스가 줄어요.</p></section>'+
     '<section class="panel"><h2 class="h2">지금 회귀하면</h2><div class="stats" style="margin-top:0"><div class="st"><span>이번 최고 스테이지</span><b>'+S.rbest+'</b></div><div class="st"><span>얻는 점수</span><b style="color:var(--gold)">+'+g+'점</b></div></div>'+
     '<button class="btn gold wide" style="margin-top:16px" data-a="rbask"'+(can?"":" disabled")+'>'+(can?"회귀하기":"스테이지 "+RBMIN+" 이상에서 가능")+'</button></section>'+
     '<section class="panel"><h2 class="h2">무엇이 바뀌나요</h2><div class="tbl"><table><tr><th>처음으로 돌아가요</th><th>그대로 남아요</th></tr><tr><td>스테이지<br>골드<br>능력 강화 레벨</td><td>뽑기권·조각<br>장비·스킬·동료·스킨<br>칭호·업적·성장 보스 보너스</td></tr></table></div></section>'+
     '<section class="panel"><h2 class="h2">획득 점수표</h2><div class="tbl"><table><tr><th>도달 스테이지</th><th>점수</th><th>보너스</th></tr>'+
-    [20,30,50,80,100,150].map(function(s){var p=rpGain(s);return '<tr><td class="num">'+s+'</td><td class="num">+'+p+'점</td><td class="num">+'+(p*RPB)+'%</td></tr>'}).join("")+
+    [20,30,50,80,100,150].map(function(s){var p=rpGain(s);return '<tr><td class="num">'+s+'</td><td class="num">+'+p+'점</td><td class="num">+'+Math.round(rpBonus(p))+'%</td></tr>'}).join("")+
     '</table></div><p class="sub" style="margin-top:8px">점수는 회귀할 때마다 누적돼요. 벽에 막혔을 때 회귀하면 더 빨리 다시 올라올 수 있어요.</p></section>';
   return rsHtml()+h;
 }
@@ -4221,16 +4348,63 @@ var SYN=[
   {id:"y25",n:"생과 사",need:["el_life","el_death"],fx:{atk:30,hp:30},d:"공격력 +30%, 체력 +30%"},
   {id:"y26",n:"악몽",need:["el_dream","el_chaos"],fx:{crit:12,gold:20},d:"치명타 +12%, 골드 +20%"},
   {id:"y27",n:"특이점",need:["el_gravity","el_void"],fx:{atk:25,dur:20},d:"공격력 +25%, 지속 시간 +20%"},
+  {id:"a1",n:"강평 플러스",need:["gpa","note"],fx:{atk:20,spow:10},d:"공격력 +20%, 스킬 효과 +10%"},
+  {id:"a2",n:"친구 뺨 맞기",need:["summon","slap"],fx:{fr:40,nuke:25},d:"친구 도움 +40%, 즉발 피해 +25%"},
+  {id:"a3",n:"멘탈 무장",need:["burst","chili"],fx:{atk:25,dur:15},d:"공격력 +25%, 지속 시간 +15%"},
+  {id:"a4",n:"머리 대청소",need:["shave","slap"],fx:{nuke:45,crit:8},d:"즉발 피해 +45%, 치명타 +8%"},
+  {id:"a5",n:"고추 부스터",need:["chili","gpa"],fx:{atk:20,spd:10},d:"공격력 +20%, 공격 속도 +10%"},
+  {id:"a6",n:"행복한 노트",need:["happy","note"],fx:{gold:30,cdr:8},d:"골드 +30%, 쿨타임 −8%"},
+  {id:"a7",n:"침묵 시위",need:["awk","glare"],fx:{crit:10,cdr:8},d:"치명타 +10%, 쿨타임 −8%"},
+  {id:"a8",n:"생각 정리",need:["think","memo"],fx:{cdr:12,spow:10},d:"쿨타임 −12%, 스킬 효과 +10%"},
+  {id:"a9",n:"바지 하이킥",need:["pants","slap"],fx:{nuke:35,atk:10},d:"즉발 피해 +35%, 공격력 +10%"},
+  {id:"a10",n:"수업 집중",need:["think","gpa"],fx:{spow:20,dur:15},d:"스킬 효과 +20%, 지속 시간 +15%"},
+  {id:"a11",n:"매운 하루",need:["chili","happy"],fx:{gold:25,crit:6},d:"골드 +25%, 치명타 +6%"},
+  {id:"a12",n:"집단 괴롭힘?",need:["summon","pants","glare"],fx:{fr:50,crit:10,atk:15},d:"친구 도움 +50%, 치명타 +10%, 공격력 +15%"},
+  {id:"c1",n:"성실한 하루",cnt:{k:"sk",t:"ABC",n:3},fx:{spow:15,cdr:8},d:"A·B·C등급 스킬 3종 이상 장착: 스킬 효과 +15%, 쿨타임 −8%"},
+  {id:"c2",n:"꾸준함의 힘",cnt:{k:"sk",t:"ABC",n:4},fx:{atk:15,gold:20},d:"A·B·C등급 스킬 4종 장착: 공격력 +15%, 골드 +20%"},
+  {id:"c3",n:"학급 일등",cnt:{k:"cm",t:"A",n:2},fx:{atk:15,crit:6},d:"A등급 동료 2명 이상: 공격력 +15%, 치명타 +6%"},
+  {id:"c4",n:"어울림",cnt:{k:"cm",t:"BC",n:2},fx:{gold:25,fr:25},d:"B·C등급 동료 2명 이상: 골드 +25%, 친구 도움 +25%"},
+  {id:"c5",n:"동물 친구들",cnt:{k:"pt",t:"ABC",n:2},fx:{hp:20,gold:15},d:"A·B·C등급 펫 2마리: 체력 +20%, 골드 +15%"},
+  {id:"q1",n:"모범생 스터디",need:["c:wonjong","c:heesung"],fx:{spow:20,cdr:8},d:"스킬 효과 +20%, 쿨타임 −8%"},
+  {id:"q2",n:"재능 듀오",need:["c:siyul","c:hayeon"],fx:{atk:25,crit:8},d:"공격력 +25%, 치명타 +8%"},
+  {id:"q3",n:"겉친 콤보",need:["c:sihyeon","c:jihwan"],fx:{fr:40,gold:20},d:"친구 도움 +40%, 골드 +20%"},
+  {id:"q4",n:"돌격 딜러",need:["c:byeonghwa","c:hayeon"],fx:{atk:25,spd:12},d:"공격력 +25%, 공격 속도 +12%"},
+  {id:"q5",n:"찐친",need:["c:dohyeon","c:junho"],fx:{gold:30,hp:25},d:"골드 +30%, 체력 +25%"},
+  {id:"q6",n:"엘리트 라인",need:["c:wonjong","c:siyul"],fx:{atk:20,gold:20},d:"공격력 +20%, 골드 +20%"},
+  {id:"q7",n:"수다 힐링",need:["c:sihyeon","c:heesung"],fx:{hp:30,fr:25},d:"체력 +30%, 친구 도움 +25%"},
+  {id:"q8",n:"방패와 창",need:["c:junbeom","c:byeonghwa"],fx:{def:40,atk:15},d:"방어력 +40%, 공격력 +15%"},
+  {id:"q9",n:"공부 모임",need:["c:wonjong","note"],fx:{spow:20,gold:15},d:"스킬 효과 +20%, 골드 +15%"},
+  {id:"q10",n:"응원단",need:["c:sihyeon","happy"],fx:{gold:30,fr:30},d:"골드 +30%, 친구 도움 +30%"},
+  {id:"q11",n:"엘리트 집중",need:["c:siyul","gpa"],fx:{atk:25,crit:8},d:"공격력 +25%, 치명타 +8%"},
+  {id:"q12",n:"동네 한 바퀴",need:["p:coco","p:chick"],fx:{gold:20,hp:15},d:"골드 +20%, 체력 +15%"},
+  {id:"q13",n:"고양이와 토끼",need:["p:nabi","p:daltto"],fx:{spd:15,crit:6},d:"공격 속도 +15%, 치명타 +6%"},
+  {id:"q14",n:"습지 산책",need:["p:cloud","p:gul"],fx:{hp:25,def:15},d:"체력 +25%, 방어력 +15%"},
+  {id:"q15",n:"지혜로운 여우",need:["p:jihye","p:yeou"],fx:{spow:20,crit:8},d:"스킬 효과 +20%, 치명타 +8%"},
+  {id:"q16",n:"작은 친구들",need:["p:hamzzi","p:chick"],fx:{gold:25},d:"골드 +25%"},
+  {id:"q17",n:"망보는 고양이",need:["p:meerkat","p:nabi"],fx:{atk:15,crit:8},d:"공격력 +15%, 치명타 +8%"},
+  {id:"q18",n:"밤샘 공부",need:["p:jihye","think"],fx:{spow:15,cdr:8},d:"스킬 효과 +15%, 쿨타임 −8%"},
+  {id:"q19",n:"토끼뜀",need:["p:daltto","gut"],fx:{spd:15},d:"공격 속도 +15%"},
+  {id:"q20",n:"개구리 뺨",need:["p:gul","slap"],fx:{nuke:25,crit:5},d:"즉발 피해 +25%, 치명타 +5%"},
+  {id:"q21",n:"여우 눈빛",need:["p:yeou","glare"],fx:{crit:12,atk:10},d:"치명타 +12%, 공격력 +10%"},
+  {id:"q22",n:"햄스터 간식",need:["p:hamzzi","c:dohyeon"],fx:{gold:30},d:"골드 +30%"},
   {id:"y17",n:"현자의 깨달음",need:["sage","think"],fx:{cdr:15,dur:20},d:"쿨타임 −15%, 지속 시간 +20%"}
 ];
-var SYc={atk:0,crit:0,spd:0,gold:0,fr:0,cdr:0,spow:0,nuke:0,dur:0,time:0,hp:0,def:0};
+var SYc={atk:0,crit:0,spd:0,gold:0,fr:0,cdr:0,spow:0,nuke:0,dur:0,time:0,hp:0,def:0,regen:0};
 function haveNeed(x){return x.indexOf("c:")===0?S.party.indexOf(x.slice(2))>=0:x.indexOf("p:")===0?(S.pets||[]).indexOf(x.slice(2))>=0:allSlots().indexOf(x)>=0}
+function synCntOf(y){
+  var c=y.cnt,n=0;
+  if(c.k==="sk")allSlots().forEach(function(id){if(id&&S.skl[id]&&SKM[id]&&c.t.indexOf(SKM[id].t)>=0&&!isMg(id))n++});
+  else if(c.k==="cm")S.party.forEach(function(id){if(id&&S.cmp[id]&&CMM[id]&&c.t.indexOf(CMM[id].t)>=0)n++});
+  else if(c.k==="pt")S.pets.forEach(function(id){if(id&&S.pet[id]&&PETM[id]&&c.t.indexOf(PETM[id].t)>=0)n++});
+  return n;
+}
 function synOn(y){
   if(y.tier)return S.slots.every(function(id){return id&&SKM[id]&&SKM[id].t===y.tier});
+  if(y.cnt)return synCntOf(y)>=y.cnt.n;
   return y.need.every(haveNeed);
 }
 function refreshSYN(){
-  var o={atk:0,crit:0,spd:0,gold:0,fr:0,cdr:0,spow:0,nuke:0,dur:0,time:0,hp:0,def:0};
+  var o={atk:0,crit:0,spd:0,gold:0,fr:0,cdr:0,spow:0,nuke:0,dur:0,time:0,hp:0,def:0,regen:0};
   SYN.forEach(function(y){if(synOn(y))for(var k in y.fx)o[k]+=y.fx[k]});
   SYc=o;
 }
@@ -4247,11 +4421,11 @@ function synHtml(){
   var h='<section class="panel"><div class="row" style="justify-content:space-between"><h2 class="h2" style="margin:0">시너지</h2><span class="sub num">발동 '+synCount()+' / '+SYN.length+'</span></div><p class="sub" style="margin:6px 0 10px">스킬과 동료 조합이 맞으면 보너스가 켜져요. 즉발 스킬은 지속 효과가 켜져 있을 때마다 피해가 15%씩 커져요(연계).</p>';
   var all=T.synAll,list=SYN.slice().sort(function(a,b){return synOn(b)-synOn(a)});
   if(!all){
-    var near=list.filter(function(y){return !synOn(y)&&!y.tier&&y.need.some(haveNeed)}).slice(0,3);
+    var near=list.filter(function(y){return !synOn(y)&&!y.tier&&(y.cnt?synCntOf(y)>0:y.need.some(haveNeed))}).slice(0,4);
     list=list.filter(synOn).concat(near);
   }
   list.forEach(function(y){
-    var on=synOn(y),req=y.tier?y.tier+"등급 스킬 4개":y.need.map(function(x){return (haveNeed(x)?"✔ ":"")+synName(x)}).join(" + ");
+    var on=synOn(y),req=y.tier?y.tier+"등급 스킬 4개":y.cnt?(y.cnt.k==="sk"?"스킬":y.cnt.k==="cm"?"동료":"펫")+" "+y.cnt.t.split("").join("·")+"등급 "+synCntOf(y)+" / "+y.cnt.n:y.need.map(function(x){return (haveNeed(x)?"✔ ":"")+synName(x)}).join(" + ");
     h+='<div class="irow'+(on?"":" dim")+'"><div class="ie2">'+spr(on?"✨":"🔒",16,2.2)+'</div><div class="ib"><div class="t">'+y.n+(on?' <span class="chip" style="color:var(--green)">발동 중</span>':"")+'</div><div class="d" style="margin:0">'+y.d+'</div><div class="d" style="margin:2px 0 0;color:var(--ink3)">'+esc(req)+'</div></div></div>';
   });
   return h+'<button class="btn small ghost wide" style="margin-top:10px" data-a="synall">'+(all?"접기":"전체 시너지 보기 ("+SYN.length+")")+'</button></section>';
@@ -4366,9 +4540,11 @@ function needTxt(sk){
 /* ---------- 틱 ---------- */
 function step(dt){
   SKL.forEach(function(sk){
-    if(cds[sk.id]>0)cds[sk.id]=Math.max(0,cds[sk.id]-dt);
+    if(cds[sk.id]>0){cds[sk.id]=Math.max(0,cds[sk.id]-dt);if(cds[sk.id]<=0)RDY[sk.id]=0}
+    else if(RDY[sk.id]!==undefined&&RDY[sk.id]<9)RDY[sk.id]+=dt;
     if(eff[sk.id]>0)eff[sk.id]=Math.max(0,eff[sk.id]-dt);
   });
+  wkTick(dt);
   refreshSF();refreshEV();
   if(S.stage>S.rbest){S.rbest=S.stage;S.stuckT=0}
   if(!paused())S.stuckT=(S.stuckT||0)+dt;
@@ -4887,6 +5063,7 @@ function uiBattle(){
     el.disabled=cd>0;
     el.classList.toggle("act",on);
     el.classList.toggle("rdy",cd<=0&&!on);
+    el.classList.toggle("pf",perfectOk(id)&&!on);
     $("cdm-"+s).style.height=cd>0?Math.min(100,cd/tot*100)+"%":"0";
     $("cdt-"+s).textContent=cd>0?Math.ceil(cd):on?Math.ceil(eff[id]):"";
   }
@@ -4915,7 +5092,8 @@ document.addEventListener("click",function(e){
   if(a!=="reset")resetArmed=false;
   if(a==="tab"){tab=v;renderTab();window.scrollTo(0,0);snd(440,0.04,"square",0.025)}
   else if(a==="sub"){var p=v.split(":");sub[p[0]]=p[1];renderTab()}
-  else if(a==="cast")useSkill(slotAt(parseInt(v,10)));
+  else if(a==="cast")useSkill(slotAt(parseInt(v,10)),true);
+  else if(a==="wk")wkHit();
   else if(a==="mup")magicUp(v);
   else if(a==="boss"){enterBoss();uiBattle()}
   else if(a==="tog"){
@@ -4992,6 +5170,10 @@ document.addEventListener("click",function(e){
   else if(a==="acgo")acctGo();
   else if(a==="mq")claimMq();
   else if(a==="shop")shopBuy(v);
+  else if(a==="prem")premPull(v);
+  else if(a==="lvov")lvOv(v);
+  else if(a==="dlv")dlvBuy(v);
+  else if(a==="dtr")dtBuy(v);
   else if(a==="rshop")rsBuy(v);
   else if(a==="help")helpOv();
   else if(a==="spin")spinRoulette();
@@ -5021,7 +5203,7 @@ function boot(){
   if(!S.petG){S.petG=true;if(Object.keys(S.pet).length===0){S.pet.coco={n:1,lv:1};if(!S.pets[0])S.pets[0]="coco";petNew=true;refreshCM();paintParty()}}
   if(S.balNote){
     S.balNote=false;save();
-    setTimeout(function(){showOv('<div class="panel gold"><p class="banner">밸런스 개편 안내</p><p style="margin:0 0 8px;text-align:center">정식 출시를 앞두고 난이도 곡선을 다시 맞췄어요.</p><div class="tbl" style="margin:8px 0"><table><tr><th>변경</th><th>내용</th></tr><tr><td>스테이지 난이도</td><td>초·중반이 더 길고 단단해졌어요</td></tr><tr><td>후반부</td><td>정체 구간을 풀어 끝까지 도전할 수 있어요</td></tr><tr><td>전투력</td><td>랭킹은 전투력 순, 친구와 대련 가능</td></tr></table></div><p class="sub" style="text-align:center;margin-bottom:12px">보상: 뽑기권 +10 · 다이아 +100 · 강화 조각 +50<br>막히면 회귀로 영구 보너스를 모아 보세요.</p><button class="btn gold wide" data-a="ovx">알겠어요</button></div>')},900);
+    setTimeout(function(){showOv('<div class="panel gold"><p class="banner">밸런스 개편 안내</p><p style="margin:0 0 8px;text-align:center">정식 출시를 앞두고 난이도 곡선을 다시 맞췄어요.</p><div class="tbl" style="margin:8px 0"><table><tr><th>변경</th><th>내용</th></tr><tr><td>스테이지 난이도</td><td>초·중반이 더 길고 단단해졌어요</td></tr><tr><td>후반부</td><td>정체 구간을 풀어 끝까지 도전할 수 있어요</td></tr><tr><td>전투력</td><td>랭킹은 전투력 순, 친구와 대련 가능</td></tr><tr><td>회귀 점수</td><td>점수가 많을수록 효율이 줄어요. 상점에 쓴 점수는 전부 돌려드렸으니 새로 골라 주세요</td></tr><tr><td>스킨 · 시너지</td><td>스킨 능력치를 비슷하게 맞추고, A·B·C 조합 시너지를 늘렸어요</td></tr></table></div><p class="sub" style="text-align:center;margin-bottom:12px">약점 노리기, 퍼펙트 타이밍 같은 직접 조작 보너스도 생겼어요.<br>(기존 플레이어 보상: 뽑기권 +10 · 다이아 +100 · 조각 +50)</p><button class="btn gold wide" data-a="ovx">알겠어요</button></div>')},900);
   }
   if(!S.welcome){
     S.welcome=true;S.tickets+=5;S.lastGift=now;
