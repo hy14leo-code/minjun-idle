@@ -757,6 +757,9 @@ body,.panel,.btn{text-shadow:none}
 .tier.t-hyper{background:linear-gradient(90deg,#FFD84D,#FF6FD8,#7CE8FF);color:#1A1030;animation:rb 1.2s steps(6) infinite}
 .tier.t-mystic{background:linear-gradient(90deg,#7CFFE8,#B07CFF,#FF5C7A,#FFD84D);color:#1A1030;animation:rb 1.2s steps(6) infinite}
 .pcard.t-omega::after,.pcard.t-hyper::after,.pcard.t-mystic::after{content:"";position:absolute;inset:-4px;border:4px solid var(--tc);animation:rb 1.2s steps(6) infinite;pointer-events:none}
+
+.msl{grid-column:span 3;align-self:center;font-family:var(--f-p);font-size:13px;color:var(--gold);line-height:1.5;padding-left:6px}
+.msl span{color:var(--ink3);font-size:11px}
 </style>
 
 <div class="wrap">
@@ -984,19 +987,19 @@ var SKL=[
   {id:"el_fire",t:"E",n:"파이어 볼",e:"🔥",cd:40,dur:8,nuke:220,buff:{dot:8}},
   {id:"el_water",t:"E",n:"아쿠아 쉴드",e:"🌊",cd:50,dur:12,nuke:80,buff:{dr:0.5}},
   {id:"el_wind",t:"E",n:"윈드 블레이드",e:"🌪️",cd:35,dur:10,nuke:150,buff:{spdM:1.7}},
-  {id:"el_earth",t:"E",n:"어스 퀘이크",e:"⛰️",cd:55,nuke:260},
+  {id:"el_earth",t:"E",n:"어스 퀘이크",e:"⛰️",cd:55,nuke:300},
   {id:"el_lightning",t:"E",n:"썬더 스톰",e:"⚡",cd:45,dur:8,nuke:200,buff:{critAdd:0.4}},
   {id:"el_ice",t:"E",n:"프로스트 노바",e:"❄️",cd:50,dur:6,nuke:120,buff:{freeze:1,dr:0.3}},
   {id:"el_light",t:"E",n:"홀리 노바",e:"✨",cd:60,dur:12,nuke:180,buff:{atkM:1.6}},
-  {id:"el_dark",t:"E",n:"다크 매터",e:"🌑",cd:65,dur:10,nuke:400,buff:{dmgM:2}},
-  {id:"el_time",t:"L",n:"타임 스톱",e:"⏳",cd:70,dur:6,nuke:300,buff:{freeze:1,dr:0.8}},
-  {id:"el_space",t:"L",n:"디멘션 슬래시",e:"🌠",cd:55,nuke:350},
-  {id:"el_gravity",t:"L",n:"그라비티 크래시",e:"🧲",cd:60,dur:8,nuke:320,buff:{dmgM:1.8}},
+  {id:"el_dark",t:"E",n:"다크 매터",e:"🌑",cd:65,dur:10,nuke:300,buff:{dmgM:1.9}},
+  {id:"el_time",t:"L",n:"타임 스톱",e:"⏳",cd:65,dur:6,nuke:280,buff:{freeze:1,dr:0.8}},
+  {id:"el_space",t:"L",n:"디멘션 슬래시",e:"🌠",cd:55,nuke:300},
+  {id:"el_gravity",t:"L",n:"그라비티 크래시",e:"🧲",cd:60,dur:8,nuke:220,buff:{dmgM:1.8}},
   {id:"el_life",t:"L",n:"생명의 샘",e:"🌺",cd:60,dur:12,nuke:100,buff:{dr:0.4,atkM:1.4}},
-  {id:"el_death",t:"L",n:"데스 터치",e:"💀",cd:75,nuke:600},
+  {id:"el_death",t:"L",n:"데스 터치",e:"💀",cd:75,nuke:420},
   {id:"el_dream",t:"L",n:"드림 이터",e:"🌙",cd:65,dur:10,nuke:250,buff:{goldM:3,charm:1}},
-  {id:"el_chaos",t:"L",n:"카오스 스톰",e:"🌀",cd:50,dur:8,nuke:280,buff:{critAdd:0.5,spdM:1.5}},
-  {id:"el_void",t:"L",n:"보이드 엔드",e:"🕳️",cd:120,dur:10,nuke:1000,buff:{freeze:1,dr:0.6,atkM:2}}
+  {id:"el_chaos",t:"L",n:"카오스 스톰",e:"🌀",cd:50,dur:8,nuke:200,buff:{critAdd:0.5,spdM:1.5}},
+  {id:"el_void",t:"L",n:"보이드 엔드",e:"🕳️",cd:100,dur:10,nuke:650,buff:{freeze:1,dr:0.6,atkM:1.8}}
 ];
 var SKM={}; SKL.forEach(function(s){SKM[s.id]=s});
 
@@ -1899,7 +1902,18 @@ function sceneUrl(i){
 /* ---------- 상태 ---------- */
 var KEY="minjun-idle-v1";
 function fresh(){return {v:8,gold:0,tickets:0,stage:1,best:1,majors:0,up:[0,0,0,0,0,0,0],inv:{},equip:{weapon:null,armor:null,acc:null},shards:0,pity:0,pulls:0,title:null,tl:false,skin:"basic",autoBoss:true,autoSkill:true,bossReady:false,welcome:false,lastGift:0,last:Date.now(),gps:0,ending:null,kt:0,bk:0,ach:{},sfx:true,
-  tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,bmax:0,dgx:0,rcd:[],gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
+  tb:{d:"",n:0},el:{},hell:0,reinc:0,bcl:0,bmax:0,dgx:0,rcd:[],gtd:{d:"",n:0},skl:{memo:{n:1,lv:1}},slots:["memo",null,null,null],ms:[null,null],cmp:{dohyeon:{n:1,lv:1}},party:["dohyeon",null,null],pit:{sk:0,cm:0,skn:0,cmu:0,cmm:0,pt:0},att:{last:"",streak:0},speed:1,migr:false,rb:0,rp:0,rbest:1,dq:{d:"",c:{k:0,s:0,p:0,b:0,u:0},cl:{}},rc:[],ln:"",nick:"",dg:{d:"",n:0},rl:"",lk:0,gm:0,dgc:0,mq:0,dia:0,rps:0,rs:{},ab:false,sd:{d:"",b:{}},ak:0,sm:0,skt:0,dth:0,m8:false,lock:false,gp:false,egg:{},transc:false,pet:{},pets:[null,null],petG:false}}
+function migMagic(o){
+  if(!Array.isArray(o.ms))o.ms=[null,null];
+  while(o.ms.length<2)o.ms.push(null);
+  for(var i=0;i<o.slots.length;i++){
+    var id=o.slots[i];
+    if(id&&id.indexOf("el_")===0){
+      o.slots[i]=null;
+      if(o.ms.indexOf(id)<0){var e=o.ms.indexOf(null);if(e>=0)o.ms[e]=id}
+    }
+  }
+}
 function norm(o){
   var f=fresh(),old=!o.v||o.v<5,hadRb=o.rbest!==undefined;
   for(var k in f){if(o[k]===undefined)o[k]=f[k]}
@@ -1929,6 +1943,7 @@ function norm(o){
   }
   if(!Array.isArray(o.slots))o.slots=["memo",null,null,null];
   while(o.slots.length<4)o.slots.push(null);
+  migMagic(o);
   if(!Array.isArray(o.party))o.party=[null,null,null];
   while(o.party.length<3)o.party.push(null);
   return o;
@@ -2041,7 +2056,7 @@ function migPetMove(){
   if(ch&&typeof save==="function")setTimeout(function(){try{save()}catch(e){}},50);
 }
 function refreshCM(){
-  migPetMove();
+  migPetMove();migMagic(S);
   applyJob();
   var o={atk:0,spd:0,crit:0,gold:0,time:0,cd:0,dps:0,pet:0,heal:0,guard:0,tip:0,disc:0,spow:0,bz:0,hp:0,def:0,regen:0,sponge:0,friend:0};
   S.party.forEach(function(id){
@@ -2119,7 +2134,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v58";
+var BUILD="v59";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -2222,7 +2237,7 @@ function bossWin(e){
   if(s===160&&!S.transc)transcOv();
   else if(s===180&&!S.hell)hellOv();
   else if(s===200&&!S.reinc)finalSeq(0);
-  else if(e.el&&!(S.el&&S.el[e.el]))elemGrant(e.el);
+  else if(e.el){if(!(S.el&&S.el[e.el]))elemGrant(e.el);else elemRepeat(e.el)}
   save();
 }
 function bossTimeout(){
@@ -2236,7 +2251,7 @@ function elemGrant(el){
   if(!S.el)S.el={};
   var law=ELG[el]===1;
   S.el[el]=1;var id="el_"+el,sk=SKM[id],skn=SKIN["mage_"+el];
-  var had=!!S.skl[id];if(!had){S.skl[id]={n:1,lv:1};var ei=S.slots.indexOf(null);if(ei>=0)S.slots[ei]=id}
+  var had=!!S.skl[id];if(!had){S.skl[id]={n:1,lv:1};var ei=S.ms.indexOf(null);if(ei>=0)S.ms[ei]=id;renderSbar()}
   var tk=law?10:5,dm=law?40:20;S.tickets+=tk;S.dia+=dm;
   var n=elemCount(law?1:0),extra="";
   if(n>=8)extra='<p style="margin:0 0 10px;color:var(--gold)">'+(law?'법칙의 수호자 8명을 모두 쓰러뜨렸어요! 스킨 「법칙의 지배자」도 해금!':'정령왕 8명을 모두 쓰러뜨렸어요! 스킨 「원소 대마법사」도 해금!')+'</p>';
@@ -2460,6 +2475,25 @@ function tap(){
   flashHit();
   if(T.sndT<=0){T.sndT=0.06;if(cr)snd(700,0.1,"square",0.04,1100);else snd(320,0.06,"square",0.03,170)}
 }
+function isMg(id){return !!id&&id.indexOf("el_")===0}
+function slotAt(i){return i<4?S.slots[i]:S.ms[i-4]}
+function allSlots(){return S.slots.concat(S.ms||[])}
+function mgOn(){return !!(S.el&&Object.keys(S.el).length)||(S.ms||[]).some(Boolean)}
+function mgCost(lv){return 8+5*lv}
+function magicUp(id){
+  var o=S.skl[id],sk=SKM[id];
+  if(!o||!sk||!isMg(id))return;
+  if(o.lv>=SKMAX){toast("이미 최대 레벨이에요");return}
+  var c=mgCost(o.lv);
+  if(S.shards<c){toast("강화 조각이 부족해요 ("+c+"개 필요)");return}
+  S.shards-=c;o.lv++;jingle([660,880]);toast(sk.n+" Lv."+o.lv+"!");
+  refreshSYN();save();uiTop();renderTab();
+}
+function elemRepeat(el){
+  var id="el_"+el,o=S.skl[id],sk=SKM[id];if(!o||!sk)return;
+  if(o.lv<SKMAX){o.lv++;toast(sk.n+" Lv."+o.lv+" 상승! (정령왕·수호자 재격파)")}
+  else{S.shards+=15;toast("재격파 보상: 조각 15개")}
+}
 function useSkill(id){
   var sk=SKM[id];
   if(!sk||!S.skl[id]||cds[id]>0||!F)return;
@@ -2503,7 +2537,7 @@ function useSkill(id){
 function autoSkills(){
   if(!S.autoSkill||!F)return;
   var c=calc();
-  S.slots.forEach(function(id){
+  allSlots().forEach(function(id){
     if(!id||!F)return;
     var sk=SKM[id];
     if(!sk||!S.skl[id]||cds[id]>0)return;
@@ -3014,8 +3048,19 @@ function setSkin(id){
   var sk=SKIN[id];if(!sk||!skinOpen(sk))return;
   S.skin=id;save();renderTab();uiTop();
 }
+function toggleMagic(id){
+  var before=synSnap(),i=S.ms.indexOf(id);
+  if(i>=0)S.ms[i]=null;
+  else{
+    var e=S.ms.indexOf(null);
+    if(e<0){toast("마법 슬롯이 가득 찼어요. 먼저 장착 해제해 주세요");return}
+    S.ms[e]=id;
+  }
+  refreshSYN();synNote(before);save();renderSbar();renderTab();
+}
 function toggleSkill(id){
   if(!S.skl[id])return;
+  if(isMg(id)){toggleMagic(id);return}
   var before=synSnap();
   var i=S.slots.indexOf(id);
   if(i>=0)S.slots[i]=null;
@@ -3197,7 +3242,7 @@ function shopHtml(){
 function updateDots(){
   var f={};
   f.char=mqCan()||UP.some(function(u,i){return !(u.max&&S.up[i]>=u.max)&&S.gold>=upCostN(i,1)});
-  f.skill=S.slots.indexOf(null)>=0&&Object.keys(S.skl).some(function(id){return S.slots.indexOf(id)<0});
+  f.skill=(S.slots.indexOf(null)>=0&&Object.keys(S.skl).some(function(id){return !isMg(id)&&S.slots.indexOf(id)<0}))||(S.ms.indexOf(null)>=0&&Object.keys(S.skl).some(function(id){return isMg(id)&&S.ms.indexOf(id)<0}));
   f.gear=SLOTS.some(function(sl){return !S.equip[sl]&&ITEMS.some(function(i){return i.slot===sl&&S.inv[i.id]&&i.t!=="trash"})});
   f.party=S.party.indexOf(null)>=0&&Object.keys(S.cmp).some(function(id){return S.party.indexOf(id)<0});
   f.party=f.party||(S.pets.indexOf(null)>=0&&Object.keys(S.pet).some(function(id){return S.pets.indexOf(id)<0}));
@@ -4049,7 +4094,7 @@ var SYN=[
   {id:"y17",n:"현자의 깨달음",need:["sage","think"],fx:{cdr:15,dur:20},d:"쿨타임 −15%, 지속 시간 +20%"}
 ];
 var SYc={atk:0,crit:0,spd:0,gold:0,fr:0,cdr:0,spow:0,nuke:0,dur:0,time:0,hp:0,def:0};
-function haveNeed(x){return x.indexOf("c:")===0?S.party.indexOf(x.slice(2))>=0:x.indexOf("p:")===0?(S.pets||[]).indexOf(x.slice(2))>=0:S.slots.indexOf(x)>=0}
+function haveNeed(x){return x.indexOf("c:")===0?S.party.indexOf(x.slice(2))>=0:x.indexOf("p:")===0?(S.pets||[]).indexOf(x.slice(2))>=0:allSlots().indexOf(x)>=0}
 function synOn(y){
   if(y.tier)return S.slots.every(function(id){return id&&SKM[id]&&SKM[id].t===y.tier});
   return y.need.every(haveNeed);
@@ -4370,7 +4415,16 @@ function renderSbar(){
     if(sk)h+='<div class="skw"><button class="skb k-'+sk.t+'" id="sk-'+i+'" data-a="cast" data-v="'+i+'" aria-label="'+sk.n+'"><span class="e">'+spr(sk.e,18,2.4)+'</span><i class="cdm" id="cdm-'+i+'"></i><span class="cdt" id="cdt-'+i+'"></span><b class="tg">'+sk.t+'</b></button><span class="skn">'+sk.n+'</span></div>';
     else h+='<div class="skw"><button class="skb emp" data-a="tab" data-v="skill" aria-label="스킬 장착"><span class="e">+</span></button><span class="skn" style="color:var(--ink3)">비어 있음</span></div>';
   }
-  h+='<div class="sside"><button class="mini" id="b-tAS" data-a="tog" data-v="skill">AUTO</button><button class="mini" id="b-spd" data-a="tog" data-v="speed">×1</button><button class="mini" id="b-fold" data-a="fold">접기</button></div></div>';
+  h+='<div class="sside"><button class="mini" id="b-tAS" data-a="tog" data-v="skill">AUTO</button><button class="mini" id="b-spd" data-a="tog" data-v="speed">×1</button><button class="mini" id="b-fold" data-a="fold">접기</button></div>';
+  if(mgOn()){
+    for(var j=4;j<6;j++){
+      var mid=slotAt(j),ms=mid&&SKM[mid];
+      if(ms)h+='<div class="skw"><button class="skb k-'+ms.t+'" id="sk-'+j+'" data-a="cast" data-v="'+j+'" aria-label="'+ms.n+'"><span class="e">'+spr(ms.e,18,2.4)+'</span><i class="cdm" id="cdm-'+j+'"></i><span class="cdt" id="cdt-'+j+'"></span><b class="tg">'+ms.t+'</b></button><span class="skn">'+ms.n+'</span></div>';
+      else h+='<div class="skw"><button class="skb emp" data-a="tab" data-v="skill" aria-label="마법 장착"><span class="e">+</span></button><span class="skn" style="color:var(--ink3)">마법 칸</span></div>';
+    }
+    h+='<div class="msl">✨ 마법 슬롯<br><span>원소·법칙 마법 전용</span></div>';
+  }
+  h+='</div>';
   $("sbar").innerHTML=h;
 }
 
@@ -4479,15 +4533,25 @@ function skillHtml(){
     var id=S.slots[i],sk=id&&SKM[id];
     h+=sk?'<div class="slotc k-'+sk.t+'">'+spr(sk.e,18,2.2)+'<div class="n">'+sk.n+'</div><div class="s">Lv.'+S.skl[id].lv+'</div></div>':'<div class="slotc"><div style="height:46px;display:grid;place-items:center;color:var(--ink3);font-family:var(--f-p);font-size:14px">+</div><div class="s">비어 있음</div></div>';
   }
-  h+='</div></section>'+synHtml();
+  h+='</div></section>';
+  if(mgOn()){
+    h+='<section class="panel"><div class="row" style="justify-content:space-between"><h2 class="h2" style="margin:0">마법 슬롯</h2><span class="sub num">💠 조각 '+S.shards+'개</span></div>'+
+      '<p class="sub" style="margin:6px 0 12px">원소·법칙 마법은 일반 스킬과 별도의 마법 슬롯 2칸에 장착해요. 아래 마법 목록에서 <b>조각으로 강화</b>하거나, 정령왕·수호자를 다시 쓰러뜨리면(회귀 후 재도전) Lv이 올라요. 위력은 S등급 스킬 수준이에요.</p><div class="slots4" style="grid-template-columns:repeat(2,1fr)">';
+    for(var q=0;q<2;q++){
+      var mi=S.ms[q],msk=mi&&SKM[mi];
+      h+=msk?'<div class="slotc k-'+msk.t+'">'+spr(msk.e,18,2.2)+'<div class="n">'+msk.n+'</div><div class="s">Lv.'+S.skl[mi].lv+'</div></div>':'<div class="slotc"><div style="height:46px;display:grid;place-items:center;color:var(--ink3);font-family:var(--f-p);font-size:14px">+</div><div class="s">비어 있음</div></div>';
+    }
+    h+='</div></section>';
+  }
+  h+=synHtml();
   ["L","E","X","N","S","A","B","C"].forEach(function(tr){
-    h+='<section class="panel"><div class="row" style="justify-content:space-between;margin-bottom:4px"><h2 class="h2" style="margin:0">'+tl2(tr)+'</h2><span class="tier k-'+tr+'">'+(tr==="E"||tr==="L"?"보스 드롭":SKTI[tr].p+"%")+'</span></div>';
+    h+='<section class="panel"><div class="row" style="justify-content:space-between;margin-bottom:4px"><h2 class="h2" style="margin:0">'+tl2(tr)+'</h2><span class="tier k-'+tr+'">'+(tr==="E"||tr==="L"?"보스 드롭 · 조각 강화":SKTI[tr].p+"%")+'</span></div>';
     SKL.filter(function(s){return s.t===tr}).forEach(function(sk){
-      var o=S.skl[sk.id],p=o?sPow(sk.id):1,on=S.slots.indexOf(sk.id)>=0,open=T.sx===sk.id;
+      var o=S.skl[sk.id],p=o?sPow(sk.id):1,on=allSlots().indexOf(sk.id)>=0,open=T.sx===sk.id;
       h+='<div class="irow gx'+(o?"":" dim")+(open?" open":"")+'"><div class="ie2 k-'+sk.t+'" data-a="sx" data-v="'+sk.id+'">'+spr(sk.e,18,2.2)+'</div><div class="ib"><div class="t" data-a="sx" data-v="'+sk.id+'">'+sk.n+(o?' <span class="chip">Lv.'+o.lv+' / '+SKMAX+'</span>':' <span class="chip">미보유</span>')+(on?' <span class="chip" style="color:var(--gold)">장착중</span>':'')+'<span class="sub">'+(open?"▲":"▼")+'</span></div>'+
         '<div class="d" style="margin:0" data-a="sx" data-v="'+sk.id+'">재사용 '+f1(sk.cd*(1-cdCut()))+'초'+(sk.nuke?' · 즉발':'')+(sk.buff||sk.mimic?' · 강화':'')+'</div>'+
         (open?'<div class="d" style="margin-top:6px">'+skDesc(sk,p,o?o.lv:1)+'</div>':'')+
-        (o?'<button class="btn small'+(on?" ghost":"")+'" data-a="sleq" data-v="'+sk.id+'">'+(on?"장착 해제":"장착")+'</button>':'')+'</div></div>';
+        (o?'<button class="btn small'+(on?" ghost":"")+'" data-a="sleq" data-v="'+sk.id+'">'+(on?"장착 해제":"장착")+'</button>':'')+(o&&isMg(sk.id)?(o.lv>=SKMAX?' <span class="chip">최대 레벨</span>':' <button class="btn small '+(S.shards>=mgCost(o.lv)?"gold":"ghost")+'" data-a="mup" data-v="'+sk.id+'">강화 → Lv.'+(o.lv+1)+' (💠'+mgCost(o.lv)+')</button>'):'')+'</div></div>';
     });
     h+='</section>';
   });
@@ -4693,8 +4757,8 @@ function uiBattle(){
   $("b-tAS").classList.toggle("on",S.autoSkill);
   $("b-spd").textContent="×"+S.speed;$("b-spd").classList.toggle("on",S.speed>1);
   $("b-fold").textContent=$("top").classList.contains&&E.fold?"펴기":"접기";
-  for(var s=0;s<4;s++){
-    var id=S.slots[s];if(!id)continue;
+  for(var s=0;s<6;s++){
+    var id=slotAt(s);if(!id)continue;
     var sk=SKM[id],el=$("sk-"+s);if(!el)continue;
     var cd=cds[id],on=eff[id]>0,tot=sk.cd*(1-cdCut());
     el.disabled=cd>0;
@@ -4728,7 +4792,8 @@ document.addEventListener("click",function(e){
   if(a!=="reset")resetArmed=false;
   if(a==="tab"){tab=v;renderTab();window.scrollTo(0,0);snd(440,0.04,"square",0.025)}
   else if(a==="sub"){var p=v.split(":");sub[p[0]]=p[1];renderTab()}
-  else if(a==="cast")useSkill(S.slots[parseInt(v,10)]);
+  else if(a==="cast")useSkill(slotAt(parseInt(v,10)));
+  else if(a==="mup")magicUp(v);
   else if(a==="boss"){enterBoss();uiBattle()}
   else if(a==="tog"){
     if(v==="boss")S.autoBoss=!S.autoBoss;
