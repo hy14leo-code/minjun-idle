@@ -867,6 +867,7 @@ var CMTIERS=[
   {id:"D",n:"D등급",p:2,sh:0,rank:0.5}
 ];
 function isTop(sk){return !!sk&&(sk.t==="N"||sk.t==="X")}
+function sameTop(a,b){return isTop(a)&&isTop(b)&&a.t===b.t}
 function tl(t){return t==="L"?"법칙마법":t==="O"?"오메가":t==="E"?"원소마법":t==="X"?"멸망":t==="N"?"국가권력":t==="U"?"울트라":t==="H"?"하이퍼":t==="M"?"미스틱":t}
 function tl2(t){return "SABCD".indexOf(t)>=0?t+"등급":tl(t)}
 var SKTI={},CMTI={};
@@ -2139,7 +2140,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v62";
+var BUILD="v63";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -2955,7 +2956,7 @@ function pullSk(pool){
   var sk=pickRand(SKL.filter(function(s){return s.t===t.id})),own=S.skl[sk.id],isNew=false,up=false,sh=0;
   if(!own){
     S.skl[sk.id]={n:1,lv:1};isNew=true;
-    var ei=S.slots.indexOf(null);if(ei>=0&&!(isTop(sk)&&S.slots.some(function(x){return x&&SKM[x]&&isTop(SKM[x])})))S.slots[ei]=sk.id;
+    var ei=S.slots.indexOf(null);if(ei>=0&&!(isTop(sk)&&S.slots.some(function(x){return x&&SKM[x]&&sameTop(SKM[x],sk)})))S.slots[ei]=sk.id;
   }else{
     own.n++;
     if(own.lv<SKMAX){own.lv++;up=true}else{sh=t.sh;S.shards+=sh}
@@ -3073,8 +3074,8 @@ function toggleSkill(id){
     var e=S.slots.indexOf(null),nsk=SKM[id],swapped=false;
     if(isTop(nsk)){
       var oi=-1;
-      S.slots.forEach(function(x,ix){if(x&&x!==id&&SKM[x]&&isTop(SKM[x]))oi=ix});
-      if(oi>=0){toast("국가권력급 이상 스킬은 하나만 장착할 수 있어요: "+SKM[S.slots[oi]].n+" → "+nsk.n);S.slots[oi]=id;swapped=true}
+      S.slots.forEach(function(x,ix){if(x&&x!==id&&SKM[x]&&sameTop(SKM[x],nsk))oi=ix});
+      if(oi>=0){toast(tl(nsk.t)+" 스킬은 하나만 장착할 수 있어요: "+SKM[S.slots[oi]].n+" → "+nsk.n);S.slots[oi]=id;swapped=true}
     }
     if(!swapped){
       if(e<0){toast("슬롯이 가득 찼어요. 먼저 장착 해제해 주세요");return}
@@ -3976,9 +3977,9 @@ async function admFill(tab){
     }else if(tab==="players"){
       var d3=await admCall("mj_admin_players"),ps=(d3&&d3.rows)||[],named=ps.filter(function(p){return p.nick}),h3="";
       named.slice(0,80).forEach(function(p){
-        h3+='<div class="tcard" style="margin-bottom:8px"><div class="tn">'+esc(p.nick)+(p.hidden?' <span class="chip">랭킹 숨김</span>':'')+'</div><span class="sub">최고 스테이지 '+p.best+' · 회귀 '+p.rb+'회 · Lv.'+p.lv+' · '+admAgo(p.updated_at)+'</span><div class="grid2" style="margin-top:6px"><button class="btn small ghost" data-a="admps" data-v="'+p.id+':'+(p.hidden?"unhide":"hide")+'">'+(p.hidden?'랭킹 다시 보이기':'랭킹에서 숨기기')+'</button><button class="btn small ghost" data-a="admps" data-v="'+p.id+':clearnick">닉네임 초기화</button></div></div>';
+        h3+='<div class="tcard" style="margin-bottom:8px"><div class="tn">'+esc(p.nick)+(p.hidden?' <span class="chip">랭킹 숨김</span>':'')+(p.flagged>0?' <span class="chip" style="color:var(--red,#FF6B6B)">⚠ 부정 의심</span>':'')+(p.trusted?' <span class="chip">신뢰됨</span>':'')+'</div>'+(p.flagged>0?'<div class="sub" style="color:var(--red,#FF6B6B);margin-bottom:4px">'+esc(p.flag_note||"")+' — 랭킹에서 자동 제외됨</div>':'')+'<span class="sub">최고 스테이지 '+p.best+' · 회귀 '+p.rb+'회 · Lv.'+p.lv+' · '+admAgo(p.updated_at)+'</span><div class="grid2" style="margin-top:6px"><button class="btn small ghost" data-a="admps" data-v="'+p.id+':'+(p.hidden?"unhide":"hide")+'">'+(p.hidden?'랭킹 다시 보이기':'랭킹에서 숨기기')+'</button><button class="btn small ghost" data-a="admps" data-v="'+p.id+':clearnick">닉네임 초기화</button></div>'+(p.flagged>0?'<button class="btn small gold wide" style="margin-top:6px" data-a="admps" data-v="'+p.id+':trust">정상 확인 (의심 해제·앞으로 검사 안 함)</button>':'<button class="btn small ghost wide" style="margin-top:6px" data-a="admps" data-v="'+p.id+':flag">부정으로 제한 (랭킹 제외)</button>')+'</div>';
       });
-      b.innerHTML='<h2 class="h2">학생 목록</h2><p class="sub" style="margin-bottom:8px">닉네임이 있는 계정 '+named.length+'개 (전체 계정 '+ps.length+'개). 최근에 접속한 순서예요.</p>'+(h3||'<p class="sub">아직 없어요.</p>');
+      b.innerHTML='<h2 class="h2">학생 목록</h2><p class="sub" style="margin-bottom:8px">닉네임이 있는 계정 '+named.length+'개 (전체 계정 '+ps.length+'개). 부정 의심 계정이 맨 위에 나와요. 서버가 처치 수·회귀 점수 등이 맞지 않는 기록을 자동으로 찾아 랭킹에서 제외해요.</p>'+(h3||'<p class="sub">아직 없어요.</p>');
     }else{
       b.innerHTML='<h2 class="h2">내 계정</h2><p class="sub" style="margin-bottom:8px">이 기기의 내 계정에 모든 캐릭터·장비·스킬·펫·스킨을 최대 레벨로 넣어요. 내 계정은 <b>랭킹에서 자동으로 숨겨요.</b></p><button class="btn hot wide" data-a="admunlock">'+(T.admConfirm?"정말 실행할까요? (한 번 더 누르기)":"전부 해금하기")+'</button>'+
         '<h2 class="h2" style="margin-top:18px">비밀번호 바꾸기</h2><input class="inp" id="adm-p1" type="password" placeholder="새 비밀번호 (8자 이상)" style="margin-bottom:6px"><input class="inp" id="adm-p2" type="password" placeholder="새 비밀번호 한 번 더" style="margin-bottom:8px"><button class="btn gold wide" data-a="admpw">비밀번호 바꾸기</button>'+
@@ -4526,7 +4527,7 @@ function uiInfo(){
 /* ---------- 탭: 스킬 ---------- */
 function skillHtml(){
   var h='<section class="panel"><div class="row" style="justify-content:space-between"><h2 class="h2" style="margin:0">장착 스킬</h2><span class="sub num">보유 '+Object.keys(S.skl).length+' / '+SKL.length+'종</span></div>'+
-    '<p class="sub" style="margin:6px 0 12px">최대 4개까지 장착할 수 있어요. 같은 스킬을 또 뽑으면 레벨이 올라요 (최대 Lv.'+SKMAX+', Lv.5부터는 상승폭이 줄어요). 국가권력급 스킬은 한 번에 하나만 장착돼요.</p><div class="slots4">';
+    '<p class="sub" style="margin:6px 0 12px">최대 4개까지 장착할 수 있어요. 같은 스킬을 또 뽑으면 레벨이 올라요 (최대 Lv.'+SKMAX+', Lv.5부터는 상승폭이 줄어요). 국가권력급과 멸망급은 각각 하나씩, 함께 장착할 수 있어요.</p><div class="slots4">';
   for(var i=0;i<4;i++){
     var id=S.slots[i],sk=id&&SKM[id];
     h+=sk?'<div class="slotc k-'+sk.t+'">'+spr(sk.e,18,2.2)+'<div class="n">'+sk.n+'</div><div class="s">Lv.'+S.skl[id].lv+'</div></div>':'<div class="slotc"><div style="height:46px;display:grid;place-items:center;color:var(--ink3);font-family:var(--f-p);font-size:14px">+</div><div class="s">비어 있음</div></div>';
@@ -4819,7 +4820,7 @@ document.addEventListener("click",function(e){
   else if(a==="admev")admEvent();
   else if(a==="admevclr")admLive({event:null},"이벤트를 끝냈어요.");
   else if(a==="admgift")admGift();
-  else if(a==="admps"){var pp=String(v).split(":");admDo("mj_admin_player_set",{p_id:pp[0],p_action:pp[1]},function(){return pp[1]==="clearnick"?"닉네임을 초기화했어요.":pp[1]==="hide"?"랭킹에서 숨겼어요.":"랭킹에 다시 보여요."})}
+  else if(a==="admps"){var pp=String(v).split(":");admDo("mj_admin_player_set",{p_id:pp[0],p_action:pp[1]},function(){return pp[1]==="clearnick"?"닉네임을 초기화했어요.":pp[1]==="trust"?"정상 계정으로 확인했어요.":pp[1]==="flag"?"랭킹에서 제외했어요.":pp[1]==="hide"?"랭킹에서 숨겼어요.":"랭킹에 다시 보여요."})}
   else if(a==="admunlock")admUnlock();
   else if(a==="admpw")admPw();
   else if(a==="admout"){admOut();hideOv();toast("로그아웃했어요")}
