@@ -798,6 +798,21 @@ body,.panel,.btn{text-shadow:none}
 .tdot{width:9px;height:9px;background:#2A2018;box-shadow:inset 0 0 0 2px #6E5230}
 .tdot.on{background:var(--gold,#FFC94A);box-shadow:inset 0 0 0 2px #FFF0B0}
 .subtabs{row-gap:6px}
+
+/* 세로가 짧은 화면: 전장을 줄여 아래 내용 영역을 확보 */
+@media (max-height:720px){
+  .field{height:clamp(168px,28vh,230px)!important;--sc:.8}
+  .top{padding-bottom:6px}
+  .sbar .skn{display:none}
+  .sbar{padding-top:8px!important}
+}
+@media (max-height:600px){
+  .field{height:150px!important;--sc:.7}
+}
+.mini,.sbar.six .mini{min-height:27px}
+.sside,.sbar.six .sside{gap:4px!important}
+.subtabs .btn.lk{opacity:.55}
+.subtabs .btn small{font-size:.8em}
 </style>
 
 <div class="wrap">
@@ -1996,14 +2011,33 @@ function norm(o){
   while(o.party.length<3)o.party.push(null);
   return o;
 }
+var LOADREC=false,SAVEERR=0,SAVEBT=0;
+function saveOk(o){return !!o&&typeof o==="object"&&typeof o.gold==="number"&&Array.isArray(o.up)}
+function readSave(k){try{var raw=localStorage.getItem(k);if(!raw)return null;var o=JSON.parse(raw);return saveOk(o)?o:null}catch(e){return null}}
 function load(){
-  var o=null;
-  try{var raw=localStorage.getItem(KEY);if(raw)o=JSON.parse(raw)}catch(e){o=null}
-  if(!o||typeof o!=="object")return fresh();
+  var had=false;try{had=!!localStorage.getItem(KEY)}catch(e){}
+  var o=readSave(KEY);
+  if(!o){
+    /* 기록이 깨졌거나 없으면 백업 본에서 복구 */
+    var b=readSave(KEY+"-bak");
+    if(b){o=b;LOADREC=had}
+  }
+  if(!o)return fresh();
   return norm(o);
 }
 var S=load();
-function save(){S.last=Date.now();try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function save(){
+  S.last=Date.now();
+  try{
+    var j=JSON.stringify(S);
+    localStorage.setItem(KEY,j);SAVEERR=0;
+    /* 5분마다 정상 기록의 백업 본을 따로 보관 */
+    if(S.last-SAVEBT>300000){SAVEBT=S.last;try{localStorage.setItem(KEY+"-bak",j)}catch(e){}}
+  }catch(e){
+    SAVEERR++;
+    if(SAVEERR===3&&typeof toast==="function")toast("기기에 저장 공간이 부족해 기록을 저장하지 못하고 있어요. 설정에서 세이브 코드를 내보내 주세요");
+  }
+}
 
 var KPS=8,tab="char",sub={char:"up",gacha:"eq",quest:"dq",party:"cm",chal:"tw"},F=null,kills=0,BM=1,lastPull=null,resetArmed=false,E={},pickSel=null,hudKey="";
 var cds={},eff={};
@@ -2307,6 +2341,7 @@ function twHp(f){return hpOf(twEq(f))*30}
 function twRst(f){return 4+Math.floor(f/4)}
 function twStart(){
   var f=(S.twf||0)+1;
+  if(lockOf("chal","tw")){toast("스테이지 20에 도달하면 무한의 탑이 열려요");return}
   if(f>TWMAX){toast("탑의 꼭대기에 도달했어요!");return}
   if(F&&F.boss){toast("보스전이 끝난 뒤에 도전할 수 있어요");return}
   var c=calc(),eq=twEq(f),ph=PH[phIdx(eq)],major=f%10===0,d=major?ph.boss:ph.mini,hp=twHp(f),tm=Math.max(15,c.time);
@@ -2458,7 +2493,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v71";
+var BUILD="v72";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -3639,7 +3674,7 @@ function updateDots(){
   f.party=S.party.indexOf(null)>=0&&Object.keys(S.cmp).some(function(id){return S.party.indexOf(id)<0});
   f.party=f.party||(S.pets.indexOf(null)>=0&&Object.keys(S.pet).some(function(id){return S.pets.indexOf(id)<0}));
   f.gacha=S.tickets>0;
-  var dc=$("dot-c");if(dc)dc.hidden=!(S.twd!==dayKey(new Date())&&(S.twf||0)>0);
+  var dc=$("dot-c");if(dc)dc.hidden=!(S.twd!==dayKey(new Date())&&(S.twf||0)>0&&!lockOf("chal","tw"));
   var ds=document.querySelectorAll("#nav .dot");
   for(var i=0;i<ds.length;i++)ds[i].hidden=!f[ds[i].getAttribute("data-d")];
   var sd=document.querySelectorAll(".sdot");
@@ -4035,7 +4070,7 @@ function dqHtml(){
   return h;
 }
 function questHtml(){
-  if(["dq","mq","ach","pass"].indexOf(sub.quest)<0)sub.quest="dq";
+  if(["dq","mq","ach","pass"].indexOf(sub.quest)<0||lockOf("quest",sub.quest))sub.quest="dq";
   var h=subHtml("quest",[["dq","일일"],["mq","목표"],["ach","업적"],["pass","패스"]]);
   if(sub.quest==="mq")return h+mqListHtml();
   if(sub.quest==="ach")return h+achHtml();
@@ -4043,6 +4078,7 @@ function questHtml(){
   return h+dqHtml();
 }
 function chalHtml(){
+  if(lockOf("chal",sub.chal))sub.chal="dg";
   var h=subHtml("chal",[["tw","탑"],["dg","던전"],["rank","랭킹·대련"],["mini","미니게임"]]);
   if(sub.chal==="dg")return h+dgHtml();
   if(sub.chal==="rank")return h+rankHtml();
@@ -4944,7 +4980,7 @@ function step(dt){
     if(cds[sk.id]>0)cds[sk.id]=Math.max(0,cds[sk.id]-dt);
     if(eff[sk.id]>0)eff[sk.id]=Math.max(0,eff[sk.id]-dt);
   });
-  refreshSF();refreshEV();
+  refreshSF();refreshEV();unlockTick();
   if(S.stage>S.rbest){S.rbest=S.stage;S.stuckT=0}
   if(!paused())S.stuckT=(S.stuckT||0)+dt;
   if(S.sm<Math.floor(S.best/10))milestone();
@@ -5035,6 +5071,7 @@ function navHtml(){
 }
 function subDot(key,id){
   try{
+    if(lockOf(key,id))return false;
     if(key==="quest"){
       if(id==="dq")return dqCanClaim()||S.rl!==dayKey(new Date());
       if(id==="mq")return mqCan();
@@ -5055,8 +5092,17 @@ function subDot(key,id){
   }catch(e){}
   return false;
 }
+var LOCKS={"char:tal":[10,"특성"],"char:relic":[20,"유물"],"chal:tw":[20,"무한의 탑"],"chal:mini":[5,"미니게임"],"quest:pass":[5,"성장 패스"]};
+function lockOf(key,id){var l=LOCKS[key+":"+id];return l&&(S.best||1)<l[0]?l:null}
+function unlockTick(){
+  var b=S.best||1;
+  if(T.ub===undefined){T.ub=b;return}
+  if(b===T.ub)return;
+  for(var k in LOCKS){var l=LOCKS[k];if(T.ub<l[0]&&b>=l[0]){(function(nm){setTimeout(function(){toast("새 콘텐츠 해금: "+nm+"!");bannerFx("해금!");jingle([523,659,784,1046])},2600)})(l[1])}}
+  T.ub=b;
+}
 function subHtml(key,list){
-  return '<div class="subtabs">'+list.map(function(x){return '<button class="btn small ghost'+(sub[key]===x[0]?" on":"")+'" data-a="sub" data-v="'+key+':'+x[0]+'">'+x[1]+'<span class="dot sdot" data-sk="'+key+'" data-si="'+x[0]+'"'+(subDot(key,x[0])?"":" hidden")+'></span></button>'}).join("")+"</div>";
+  return '<div class="subtabs">'+list.map(function(x){var lk=lockOf(key,x[0]);return '<button class="btn small ghost'+(sub[key]===x[0]?" on":"")+(lk?" lk":"")+'" data-a="sub" data-v="'+key+':'+x[0]+'">'+x[1]+(lk?' <small>🔒</small>':'')+'<span class="dot sdot" data-sk="'+key+'" data-si="'+x[0]+'"'+(subDot(key,x[0])?"":" hidden")+'></span></button>'}).join("")+"</div>";
 }
 var UQ={
   memo:{d:function(p){return "5초 뒤 같은 피해를 50% 한 번 더 (복습)"},run:function(c,p){var d=nukeDmg(SKM.memo,c,p)*0.5;setTimeout(function(){if(F){popAt("복습! "+fmt(d),"big",0.7,0.35);deal(d)}},5000)}},
@@ -5496,14 +5542,14 @@ function openTitlePick(){
 
 /* ---------- 입력 ---------- */
 function hardReset(){
-  S=fresh();resetArmed=false;afterLoad();boot();cloudSave(true);
+  S=fresh();resetArmed=false;try{localStorage.removeItem(KEY+"-bak")}catch(e){}SAVEBT=0;afterLoad();boot();cloudSave(true);
 }
 document.addEventListener("click",function(e){
   var b=e.target.closest("[data-a]");if(!b||b.disabled)return;
   var a=b.getAttribute("data-a"),v=b.getAttribute("data-v");
   if(a!=="reset")resetArmed=false;
   if(a==="tab"){tab=v;renderTab();window.scrollTo(0,0);snd(440,0.04,"square",0.025)}
-  else if(a==="sub"){var p=v.split(":");sub[p[0]]=p[1];renderTab()}
+  else if(a==="sub"){var p=v.split(":"),lk0=lockOf(p[0],p[1]);if(lk0){toast("스테이지 "+lk0[0]+"에 도달하면 「"+lk0[1]+"」이(가) 열려요");return}sub[p[0]]=p[1];renderTab()}
   else if(a==="cast")useSkill(slotAt(parseInt(v,10)));
   else if(a==="mup")magicUp(v);
   else if(a==="boss"){enterBoss();uiBattle()}
@@ -5626,6 +5672,7 @@ function boot(){
   var now=Date.now(),lines=[],petNew=false;
   if(!S.petG){S.petG=true;if(Object.keys(S.pet).length===0){S.pet.coco={n:1,lv:1};if(!S.pets[0])S.pets[0]="coco";petNew=true;refreshCM();paintParty()}}
   bgInit();
+  if(LOADREC){LOADREC=false;setTimeout(function(){toast("저장 기록에 문제가 있어 최근 백업 본으로 복구했어요")},1500)}
   if(S.v2Note){
     S.v2Note=false;S.balNote=false;save();
     setTimeout(function(){showOv('<div class="panel gold"><p class="banner">대규모 업데이트 2.0</p><div class="tbl" style="margin:8px 0"><table><tr><th>새 콘텐츠</th><th>내용</th></tr><tr><td>무한의 탑</td><td>회귀해도 유지되는 층 도전 · 탑 랭킹 (전장 왼쪽 ⚔ 버튼)</td></tr><tr><td>유물</td><td>유물석으로 올리는 영구 능력 (캐릭터 → 유물)</td></tr><tr><td>특성</td><td>공격·생존·재화 15종, 나만의 빌드 (캐릭터 → 특성)</td></tr><tr><td>성장 패스</td><td>매달 30단계 무료 보상 (퀘스트 → 패스)</td></tr><tr><td>도전 메뉴</td><td>탑·던전·랭킹·대련·미니게임을 한곳에</td></tr><tr><td>배경음악</td><td>설정에서 켜고 끌 수 있어요</td></tr></table></div><p class="sub" style="text-align:center;margin-bottom:12px">업데이트 선물: 유물석 60개</p><button class="btn gold wide" data-a="ovx">알겠어요</button></div>')},900);
