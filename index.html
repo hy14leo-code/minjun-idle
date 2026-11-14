@@ -813,6 +813,16 @@ body,.panel,.btn{text-shadow:none}
 .sside,.sbar.six .sside{gap:4px!important}
 .subtabs .btn.lk{opacity:.55}
 .subtabs .btn small{font-size:.8em}
+
+.bkg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.bkc{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:4px;min-height:74px;padding:6px 2px;background:rgba(0,0,0,.28);box-shadow:inset 0 0 0 2px var(--tc,#6E5230);text-align:center;overflow:hidden}
+.bkc span{font-family:var(--f-d);font-size:11px;line-height:1.15;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bkc.no{box-shadow:inset 0 0 0 2px #3A2E22}
+.bkc.no img,.bkc.no .pxe{filter:brightness(0) opacity(.45)}
+.bkc.no span{color:var(--ink3)}
+.bkc .pxi{--u:2.2px;margin:0 auto}
+.bkc img{max-height:46px}
+@media (min-width:520px){.bkg{grid-template-columns:repeat(6,minmax(0,1fr))}}
 </style>
 
 <div class="wrap">
@@ -2001,6 +2011,7 @@ function norm(o){
   while(o.slots.length<4)o.slots.push(null);
   migMagic(o);
   if(!o.rel||typeof o.rel!=="object")o.rel={};
+  if(!o.colr||typeof o.colr!=="object")o.colr={};
   if(!o.tal||typeof o.tal!=="object")o.tal={};
   if(!o.ps||typeof o.ps!=="object"||!o.ps.cl)o.ps={s:"",xp:0,cl:{}};
   if(needV2){o.rst=(o.rst||0)+60;o.v2Note=true}
@@ -2097,7 +2108,8 @@ function gearBonus(){
   SLOTS.forEach(function(s){
     var id=S.equip[s];if(!id||!S.inv[id])return;
     var it=ITEM[id],lv=S.inv[id].lv||0;
-    for(var k in it.fx)b[k]+=mult(k,it.fx[k],lv);
+    var sm=1+0.15*(S.inv[id].st||0);
+    for(var k in it.fx){var gv=mult(k,it.fx[k],lv);b[k]+=gv>0?gv*sm:gv}
   });
   var st=setTier();
   if(st)for(var k2 in SETB[st])b[k2]+=SETB[st][k2];
@@ -2493,7 +2505,7 @@ function skinOpen(sk){return (S.majors||0)>=sk.need&&(S.rb||0)>=(sk.rb||0)&&(!sk
 function charLv(){return 1+S.up.reduce(function(a,b){return a+b},0)}
 
 /* ---------- 알림 ---------- */
-var BUILD="v72";
+var BUILD="v73";
 function checkVer(){
   try{
     fetch("version.txt?t="+Date.now(),{cache:"no-store"}).then(function(r){return r.ok?r.text():""}).then(function(t){
@@ -3394,6 +3406,26 @@ function enhance(id,gu){
   }
   save();renderTab();uiTop();
 }
+
+/* ---------- 장비 돌파: 같은 장비 여분을 써서 ★을 올림 ---------- */
+var STARC=[1,2,3,5,8],STARMAX=5;
+function starSpare(o){return Math.max(0,(o.n||1)-1-(o.su||0))}
+function starUp(id){
+  var o=S.inv[id],it=ITEM[id];if(!o||!it||it.t==="trash")return;
+  var st=o.st||0;if(st>=STARMAX)return;
+  var c=STARC[st];
+  if(starSpare(o)<c){toast("같은 장비가 "+c+"개 더 필요해요 (여분 "+starSpare(o)+"개)");return}
+  o.su=(o.su||0)+c;o.st=st+1;
+  jingle([660,880,1175,1568]);bannerFx("돌파 ★"+o.st);toast(it.n+" 돌파! 능력치 +"+(o.st*15)+"%");
+  save();renderTab();uiTop();
+}
+function starTxt(o){var n=o.st||0,t="";for(var i=0;i<n;i++)t+="★";return t}
+function starBtn(it,o){
+  var st=o.st||0;
+  if(st>=STARMAX)return '<button class="btn small ghost" disabled>돌파 완료 ★'+STARMAX+'</button>';
+  var c=STARC[st],sp=starSpare(o);
+  return '<button class="btn small'+(sp>=c?" gold":" ghost")+'" data-a="star" data-v="'+it.id+'"'+(sp>=c?"":" disabled")+'>★ 돌파 '+(st+1)+'단계<small>여분 '+sp+' / '+c+'개 · 능력치 +'+((st+1)*15)+'%</small></button>';
+}
 function enhBtns(it,o){
   if(o.lv>=15)return '<button class="btn small ghost" disabled>최대 강화 +15</button>';
   var c=enhCost(o.lv),g=enhGold(o.lv),r=enhRate(o),ok=S.shards>=c&&S.gold>=g,gc=3+o.lv;
@@ -3618,6 +3650,49 @@ function dlvBuy(v){
   var c=K.cost(o.lv);if(S.dia<c)return;
   S.dia-=c;dayUse("lvup");o.lv++;refreshCM();refreshSYN();jingle([660,880]);save();uiTop();
   lvOv(p[0],K.nm(p[1])+" Lv."+o.lv+"!");
+}
+
+
+/* ---------- 도감 ---------- */
+var COLS=[
+  {id:"eq",n:"장비",all:function(){return ITEMS.filter(function(i){return i.t!=="trash"})},has:function(x){return !!S.inv[x.id]},ic:function(x){return spr(x.e,16,2)},t:function(x){return "t-"+x.t},nm:function(x){return x.n}},
+  {id:"sk",n:"스킬",all:function(){return SKL},has:function(x){return !!S.skl[x.id]},ic:function(x){return spr(x.e,16,2)},t:function(x){return "k-"+x.t},nm:function(x){return x.n}},
+  {id:"cm",n:"동료",all:function(){return CM},has:function(x){return !!S.cmp[x.id]},ic:function(x){return cimg(x.id,1.3)},t:function(x){return "k-"+x.t},nm:function(x){return x.n}},
+  {id:"pt",n:"펫",all:function(){return PETS},has:function(x){return !!S.pet[x.id]},ic:function(x){return petImg(x.id,2)},t:function(x){return "k-"+x.t},nm:function(x){return x.n}}
+];
+var COLR=[[25,{tk:3,rst:15},"뽑기권 3 · 유물석 15"],[50,{tk:5,rst:30},"뽑기권 5 · 유물석 30"],[75,{dia:30,rst:50},"💎 30 · 유물석 50"],[100,{dia:80,rst:100},"💎 80 · 유물석 100"]];
+function colStat(c){var a=c.all(),n=a.filter(c.has).length;return {n:n,max:a.length,pct:a.length?Math.floor(n/a.length*100):0}}
+function colCan(){
+  return COLS.some(function(c){var st=colStat(c);return COLR.some(function(r){return st.pct>=r[0]&&!(S.colr&&S.colr[c.id+r[0]])})});
+}
+function colClaim(){
+  var got=0;if(!S.colr)S.colr={};
+  COLS.forEach(function(c){
+    var st=colStat(c);
+    COLR.forEach(function(r){
+      if(st.pct<r[0]||S.colr[c.id+r[0]])return;
+      S.colr[c.id+r[0]]=1;got++;
+      var w=r[1];if(w.tk)S.tickets+=w.tk;if(w.dia)S.dia+=w.dia;if(w.rst)S.rst=(S.rst||0)+w.rst;
+    });
+  });
+  if(got){jingle([523,659,784,1046]);toast("수집 보상 "+got+"개를 받았어요!");save();renderTab();uiTop()}
+}
+function bookHtml(){
+  var tot=colCount(),mx=colMax();
+  var h='<section class="panel gold"><h2 class="h2">도감</h2><div class="stats" style="margin-top:0"><div class="st"><span>전체 수집</span><b style="color:var(--gold)">'+tot+' / '+mx+'</b></div><div class="st"><span>수집 보너스</span><b>공격력·골드 +'+f1(tot*0.5)+'%</b></div></div>'+
+    '<p class="sub" style="margin-top:8px">새로운 장비·스킬·동료·펫을 하나 모을 때마다 공격력과 골드가 영구적으로 +0.5%씩 올라요. 종류별로 25·50·75·100%를 채우면 수집 보상을 받아요.</p>'+
+    '<button class="btn gold wide" style="margin-top:8px" data-a="colclaim"'+(colCan()?"":" disabled")+'>받을 수 있는 수집 보상 모두 받기</button></section>';
+  COLS.forEach(function(c){
+    var st=colStat(c);
+    h+='<section class="panel"><div class="row" style="justify-content:space-between"><h2 class="h2" style="margin:0">'+c.n+'</h2><span class="sub num">'+st.n+' / '+st.max+' ('+st.pct+'%)</span></div><div class="bar" style="margin:8px 0"><i style="width:'+st.pct+'%"></i></div><div class="chips" style="margin:0 0 10px">'+
+      COLR.map(function(r){var done=S.colr&&S.colr[c.id+r[0]],ok=st.pct>=r[0];return '<span class="chip"'+(done?'':ok?' style="color:var(--gold)"':' style="opacity:.55"')+'>'+r[0]+'% '+(done?"받음":r[2])+'</span>'}).join("")+'</div><div class="bkg">';
+    c.all().forEach(function(x){
+      var own=c.has(x);
+      h+='<div class="bkc '+c.t(x)+(own?"":" no")+'">'+c.ic(x)+'<span>'+(own?esc(c.nm(x)):"???")+'</span></div>';
+    });
+    h+='</div></section>';
+  });
+  return h;
 }
 
 /* ---------- 상점 (다이아·조각) ---------- */
@@ -3893,7 +3968,7 @@ var AC=[];
 [[1,2],[3,6],[6,12]].forEach(function(a){AC.push({id:"sy"+a[0],n:"시너지 "+a[0]+"개 동시 발동",cur:function(){return synCount()},max:a[0],t:a[1]})});
 [[1,3],[3,6],[10,15]].forEach(function(a){AC.push({id:"rb"+a[0],n:"회귀 "+a[0]+"회",cur:function(){return S.rb},max:a[0],t:a[1]})});
 [[3,2],[10,8]].forEach(function(a){AC.push({id:"cm"+a[0],n:"동료 "+a[0]+"명 영입",cur:function(){return Object.keys(S.cmp).length},max:a[0],t:a[1]})});
-function canClaim(){return AC.some(function(a){return !S.ach[a.id]&&a.cur()>=a.max})||dqCanClaim()||S.rl!==dayKey(new Date())||mqCan()||passCan()}
+function canClaim(){return AC.some(function(a){return !S.ach[a.id]&&a.cur()>=a.max})||dqCanClaim()||S.rl!==dayKey(new Date())||mqCan()||passCan()||colCan()}
 function claimAch(id){
   var a=AC.filter(function(x){return x.id===id})[0];
   if(!a||S.ach[id]||a.cur()<a.max)return;
@@ -4070,8 +4145,9 @@ function dqHtml(){
   return h;
 }
 function questHtml(){
-  if(["dq","mq","ach","pass"].indexOf(sub.quest)<0||lockOf("quest",sub.quest))sub.quest="dq";
-  var h=subHtml("quest",[["dq","일일"],["mq","목표"],["ach","업적"],["pass","패스"]]);
+  if(["dq","mq","ach","pass","book"].indexOf(sub.quest)<0||lockOf("quest",sub.quest))sub.quest="dq";
+  var h=subHtml("quest",[["dq","일일"],["mq","목표"],["ach","업적"],["pass","패스"],["book","도감"]]);
+  if(sub.quest==="book")return h+bookHtml();
   if(sub.quest==="mq")return h+mqListHtml();
   if(sub.quest==="ach")return h+achHtml();
   if(sub.quest==="pass")return h+passHtml();
@@ -5077,6 +5153,7 @@ function subDot(key,id){
       if(id==="mq")return mqCan();
       if(id==="ach")return AC.some(function(a){return !S.ach[a.id]&&a.cur()>=a.max});
       if(id==="pass")return passCan();
+      if(id==="book")return colCan();
     }
     if(key==="chal"){
       if(id==="tw")return S.twd!==dayKey(new Date())&&(S.twf||0)>0;
@@ -5334,11 +5411,11 @@ function gearHtml(){
   owned.forEach(function(it){
     var o=S.inv[it.id],on=S.equip[it.slot]===it.id,open=T.gx===it.id;
     var top=FXK.filter(function(k){return it.fx[k]!==undefined}).slice(0,3).map(function(k){var v=mult(k,it.fx[k],o.lv);return FXN[k]+" "+(v>0?"+":"")+v+fxUnit(k)}).join(" · ");
-    h+='<div class="irow gx'+(open?" open":"")+'"><div class="ie2 t-'+it.t+'" data-a="gx" data-v="'+it.id+'">'+spr(it.e,16,2.4)+'</div><div class="ib"><div class="t" data-a="gx" data-v="'+it.id+'">'+it.n+(o.lv?' <span class="chip">+'+o.lv+"</span>":"")+' <span class="tier t-'+it.t+'">'+TI[it.t].n+'</span>'+(on?' <span class="chip" style="color:var(--gold)">장착중</span>':'')+'<span class="sub">'+(open?"▲":"▼")+'</span></div>'+
+    h+='<div class="irow gx'+(open?" open":"")+'"><div class="ie2 t-'+it.t+'" data-a="gx" data-v="'+it.id+'">'+spr(it.e,16,2.4)+'</div><div class="ib"><div class="t" data-a="gx" data-v="'+it.id+'">'+it.n+(o.lv?' <span class="chip">+'+o.lv+"</span>":"")+(o.st?' <span class="chip" style="color:var(--gold)">'+starTxt(o)+'</span>':'')+' <span class="tier t-'+it.t+'">'+TI[it.t].n+'</span>'+(on?' <span class="chip" style="color:var(--gold)">장착중</span>':'')+'<span class="sub">'+(open?"▲":"▼")+'</span></div>'+
       '<div class="d" style="margin:0" data-a="gx" data-v="'+it.id+'">'+SN[it.slot]+" · "+o.n+"개 · "+top+'</div>'+
       (open?'<div class="d" style="margin-top:6px">'+it.d+'</div><div class="chips">'+chipsFx(it.fx,o.lv)+'</div>'+(it.pr?'<div class="d" style="color:var(--gold);margin:0 0 6px">✨ '+prDesc(it.pr,o.lv)+'</div>':'')+'<div class="row">'+
       '<button class="btn small'+(on?" ghost":"")+'" data-a="equip" data-v="'+it.id+'">'+(on?"해제":"장착")+"</button>"+
-      (it.t==="trash"?'<span class="sub">저주는 강화로 풀리지 않아요</span>':enhBtns(it,o))+"</div>":'')+
+      (it.t==="trash"?'<span class="sub">저주는 강화로 풀리지 않아요</span>':enhBtns(it,o)+starBtn(it,o))+"</div>":'')+
       "</div></div>";
   });
   h+='</section><section class="panel"><h2 class="h2">강화 안내</h2><div class="tbl"><table><tr><th>등급</th><th>중복 시 조각</th></tr>'+
@@ -5630,6 +5707,8 @@ document.addEventListener("click",function(e){
   else if(a==="shop")shopBuy(v);
   else if(a==="prem")premPull(v);
   else if(a==="relup")relBuy(v);
+  else if(a==="star")starUp(v);
+  else if(a==="colclaim")colClaim();
   else if(a==="talup")talUp(v);
   else if(a==="talreset")talReset();
   else if(a==="twgo")twStart();
